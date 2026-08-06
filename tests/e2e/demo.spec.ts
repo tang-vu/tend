@@ -192,3 +192,17 @@ test("credential-gated service APIs fail closed when unconfigured", async ({
     error: "Internal worker API is not configured.",
   });
 });
+
+test("deployment health checks persistence without exposing state", async ({
+  request,
+}) => {
+  const response = await request.get("/api/health");
+  expect(response.status()).toBe(200);
+  expect(response.headers()["cache-control"]).toBe("no-store");
+  await expect(response.json()).resolves.toEqual({
+    ok: true,
+    service: "tend-web",
+    mode: "demo",
+    persistence: "ready",
+  });
+});

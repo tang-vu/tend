@@ -81,6 +81,8 @@ pnpm worker:once
 
 Everything simulated is labeled: Mock Minds uses a readable fixture and Discord delivery is a local audit record. SQLite, policy, approval, job scheduling, claim, resolution, and audit state are real.
 
+Deployment health is available at `GET /api/health`. It verifies that persisted community state can be read, returns no incident or member data, and is the Docker image healthcheck target.
+
 ## Live Minds setup
 
 1. Create/select a Mind and Builder key at the [Minds Builder console](https://build.hellominds.ai/).
