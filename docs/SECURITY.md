@@ -54,6 +54,12 @@ The hackathon MVP has no authentication, so the dashboard must not be exposed to
 - Retried follow-ups are bounded and eventually visible as failed/manual review.
 - Audit payloads are summaries, not secret-bearing raw requests.
 
+## Build supply chain
+
+- GitHub Actions are pinned to reviewed full commit SHAs with the corresponding release tag documented inline.
+- CI installs dependencies from the committed pnpm lockfile with `--frozen-lockfile`.
+- Action releases selected for the current workflow use the Node 24 action runtime; this avoids deprecated runner runtimes while the application itself keeps its documented Node 22+ contract.
+
 ## Incident response
 
 1. Disable live mode and stop the Discord worker.
