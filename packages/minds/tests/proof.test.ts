@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { evaluatePersistenceProof } from "../src/proof-evaluator";
+import {
+  evaluatePersistenceProof,
+  parsePersistenceProofResponse,
+} from "../src/proof-evaluator";
 
 describe("persistence proof evaluation", () => {
   it.each([
@@ -35,5 +38,17 @@ describe("persistence proof evaluation", () => {
         confidence: 0.91,
       }).proven,
     ).toBe(true);
+  });
+
+  it("parses JSON returned inside the Mind's HTML preformatted envelope", () => {
+    const parsed = parsePersistenceProofResponse(
+      "<p>Here is the assessment.</p><pre>{&quot;recalledEarlierBoundary&quot;:true,&quot;recalledFact&quot;:&quot;Kai asked people not to joke about their voice&quot;,&quot;effectOnDecision&quot;:&quot;The recalled boundary changes the decision.&quot;,&quot;confidence&quot;:0.95}</pre><p>- TEND</p>",
+    );
+
+    expect(evaluatePersistenceProof(parsed).proven).toBe(true);
+  });
+
+  it("rejects oversized proof responses", () => {
+    expect(parsePersistenceProofResponse("x".repeat(64 * 1024 + 1))).toBeNull();
   });
 });

@@ -1,5 +1,20 @@
-import "dotenv/config";
 import { createMindsClient } from "@animocabrands/minds-client-lib";
+import { config } from "dotenv";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const repositoryRoot = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  "../../../..",
+);
+
+config({
+  path: [
+    resolve(repositoryRoot, ".env.local"),
+    resolve(repositoryRoot, ".env"),
+  ],
+  quiet: true,
+});
 
 export function requireMindsEnvironment() {
   const builderApiKey = process.env.MINDS_BUILDER_API_KEY;

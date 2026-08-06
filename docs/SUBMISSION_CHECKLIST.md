@@ -12,10 +12,10 @@
 ## Minds evidence
 
 - [ ] Builder API key and Mind configured in deployment secrets.
-- [ ] `pnpm minds:doctor` saved as a sanitized artifact.
-- [ ] `pnpm minds:proof` demonstrates genuine second-session recall.
+- [x] `pnpm minds:doctor` saved as a sanitized artifact.
+- [x] `pnpm minds:proof` demonstrates genuine second-session recall.
 - [ ] Failed recall, if any, reported honestly and fixed before recording.
-- [ ] Cognition balance checked.
+- [x] Cognition balance checked.
 - [ ] Custom Skill deployed, permissions inspected, equipped, and tool calls tested.
 - [ ] Skill publication status described accurately.
 
@@ -36,7 +36,7 @@
 - [x] Form-ready short/full submission copy in `docs/SUBMISSION_COPY.md`.
 - [ ] Track selected: **Moderation & community assistance**.
 - [x] Architecture and security documentation linked.
-- [ ] Minds persistence proof linked.
+- [x] Minds persistence proof linked.
 - [x] Known limitations stated.
 
 ## Final safety and delivery

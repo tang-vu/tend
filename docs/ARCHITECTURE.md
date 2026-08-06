@@ -79,7 +79,7 @@ Scale path:
 
 - One local community and no creator authentication.
 - SQLite and the embedded poller assume one web instance.
-- Live Minds, Skill equipment, and Discord delivery require owner credentials and have not been verified.
+- Live Minds discovery, cognition health, messaging, and cross-session recall are verified. Skill equipment and Discord delivery still require external setup and have not been verified.
 - Live follow-up observation is deliberately fail-closed until fresh Discord context is connected to the processor.
 - Nearby Discord context is capped at eight earlier non-bot messages.
 - Timeout uses a fixed ten-minute MVP duration after explicit approval.

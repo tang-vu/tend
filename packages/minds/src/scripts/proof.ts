@@ -1,6 +1,9 @@
 import { safePromptJson } from "@tend/core";
 import { proofAlias } from "../aliases";
-import { evaluatePersistenceProof } from "../proof-evaluator";
+import {
+  evaluatePersistenceProof,
+  parsePersistenceProofResponse,
+} from "../proof-evaluator";
 import { printSafeError, requireMindsEnvironment } from "./shared";
 
 const proofCommunity = "tend-live-persistence-proof";
@@ -56,17 +59,7 @@ try {
   if (recall.timedOut || !recall.reply?.messageText)
     throw new Error("Recall session timed out.");
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(
-      recall.reply.messageText
-        .trim()
-        .replace(/^```(?:json)?\s*/i, "")
-        .replace(/\s*```$/, ""),
-    );
-  } catch {
-    parsed = null;
-  }
+  const parsed = parsePersistenceProofResponse(recall.reply.messageText);
   const result = evaluatePersistenceProof(parsed);
   const recalled = result.proven;
   process.stdout.write(

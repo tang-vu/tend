@@ -97,7 +97,11 @@ Deployment health is available at `GET /api/health`. It verifies that persisted 
    pnpm minds:proof
    ```
 
+The diagnostics load ignored `.env.local` and `.env` files from the repository root even though pnpm runs the package command from `packages/minds`.
+
 The proof command teaches one alias and tests recall from a second alias on the same Mind. It exits nonzero if recall is not proven and never hard-codes success.
+
+Live cross-session recall was verified on 2026-08-06; see the [sanitized persistence proof](docs/evidence/minds-persistence-proof.md).
 
 ## Discord setup
 

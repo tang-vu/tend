@@ -25,7 +25,7 @@ Implementation assumptions verified from the client-library documentation:
 
 Skill guidance says a Skill includes a listing, app manifest, tool schemas, and playbook. It explicitly recommends inspecting what the Skill can read/change before publication. TEND therefore ships a narrow OpenAPI contract and setup guide, but does not claim publication, deployment, equipment, or verification.
 
-Open question requiring credentials: whether the configured Mind recalls creator-approved context across the two proof aliases in the expected way. `pnpm minds:proof` reports evidence honestly and never hard-codes success.
+Live verification on 2026-08-06 confirmed that the configured Mind recalled the creator-approved Kai/voice boundary across two distinct proof aliases and used it materially in the later assessment with confidence `0.95`. The sanitized report is in `docs/evidence/minds-persistence-proof.md`; the command still reports failures honestly and never hard-codes success.
 
 ## Framework and runtime registry checks
 

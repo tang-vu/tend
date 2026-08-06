@@ -53,9 +53,11 @@ The command exits `2` if recall was not proven. It never hard-codes success. A d
 | --------------------------- | ------------------------------ |
 | Official package compiled   | Implemented and build-verified |
 | Mock adapter                | Implemented and test-verified  |
-| Live credentials            | Not provided                   |
-| Live account/Mind discovery | Ready, not executed            |
-| Cross-session Mind recall   | Ready, not verified            |
-| Cognition health            | Ready, not executed            |
+| Live credentials            | Configured locally, untracked  |
+| Live account/Mind discovery | Verified 2026-08-06            |
+| Cross-session Mind recall   | Verified 2026-08-06            |
+| Cognition health            | Verified 2026-08-06            |
 
 Live incident analysis is implemented. Live autonomous follow-up deliberately fails closed until fresh Discord evidence is wired into the follow-up processor; the deterministic resolved outcome belongs only to labeled demo mode.
+
+The sanitized live result is recorded in [`docs/evidence/minds-persistence-proof.md`](evidence/minds-persistence-proof.md).

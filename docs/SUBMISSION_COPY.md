@@ -34,8 +34,8 @@ The credential-free demo uses a clearly labeled deterministic Mock Minds decisio
 - **Repository:** https://github.com/tang-vu/tend
 - **Live demo:** [ADD HTTPS DEPLOYMENT]
 - **Demo video:** [ADD VIDEO URL]
-- **Minds persistence proof:** [ADD SANITIZED PROOF URL]
+- **Minds persistence proof:** https://github.com/tang-vu/tend/blob/main/docs/evidence/minds-persistence-proof.md
 
 ## Honest status sentence
 
-The public demo is credential-free and deterministic; live Minds, Discord delivery, and the Custom Skill are implemented but must be described as configured or verified only after their owner-run checks succeed.
+The public demo is credential-free and deterministic; live Minds persistence is verified, while Discord delivery and the Custom Skill must be described as configured or verified only after their remaining owner-run checks succeed.
