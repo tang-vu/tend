@@ -5,7 +5,7 @@
   "type": "module",
   "description": "A persistent community steward for independent creators.",
   "license": "MIT",
-  "packageManager": "pnpm@11.13.0",
+  "packageManager": "pnpm@11.20.0",
   "engines": {
     "node": ">=22"
   },
