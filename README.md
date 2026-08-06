@@ -170,7 +170,7 @@ Never paste secret values into chat. `.env`, `.env.local`, databases, and logs a
 
 ## Testing
 
-Coverage targets policy authority, active-memory evidence, prompt injection, valid/invalid/timeout Minds results, missing credentials, persisted jobs, bounded retries, dedupe, Discord allowlists, approval-only execution, and the complete browser story.
+Coverage targets policy authority, active-memory evidence, prompt injection, valid/invalid/timeout Minds results, missing credentials, persisted jobs, bounded retries, dedupe, Discord allowlists, approval-only execution, the complete browser story, every required product screen, responsive overflow, and browser runtime errors.
 
 ```text
 pnpm verify

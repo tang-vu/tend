@@ -51,10 +51,10 @@ function phaseIndex(phase: TendSnapshot["demoPhase"]): number {
   return 3;
 }
 
-function relativeTime(iso: string): string {
+function relativeTime(iso: string, now: number): string {
   const seconds = Math.max(
     0,
-    Math.round((Date.now() - new Date(iso).getTime()) / 1000),
+    Math.round((now - new Date(iso).getTime()) / 1000),
   );
   if (seconds < 5) return "just now";
   if (seconds < 60) return `${seconds}s ago`;
@@ -69,7 +69,9 @@ export function DemoExperience({
   const [state, setState] = useState<DemoStateResponse>(initialState);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(() =>
+    new Date(initialState.serverTime).getTime(),
+  );
   const [announcement, setAnnouncement] = useState(
     "Loading persisted demo state.",
   );
@@ -583,7 +585,7 @@ export function DemoExperience({
                     <strong>{event.eventType.replaceAll(".", " ")}</strong>
                     <p>{event.payloadSummary}</p>
                     <time dateTime={event.occurredAt}>
-                      {relativeTime(event.occurredAt)}
+                      {relativeTime(event.occurredAt, now)}
                     </time>
                   </div>
                 </li>
