@@ -45,6 +45,8 @@ paths:
                     type: string
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
   /api/skill/incidents:
     get:
       operationId: list_pending_incidents
@@ -64,6 +66,8 @@ paths:
                       $ref: "#/components/schemas/Incident"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
   /api/skill/actions/propose:
     post:
       operationId: propose_community_action
@@ -94,6 +98,8 @@ paths:
           $ref: "#/components/responses/InvalidRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
   /api/skill/followups:
     post:
       operationId: schedule_followup
@@ -133,6 +139,8 @@ paths:
           $ref: "#/components/responses/InvalidRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
   /api/skill/followups/{id}:
     get:
       operationId: get_followup_status
@@ -158,6 +166,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           description: Follow-up not found.
+        "503":
+          $ref: "#/components/responses/NotConfigured"
   /api/skill/incidents/{id}/outcome:
     post:
       operationId: record_incident_outcome
@@ -201,6 +211,8 @@ paths:
           $ref: "#/components/responses/InvalidRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
 components:
   securitySchemes:
     skillBearer:
@@ -314,6 +326,18 @@ components:
         application/json:
           schema:
             type: object
+            properties:
+              ok:
+                const: false
+              error:
+                type: string
+    NotConfigured:
+      description: The server has no Skill bearer credential and refuses the request.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [ok, error]
             properties:
               ok:
                 const: false

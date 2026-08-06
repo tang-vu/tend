@@ -164,3 +164,31 @@ test("required product screens expose safe, responsive states", async ({
   ).toBeVisible();
   await expectNoPageOverflow(page);
 });
+
+test("credential-gated service APIs fail closed when unconfigured", async ({
+  request,
+}) => {
+  const skillRequests = [
+    request.get("/api/skill/community-context"),
+    request.get("/api/skill/incidents"),
+    request.post("/api/skill/actions/propose"),
+    request.post("/api/skill/followups"),
+    request.get("/api/skill/followups/unknown"),
+    request.post("/api/skill/incidents/unknown/outcome"),
+  ];
+
+  for (const response of await Promise.all(skillRequests)) {
+    expect(response.status()).toBe(503);
+    await expect(response.json()).resolves.toMatchObject({
+      ok: false,
+      error: "TEND Skill API is not configured on this server.",
+    });
+  }
+
+  const workerResponse = await request.post("/api/internal/discord/messages");
+  expect(workerResponse.status()).toBe(503);
+  await expect(workerResponse.json()).resolves.toMatchObject({
+    ok: false,
+    error: "Internal worker API is not configured.",
+  });
+});
