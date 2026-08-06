@@ -7,6 +7,11 @@ const inputSchema = z.object({
   incidentId: z.string().min(1),
   dueAt: z.string().datetime(),
   purpose: z.string().min(3).max(1_000),
+  idempotencyKey: z
+    .string()
+    .min(8)
+    .max(200)
+    .regex(/^[a-zA-Z0-9:_-]+$/),
 });
 
 export async function POST(request: Request) {
@@ -18,6 +23,7 @@ export async function POST(request: Request) {
       incidentId: input.incidentId,
       dueAt: new Date(input.dueAt),
       purpose: input.purpose,
+      idempotencyKey: `skill:followup:${input.idempotencyKey}`,
     });
     return NextResponse.json({ followUp, persisted: true });
   } catch (error) {

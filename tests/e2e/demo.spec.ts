@@ -172,7 +172,7 @@ test("required product screens expose safe, responsive states", async ({
   await expectNoPageOverflow(page);
 });
 
-test("credential-gated service APIs fail closed when unconfigured", async ({
+test("credential-gated service APIs reject missing authorization", async ({
   request,
 }) => {
   const skillRequests = [
@@ -185,18 +185,107 @@ test("credential-gated service APIs fail closed when unconfigured", async ({
   ];
 
   for (const response of await Promise.all(skillRequests)) {
-    expect(response.status()).toBe(503);
+    expect(response.status()).toBe(401);
     await expect(response.json()).resolves.toMatchObject({
       ok: false,
-      error: "TEND Skill API is not configured on this server.",
+      error: "Unauthorized.",
     });
   }
 
   const workerResponse = await request.post("/api/internal/discord/messages");
-  expect(workerResponse.status()).toBe(503);
+  expect(workerResponse.status()).toBe(401);
   await expect(workerResponse.json()).resolves.toMatchObject({
     ok: false,
-    error: "Internal worker API is not configured.",
+    error: "Unauthorized.",
+  });
+});
+
+test("authorized Skill tools preserve policy and retry idempotency", async ({
+  request,
+}) => {
+  const headers = {
+    authorization: "Bearer e2e-skill-key-not-a-production-secret",
+  };
+  await request.post("/api/demo/reset");
+  await request.post("/api/demo/learn");
+  await request.post("/api/demo/incident");
+
+  const context = await request.get("/api/skill/community-context", {
+    headers,
+  });
+  expect(context.status()).toBe(200);
+  expect((await context.json()).activeMemoryReceipts).toHaveLength(4);
+
+  const incidents = await request.get("/api/skill/incidents", { headers });
+  expect(incidents.status()).toBe(200);
+  expect((await incidents.json()).incidents).toHaveLength(1);
+
+  const actionInput = {
+    incidentId: "incident-demo-voice-boundary",
+    type: "private_reminder",
+    targetId: "member-jules",
+    content: "Please respect Kai's member-stated boundary.",
+    idempotencyKey: "e2e-action-retry-1",
+  };
+  const firstAction = await request.post("/api/skill/actions/propose", {
+    headers,
+    data: actionInput,
+  });
+  const retriedAction = await request.post("/api/skill/actions/propose", {
+    headers,
+    data: actionInput,
+  });
+  expect(firstAction.status()).toBe(200);
+  const firstActionBody = await firstAction.json();
+  const retriedActionBody = await retriedAction.json();
+  expect(retriedActionBody.proposal.id).toBe(firstActionBody.proposal.id);
+  expect(firstActionBody).toMatchObject({
+    executionOccurred: false,
+    proposal: { requiresApproval: true, status: "proposed" },
+  });
+
+  const dueAt = new Date(Date.now() + 60_000).toISOString();
+  const followUpInput = {
+    incidentId: "incident-demo-voice-boundary",
+    dueAt,
+    purpose: "Check whether the approved repair held.",
+    idempotencyKey: "e2e-followup-retry-1",
+  };
+  const firstFollowUp = await request.post("/api/skill/followups", {
+    headers,
+    data: followUpInput,
+  });
+  const retriedFollowUp = await request.post("/api/skill/followups", {
+    headers,
+    data: followUpInput,
+  });
+  expect(firstFollowUp.status()).toBe(200);
+  const firstFollowUpBody = await firstFollowUp.json();
+  expect((await retriedFollowUp.json()).followUp.id).toBe(
+    firstFollowUpBody.followUp.id,
+  );
+
+  const status = await request.get(
+    `/api/skill/followups/${firstFollowUpBody.followUp.id}`,
+    { headers },
+  );
+  expect(status.status()).toBe(200);
+  expect((await status.json()).followUp.status).toBe("scheduled");
+
+  const outcome = await request.post(
+    "/api/skill/incidents/incident-demo-voice-boundary/outcome",
+    {
+      headers,
+      data: {
+        outcome: "manual_review",
+        summary: "A moderator will verify the outcome.",
+      },
+    },
+  );
+  expect(outcome.status()).toBe(200);
+  expect(await outcome.json()).toMatchObject({
+    destructiveActionOccurred: false,
+    incident: { status: "manual_review" },
   });
 });
 

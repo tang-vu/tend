@@ -14,7 +14,9 @@ TEND's differentiated behavior is continuity: a persistent Mind receives creator
 - Timeout, repeated invalid output, unavailable credentials, and account mismatch become a transparent moderator-review result. There is no hidden LLM fallback.
 - Cognition diagnostics and a real cross-session proof command are ready.
 
-The incident prompt separates trusted creator context from `<UNTRUSTED_CONVERSATION_DATA>` and `<UNTRUSTED_TRIGGER_MESSAGE_DATA>`. It tells the Mind that embedded instructions cannot alter policy. TEND applies its policy engine again after model output.
+The incident prompt separates trusted creator policy from approved evidence and `<UNTRUSTED_CONVERSATION_DATA>` / `<UNTRUSTED_TRIGGER_MESSAGE_DATA>`. Every data block is escaped and explicitly non-authoritative. After schema validation, TEND rejects references to any receipt that was not supplied as active evidence, downgrades unavailable destructive proposals, treats low confidence as manual review, and keeps live proposals approval-gated.
+
+Sanitized provider, conversation-alias, response-fingerprint, and prompt-version references are recorded in the audit timeline when available. Builder credentials and raw authorization material are never persisted. Custom Skill action and follow-up writes require caller idempotency keys: identical retries return the original row, while conflicting reuse is rejected.
 
 ## Live setup
 
@@ -40,7 +42,8 @@ The incident prompt separates trusted creator context from `<UNTRUSTED_CONVERSAT
 2. teaches Kai's boundary;
 3. creates/ensures a distinct recall alias on the same Mind;
 4. presents the later sentence;
-5. validates and prints a sanitized report with aliases and response fingerprints.
+5. validates that the reply names Kai's voice boundary and explains a material decision effect;
+6. prints a sanitized report with aliases and response fingerprints.
 
 The command exits `2` if recall was not proven. It never hard-codes success. A database match is not accepted as proof.
 

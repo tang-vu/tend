@@ -235,6 +235,7 @@ export interface TendRepository {
       targetId: string | null;
       content: string;
       requiresApproval: boolean;
+      idempotencyKey: string;
     },
     now?: Date,
   ): ProposedAction;
@@ -243,6 +244,7 @@ export interface TendRepository {
       incidentId: string;
       dueAt: Date;
       purpose: string;
+      idempotencyKey: string;
     },
     now?: Date,
   ): FollowUp;
@@ -265,6 +267,12 @@ export interface TendRepository {
       }>;
       decision: MindDecision;
       forceManualReview: boolean;
+      analysisReference?: {
+        provider: "mock" | "live" | "unavailable";
+        conversationAlias: string | null;
+        responseFingerprint: string | null;
+        promptVersion: string;
+      };
     },
     now?: Date,
   ): Incident;
@@ -1041,9 +1049,25 @@ export class SqliteTendRepository implements TendRepository {
       targetId: string | null;
       content: string;
       requiresApproval: boolean;
+      idempotencyKey: string;
     },
     now = new Date(),
   ): ProposedAction {
+    const existing = this.database
+      .prepare("SELECT * FROM proposed_actions WHERE idempotency_key = ?")
+      .get(input.idempotencyKey) as Row | undefined;
+    if (existing) {
+      const action = actionFromRow(existing);
+      if (
+        action.incidentId !== input.incidentId ||
+        action.type !== input.type ||
+        action.targetId !== input.targetId ||
+        action.content !== input.content.trim()
+      ) {
+        throw new Error("Idempotency key was already used for another action.");
+      }
+      return action;
+    }
     const incident = this.database
       .prepare("SELECT community_id FROM incidents WHERE id = ?")
       .get(input.incidentId) as { community_id: string } | undefined;
@@ -1069,7 +1093,7 @@ export class SqliteTendRepository implements TendRepository {
         content,
         input.requiresApproval ? "consequential" : "low",
         input.requiresApproval ? 1 : 0,
-        `skill:proposal:${randomUUID()}`,
+        input.idempotencyKey,
         timestamp,
       );
     this.insertAudit(
@@ -1087,9 +1111,30 @@ export class SqliteTendRepository implements TendRepository {
   }
 
   scheduleFollowUp(
-    input: { incidentId: string; dueAt: Date; purpose: string },
+    input: {
+      incidentId: string;
+      dueAt: Date;
+      purpose: string;
+      idempotencyKey: string;
+    },
     now = new Date(),
   ): FollowUp {
+    const existing = this.database
+      .prepare("SELECT * FROM follow_ups WHERE idempotency_key = ?")
+      .get(input.idempotencyKey) as Row | undefined;
+    if (existing) {
+      const followUp = followUpFromRow(existing);
+      if (
+        followUp.incidentId !== input.incidentId ||
+        followUp.dueAt !== input.dueAt.toISOString() ||
+        followUp.purpose !== input.purpose.trim()
+      ) {
+        throw new Error(
+          "Idempotency key was already used for another follow-up.",
+        );
+      }
+      return followUp;
+    }
     const incident = this.database
       .prepare("SELECT community_id FROM incidents WHERE id = ?")
       .get(input.incidentId) as { community_id: string } | undefined;
@@ -1116,7 +1161,7 @@ export class SqliteTendRepository implements TendRepository {
         input.incidentId,
         input.dueAt.toISOString(),
         purpose,
-        `skill:followup:${randomUUID()}`,
+        input.idempotencyKey,
         timestamp,
       );
     this.insertAudit(
@@ -1187,6 +1232,12 @@ export class SqliteTendRepository implements TendRepository {
       }>;
       decision: MindDecision;
       forceManualReview: boolean;
+      analysisReference?: {
+        provider: "mock" | "live" | "unavailable";
+        conversationAlias: string | null;
+        responseFingerprint: string | null;
+        promptVersion: string;
+      };
     },
     now = new Date(),
   ): Incident {
@@ -1228,7 +1279,7 @@ export class SqliteTendRepository implements TendRepository {
           JSON.stringify(
             input.decision.memoryReceipts.map((memory) => memory.receiptId),
           ),
-          TEND_PROMPT_VERSION,
+          input.analysisReference?.promptVersion ?? TEND_PROMPT_VERSION,
           timestamp,
         );
       for (const [
@@ -1280,6 +1331,24 @@ export class SqliteTendRepository implements TendRepository {
           : "Validated Minds decision stored; proposed actions remain approval-gated.",
         timestamp,
       );
+      if (input.analysisReference) {
+        this.insertAudit(
+          snapshot.community.id,
+          id,
+          "mind",
+          "mind.response_reference",
+          JSON.stringify({
+            provider: input.analysisReference.provider,
+            conversationAlias:
+              input.analysisReference.conversationAlias?.slice(0, 200) ?? null,
+            responseFingerprint:
+              input.analysisReference.responseFingerprint?.slice(0, 200) ??
+              null,
+            promptVersion: input.analysisReference.promptVersion.slice(0, 100),
+          }),
+          timestamp,
+        );
+      }
     });
     insert();
     return incidentFromRow(

@@ -82,6 +82,7 @@ export async function POST(request: Request) {
       conversationContext: input.conversationContext,
       decision: destinationBoundDecision,
       forceManualReview: analysis.status !== "ok",
+      analysisReference: analysis.reference,
     });
     repository.markMessageProcessed(
       input.externalMessageId,

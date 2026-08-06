@@ -16,7 +16,16 @@ export function requireMindsEnvironment() {
 }
 
 export function printSafeError(error: unknown): never {
-  const message = error instanceof Error ? error.message : "Unknown error";
+  const raw = error instanceof Error ? error.message : "Unknown error";
+  const secrets = [
+    process.env.MINDS_BUILDER_API_KEY,
+    process.env.TEND_SKILL_API_KEY,
+    process.env.TEND_WORKER_API_KEY,
+  ].filter((value): value is string => Boolean(value));
+  const message = secrets.reduce(
+    (safe, secret) => safe.replaceAll(secret, "[REDACTED]"),
+    raw,
+  );
   process.stderr.write(`${JSON.stringify({ ok: false, error: message })}\n`);
   process.exit(1);
 }

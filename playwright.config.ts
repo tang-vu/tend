@@ -19,10 +19,14 @@ export default defineConfig({
   webServer: {
     command: "pnpm --filter @tend/web dev",
     url: "http://127.0.0.1:3000",
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 120_000,
     stdout: "pipe",
     stderr: "pipe",
+    env: {
+      TEND_SKILL_API_KEY: "e2e-skill-key-not-a-production-secret",
+      TEND_WORKER_API_KEY: "e2e-worker-key-not-a-production-secret",
+    },
   },
   projects: [
     {

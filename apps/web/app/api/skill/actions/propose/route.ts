@@ -13,6 +13,11 @@ const inputSchema = z.object({
   type: safeSkillActionSchema,
   targetId: z.string().min(1).nullable(),
   content: z.string().min(3).max(2_000),
+  idempotencyKey: z
+    .string()
+    .min(8)
+    .max(200)
+    .regex(/^[a-zA-Z0-9:_-]+$/),
 });
 
 export async function POST(request: Request) {
@@ -38,6 +43,7 @@ export async function POST(request: Request) {
       targetId: input.targetId,
       content: input.content,
       requiresApproval: policy.requiresApproval,
+      idempotencyKey: `skill:proposal:${input.idempotencyKey}`,
     });
     return NextResponse.json({
       proposal,

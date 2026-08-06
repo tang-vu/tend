@@ -155,3 +155,49 @@ describe("Discord persistence boundaries", () => {
     expect(repository.claimNextApprovedAction()).toBeNull();
   });
 });
+
+describe("Custom Skill idempotency", () => {
+  it("returns the original action and follow-up for an identical retry", () => {
+    const { repository, now } = setup();
+    const actionInput = {
+      incidentId: DEMO_IDS.incident,
+      type: "private_reminder" as const,
+      targetId: DEMO_IDS.jules,
+      content: "Please respect the member-stated boundary.",
+      requiresApproval: true,
+      idempotencyKey: "skill:proposal:test-action-1",
+    };
+    const firstAction = repository.proposeAction(actionInput, now);
+    expect(repository.proposeAction(actionInput, now).id).toBe(firstAction.id);
+
+    const followUpInput = {
+      incidentId: DEMO_IDS.incident,
+      dueAt: new Date(now.getTime() + 60_000),
+      purpose: "Check whether the reminder held.",
+      idempotencyKey: "skill:followup:test-followup-1",
+    };
+    const firstFollowUp = repository.scheduleFollowUp(followUpInput, now);
+    expect(repository.scheduleFollowUp(followUpInput, now).id).toBe(
+      firstFollowUp.id,
+    );
+  });
+
+  it("rejects reuse of a key for different input", () => {
+    const { repository, now } = setup();
+    const input = {
+      incidentId: DEMO_IDS.incident,
+      type: "private_reminder" as const,
+      targetId: DEMO_IDS.jules,
+      content: "Please respect the member-stated boundary.",
+      requiresApproval: true,
+      idempotencyKey: "skill:proposal:test-action-2",
+    };
+    repository.proposeAction(input, now);
+    expect(() =>
+      repository.proposeAction(
+        { ...input, content: "Different content." },
+        now,
+      ),
+    ).toThrow(/already used/);
+  });
+});

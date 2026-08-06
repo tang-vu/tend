@@ -111,7 +111,7 @@ paths:
             schema:
               type: object
               additionalProperties: false
-              required: [incidentId, dueAt, purpose]
+              required: [incidentId, dueAt, purpose, idempotencyKey]
               properties:
                 incidentId:
                   type: string
@@ -122,6 +122,11 @@ paths:
                   type: string
                   minLength: 3
                   maxLength: 1000
+                idempotencyKey:
+                  type: string
+                  minLength: 8
+                  maxLength: 200
+                  pattern: "^[a-zA-Z0-9:_-]+$"
       responses:
         "200":
           description: Persisted follow-up.
@@ -287,7 +292,7 @@ components:
     ActionProposalInput:
       type: object
       additionalProperties: false
-      required: [incidentId, type, targetId, content]
+      required: [incidentId, type, targetId, content, idempotencyKey]
       properties:
         incidentId:
           type: string
@@ -308,6 +313,11 @@ components:
           type: string
           minLength: 3
           maxLength: 2000
+        idempotencyKey:
+          type: string
+          minLength: 8
+          maxLength: 200
+          pattern: "^[a-zA-Z0-9:_-]+$"
   responses:
     Unauthorized:
       description: Missing or invalid bearer credential.
