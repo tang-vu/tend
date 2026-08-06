@@ -12,7 +12,7 @@ export default function ErrorState({
   return (
     <div className="not-found-page">
       <SiteHeader />
-      <main role="alert">
+      <main id="main-content" role="alert" tabIndex={-1}>
         <SproutIcon />
         <span className="eyebrow">Safe recovery</span>
         <h1>TEND couldn’t load this view.</h1>

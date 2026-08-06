@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <div className="landing">
       <SiteHeader />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="hero">
           <div className="hero-copy">
             <div className="hero-label">

@@ -13,6 +13,14 @@ export function MemoryManager({
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
+  function learnedTime(iso: string) {
+    return new Intl.DateTimeFormat("en-GB", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "UTC",
+    }).format(new Date(iso));
+  }
+
   async function update(
     receipt: MemoryReceipt,
     status: "active" | "corrected" | "archived",
@@ -69,7 +77,11 @@ export function MemoryManager({
                 </div>
                 <div>
                   <dt>Learned</dt>
-                  <dd>{new Date(memory.learnedAt).toLocaleString()}</dd>
+                  <dd>
+                    <time dateTime={memory.learnedAt}>
+                      {learnedTime(memory.learnedAt)} UTC
+                    </time>
+                  </dd>
                 </div>
                 <div>
                   <dt>Confidence</dt>

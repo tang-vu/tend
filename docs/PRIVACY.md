@@ -24,7 +24,7 @@ Demo defaults:
 
 - message excerpts: 30 days;
 - sanitized audit events: 180 days;
-- member deletion requests: supported.
+- member deletion requests: accepted through the documented manual process; automated fulfillment is not implemented.
 
 The MVP documents but does not yet automate retention purging. Before real use, implement a scheduled purge, legal hold rules, tenant export, and verified deletion across PostgreSQL, backups, logs, and any Mind-side context supported by the platform.
 

@@ -69,7 +69,7 @@ export default function SettingsPage() {
             <span>30</span>
             <div>
               <h2>Retention policy</h2>
-              <p>Minimum useful data, explicit deletion path.</p>
+              <p>Minimum useful data, documented manual deletion process.</p>
             </div>
           </div>
           <dl className="settings-dl">
@@ -87,14 +87,15 @@ export default function SettingsPage() {
               <dt>Member deletion requests</dt>
               <dd>
                 {snapshot.community.retentionPolicy.allowMemberDeletionRequest
-                  ? "Supported"
+                  ? "Manual process declared"
                   : "Disabled"}
               </dd>
             </div>
           </dl>
           <p className="settings-note">
             Member notes must be explicitly approved. TEND does not create
-            hidden psychological profiles.
+            hidden psychological profiles. Automated purge and verified external
+            deletion are not implemented in this MVP.
           </p>
         </section>
 

@@ -17,6 +17,9 @@ export function SiteHeader({ dashboard = false }: { dashboard?: boolean }) {
     <header
       className={dashboard ? "site-header dashboard-header" : "site-header"}
     >
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
       <Link aria-label="TEND home" href="/" className="brand-link">
         <Wordmark />
       </Link>

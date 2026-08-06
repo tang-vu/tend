@@ -36,7 +36,7 @@
 
 **Screen:** Countdown. Point to persisted state, attempt count, and live worker indicator. Do not click.
 
-**Narration:** “Now we wait. Without another creator prompt, the worker atomically claims the due job, checks whether conflict resumed, and records the outcome.”
+**Narration:** “Now we wait. Without another creator prompt, the worker atomically claims the due job and consumes a deterministic seeded observation. The evidence is simulated; the scheduling, claim, and persisted state transition are real.”
 
 **Judge takeaway:** Real autonomous follow-up and continuity.
 
@@ -44,7 +44,7 @@
 
 **Screen:** Resolved panel, community-health update, audit timeline.
 
-**Narration:** “No conflict resumed. TEND closes the case, records that repair held, and prepares a positive prompt. AutoMod keeps a server clean. TEND helps keep a community healthy.”
+**Narration:** “The seeded observation reports no renewed conflict. TEND closes the case, records that repair held, and prepares a positive prompt. AutoMod keeps a server clean. TEND helps keep a community healthy.”
 
 **Judge takeaway:** Complete loop, restorative outcome, and memorable positioning.
 
@@ -53,4 +53,4 @@
 - **Minds unavailable:** Stay in visibly labeled Demo mode. Explain that Mock Minds is deterministic while SQLite, approval, policy, scheduler, and audit transitions are real. Show `docs/MINDS_INTEGRATION.md` and a prior sanitized proof report if one exists.
 - **Discord unavailable:** Use the built-in conversation simulation. Show the readiness panel and `docs/DISCORD_SETUP.md`; do not claim a live message was sent.
 - **Slow countdown:** Run `pnpm worker:once` in a terminal after the due time, then refresh. This invokes the same persisted worker service.
-- **Browser issue:** Use the captured desktop/mobile screenshots under the latest `test-results` directory and narrate the persisted audit sequence.
+- **Browser issue:** Use the committed desktop/mobile captures in `docs/screenshots`; `test-results` contains the newest local run when available.

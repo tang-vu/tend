@@ -77,6 +77,28 @@ button:disabled {
   white-space: nowrap;
 }
 
+.skip-link {
+  background: var(--forest);
+  border-radius: 0 0 10px 10px;
+  clip-path: inset(50%);
+  color: white;
+  font-weight: 750;
+  left: 24px;
+  opacity: 0;
+  padding: 10px 14px;
+  position: fixed;
+  top: 0;
+  transform: translateY(-120%);
+  transition: transform 140ms ease;
+  z-index: 100;
+}
+
+.skip-link:focus-visible {
+  clip-path: none;
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .site-header {
   align-items: center;
   display: flex;
@@ -971,7 +993,7 @@ button:disabled {
 .act-step {
   align-items: center;
   border-radius: 14px;
-  color: #929990;
+  color: #737b73;
   display: flex;
   gap: 11px;
   padding: 12px;
@@ -1006,13 +1028,13 @@ button:disabled {
 }
 
 .act-step small {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .act-step strong {
-  font-size: 12px;
+  font-size: 13px;
   margin-top: 2px;
 }
 
@@ -1615,7 +1637,7 @@ button:disabled {
 
 .panel-title span {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .truth-panel ul {
@@ -1628,7 +1650,7 @@ button:disabled {
   align-items: center;
   border-top: 1px solid var(--line);
   display: flex;
-  font-size: 10px;
+  font-size: 12px;
   gap: 9px;
   padding: 10px 0;
 }
@@ -1645,7 +1667,7 @@ button:disabled {
 }
 
 .truth-panel li strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .truth-panel li span {
@@ -1679,7 +1701,7 @@ button:disabled {
 .panel-heading > span,
 .panel-heading > a {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .readiness-panel dl,
@@ -1693,7 +1715,7 @@ button:disabled {
   align-items: center;
   border-top: 1px solid var(--line);
   display: flex;
-  font-size: 10px;
+  font-size: 12px;
   justify-content: space-between;
   padding: 10px 0;
 }
@@ -1772,14 +1794,14 @@ button:disabled {
 
 .timeline-panel li strong,
 .timeline-detail li strong {
-  font-size: 10px;
+  font-size: 11px;
   text-transform: capitalize;
 }
 
 .timeline-panel li p,
 .timeline-detail li p {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.45;
   margin: 3px 0;
 }
@@ -1787,7 +1809,7 @@ button:disabled {
 .timeline-panel time,
 .timeline-detail time {
   color: #999f99;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .alert {
@@ -3049,12 +3071,25 @@ button:disabled {
   }
 
   .act-progress {
-    display: flex;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .act-step {
-    flex: 0 0 155px;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px 3px;
+    text-align: center;
+  }
+
+  .act-step > span {
+    height: 24px;
+    width: 24px;
+  }
+
+  .act-step strong {
+    font-size: 10px;
   }
 
   .demo-main-panel {

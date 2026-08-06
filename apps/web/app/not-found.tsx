@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <div className="not-found-page">
       <SiteHeader />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <SproutIcon />
         <span className="eyebrow">Not found</span>
         <h1>This path hasn’t grown yet.</h1>

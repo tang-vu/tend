@@ -16,12 +16,12 @@ export function OnboardingForm() {
         <span>
           <SproutIcon />
         </span>
-        <small>Local demo configuration saved in this session</small>
-        <h2>{name} is ready to tend.</h2>
+        <small>Preview only · not persisted</small>
+        <h2>{name} is ready for the walkthrough.</h2>
         <p>
-          TEND will use a deterministic Mock Minds fixture and local persisted
-          state. No Discord account was connected and no external message can be
-          sent.
+          These preview choices stay only in this page until you leave it. The
+          demo controller uses its own deterministic persisted scenario. No
+          Discord account was connected and no external message can be sent.
         </p>
         <div>
           <CheckIcon /> Creator tone: {tone}
@@ -90,7 +90,7 @@ export function OnboardingForm() {
           <legend>Autonomy boundary</legend>
           <p>These safety defaults are fixed for the MVP.</p>
           <label className="check-row">
-            <input defaultChecked type="checkbox" />
+            <input defaultChecked disabled type="checkbox" />
             <span>
               <strong>Observe and complete due follow-ups</strong>May run
               autonomously when low-risk.

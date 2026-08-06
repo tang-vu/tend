@@ -19,7 +19,7 @@ export function DashboardShell({
   return (
     <div className="dashboard-page">
       <SiteHeader dashboard />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="dashboard-intro">
           <div>
             <div className="dashboard-kicker">

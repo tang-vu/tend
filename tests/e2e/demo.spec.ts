@@ -58,6 +58,11 @@ test("three-act demo persists memory, approval, and autonomous resolution", asyn
   await expect(
     page.getByText("Kai asked people not to joke about their voice."),
   ).toBeVisible();
+  await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+  await page.screenshot({
+    fullPage: true,
+    path: testInfo.outputPath("demo-learned.png"),
+  });
 
   await page.getByRole("button", { name: "Start Act 2" }).click();
   await expect(
@@ -157,7 +162,9 @@ test("required product screens expose safe, responsive states", async ({
   await expect(page.getByLabel("Community name")).toHaveValue("The Green Room");
   await page.getByRole("button", { name: /Complete setup/ }).click();
   await expect(
-    page.getByRole("heading", { name: "The Green Room is ready to tend." }),
+    page.getByRole("heading", {
+      name: "The Green Room is ready for the walkthrough.",
+    }),
   ).toBeVisible();
   await expect(
     page.getByText("No Discord account was connected"),
@@ -205,4 +212,16 @@ test("deployment health checks persistence without exposing state", async ({
     mode: "demo",
     persistence: "ready",
   });
+});
+
+test("keyboard users can skip navigation and inspect the current demo step", async ({
+  page,
+}) => {
+  await page.goto("/demo");
+  await page.keyboard.press("Tab");
+  const skipLink = page.getByRole("link", { name: "Skip to main content" });
+  await expect(skipLink).toBeFocused();
+  await skipLink.press("Enter");
+  await expect(page.locator("#main-content")).toBeFocused();
+  await expect(page.locator('[aria-current="step"]')).toHaveCount(1);
 });

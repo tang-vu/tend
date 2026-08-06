@@ -20,7 +20,7 @@ export default function DemoPage() {
   return (
     <div className="demo-page">
       <SiteHeader dashboard />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <DemoExperience initialState={initialState} />
       </main>
     </div>

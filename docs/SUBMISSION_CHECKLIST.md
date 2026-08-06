@@ -33,6 +33,7 @@
 - [x] Desktop landing, incident, countdown, and resolution screenshots.
 - [x] Mobile landing, incident, countdown, and resolution screenshots.
 - [x] Project description and primary tagline.
+- [x] Form-ready short/full submission copy in `docs/SUBMISSION_COPY.md`.
 - [ ] Track selected: **Moderation & community assistance**.
 - [x] Architecture and security documentation linked.
 - [ ] Minds persistence proof linked.

@@ -166,6 +166,7 @@ export function DemoExperience({
           ["Act 3", "Autonomous follow-up"],
         ].map(([act, label], index) => (
           <div
+            aria-current={index === progress ? "step" : undefined}
             className={index <= progress ? "act-step active" : "act-step"}
             key={act}
           >
@@ -450,8 +451,8 @@ export function DemoExperience({
               </span>
               <h2>Repair held. The loop is closed.</h2>
               <p>
-                The due-job worker re-evaluated the persisted case, found no
-                renewed conflict, and marked the incident resolved.
+                The due-job worker consumed a deterministic seeded observation
+                of no renewed conflict, then marked the incident resolved.
               </p>
               <div className="resolution-grid">
                 <article>
@@ -524,6 +525,13 @@ export function DemoExperience({
                 <span>○</span>
                 <span>
                   <strong>Minds judgment</strong>Readable deterministic fixture
+                </span>
+              </li>
+              <li className="simulated">
+                <span>○</span>
+                <span>
+                  <strong>Follow-up evidence</strong>Seeded “no renewed
+                  conflict” observation
                 </span>
               </li>
               <li className="simulated">

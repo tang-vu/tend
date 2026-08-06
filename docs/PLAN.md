@@ -66,6 +66,7 @@ Ship a credential-free, persisted three-act TEND demo plus compile-ready live Mi
 - 2026-08-06: credential-gated Skill and Discord intake endpoints gained browser-level fail-closed coverage; the Skill contract now documents its unconfigured `503` response.
 - 2026-08-06: deployment hardening added a privacy-safe SQLite health endpoint, pinned the Docker base image digest, and made Docker image construction a CI gate.
 - 2026-08-06: independent Minds, safety, and UX reviews completed; remediation began with strict live/mock mode pairing, escaped evidence blocks, bounded structured output, active-receipt validation, and destination-bound Discord effects.
+- 2026-08-06: UX trust remediation labeled seeded follow-up evidence, removed false persistence/deletion claims, stabilized UTC memory times, and added skip-link/current-step semantics.
 - 2026-08-06: client-bundle and tracked-artifact scans found no server secret names, databases, logs, build caches, or local environment files.
 - 2026-08-06: Docker image `tend:local` built successfully with the standalone Next server and returned HTTP 200 at startup. This tool environment then sent detached containers SIGTERM after about 16 seconds, so sustained container smoke remains an external rerun.
 - 2026-08-05: Playwright desktop and mobile projects passed independently; 1440×900 and 390×844 showed no horizontal overflow.
