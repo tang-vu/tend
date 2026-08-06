@@ -1,0 +1,42 @@
+{
+  "name": "tend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A persistent community steward for independent creators.",
+  "license": "MIT",
+  "packageManager": "pnpm@11.13.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @tend/web dev",
+    "worker:dev": "pnpm --filter @tend/discord-worker dev",
+    "worker:once": "pnpm --filter @tend/discord-worker worker:once",
+    "demo:reset": "pnpm --filter @tend/db demo:reset",
+    "db:migrate": "pnpm --filter @tend/db db:migrate",
+    "minds:doctor": "pnpm --filter @tend/minds minds:doctor",
+    "minds:proof": "pnpm --filter @tend/minds minds:proof",
+    "minds:usage": "pnpm --filter @tend/minds minds:usage",
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "build": "pnpm -r --if-present build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "secrets:check": "node scripts/secret-check.mjs",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm secrets:check"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "@types/node": "24.10.0",
+    "@vitest/coverage-v8": "4.1.10",
+    "prettier": "3.6.2",
+    "tsx": "4.20.5",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

@@ -1,0 +1,15 @@
+services:
+  tend:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    environment:
+      TEND_MODE: demo
+      MINDS_MODE: mock
+      TEND_DB_PATH: /app/data/tend.db
+    volumes:
+      - tend-data:/app/data
+
+volumes:
+  tend-data:

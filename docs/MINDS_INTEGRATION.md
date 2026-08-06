@@ -1,0 +1,58 @@
+# Minds integration
+
+## Why Minds is indispensable
+
+TEND's differentiated behavior is continuity: a persistent Mind receives creator teaching, incident evidence, approved receipt references, and later follow-up work. The dashboard and SQLite mirror make decisions auditable; they are not represented as the Mind's long-term memory.
+
+## Implemented locally
+
+- `MockMindsAdapter` provides the credential-free, explicitly labeled demo.
+- `LiveMindsAdapter` uses `@animocabrands/minds-client-lib` server-side.
+- Stable, sanitized aliases use a purpose prefix, normalized community ID, and SHA-256 suffix.
+- Live analysis validates the configured Mind, ensures the conversation, captures the latest history fingerprint, sends the versioned prompt, and waits via `waitForReply`.
+- Responses are parsed with Zod. Invalid output receives one correction prompt.
+- Timeout, repeated invalid output, unavailable credentials, and account mismatch become a transparent moderator-review result. There is no hidden LLM fallback.
+- Cognition diagnostics and a real cross-session proof command are ready.
+
+The incident prompt separates trusted creator context from `<UNTRUSTED_CONVERSATION_DATA>` and `<UNTRUSTED_TRIGGER_MESSAGE_DATA>`. It tells the Mind that embedded instructions cannot alter policy. TEND applies its policy engine again after model output.
+
+## Live setup
+
+1. Create or select a Mind and Builder API key in the [Minds Builder console](https://build.hellominds.ai/).
+2. Copy `.env.example` to an ignored `.env` at the repository root.
+3. Put the key in `MINDS_BUILDER_API_KEY` and the selected Mind UUID in `MINDS_MIND_ID`.
+4. Set `MINDS_MODE=live`. Do not use a `NEXT_PUBLIC_` prefix.
+5. Run:
+
+   ```text
+   pnpm minds:doctor
+   pnpm minds:usage
+   pnpm minds:proof
+   ```
+
+6. Start TEND and inspect Settings. “Configured” is not “verified”; a successful doctor/proof report is the evidence.
+
+## Persistence proof semantics
+
+`pnpm minds:proof`:
+
+1. creates/ensures a teach alias;
+2. teaches Kai's boundary;
+3. creates/ensures a distinct recall alias on the same Mind;
+4. presents the later sentence;
+5. validates and prints a sanitized report with aliases and response fingerprints.
+
+The command exits `2` if recall was not proven. It never hard-codes success. A database match is not accepted as proof.
+
+## Current verification status
+
+| Capability                  | Status                         |
+| --------------------------- | ------------------------------ |
+| Official package compiled   | Implemented and build-verified |
+| Mock adapter                | Implemented and test-verified  |
+| Live credentials            | Not provided                   |
+| Live account/Mind discovery | Ready, not executed            |
+| Cross-session Mind recall   | Ready, not verified            |
+| Cognition health            | Ready, not executed            |
+
+Live incident analysis is implemented. Live autonomous follow-up deliberately fails closed until fresh Discord evidence is wired into the follow-up processor; the deterministic resolved outcome belongs only to labeled demo mode.

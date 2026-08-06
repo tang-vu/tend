@@ -1,0 +1,27 @@
+{
+  "name": "@tend/minds",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "minds:doctor": "tsx src/scripts/doctor.ts",
+    "minds:proof": "tsx src/scripts/proof.ts",
+    "minds:usage": "tsx src/scripts/usage.ts"
+  },
+  "dependencies": {
+    "@animocabrands/minds-client-lib": "0.1.3",
+    "@tend/core": "workspace:*",
+    "dotenv": "17.2.3",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "tsx": "4.20.5",
+    "typescript": "5.9.3"
+  }
+}

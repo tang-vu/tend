@@ -1,0 +1,318 @@
+openapi: 3.1.0
+info:
+  title: TEND Community Steward Skill
+  version: 0.1.0
+  description: |
+    Narrowly scoped tools for a persistent Mind to read approved community context,
+    propose non-destructive actions, schedule persisted follow-ups, and record outcomes.
+    These tools cannot directly delete messages, timeout members, kick, or ban.
+servers:
+  - url: https://YOUR-TEND-DEPLOYMENT.example.com
+    description: Replace with the deployed HTTPS TEND base URL before configuring Minds.
+security:
+  - skillBearer: []
+paths:
+  /api/skill/community-context:
+    get:
+      operationId: get_community_context
+      summary: Read active creator tenets, policy, and auditable memory receipts.
+      responses:
+        "200":
+          description: Sanitized trusted context.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  [community, tenets, activeMemoryReceipts, safetyNotice]
+                properties:
+                  community:
+                    type: object
+                    additionalProperties: true
+                  tenets:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  activeMemoryReceipts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MemoryReceipt"
+                  safetyNotice:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/skill/incidents:
+    get:
+      operationId: list_pending_incidents
+      summary: List incidents that still need approval, monitoring, or manual review.
+      responses:
+        "200":
+          description: Pending incident summaries.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [incidents]
+                properties:
+                  incidents:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Incident"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/skill/actions/propose:
+    post:
+      operationId: propose_community_action
+      summary: Add an action to TEND's proposal or approval queue; never execute Discord actions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActionProposalInput"
+      responses:
+        "200":
+          description: Persisted proposal and policy result. executionOccurred is always false.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [proposal, policyReason, executionOccurred]
+                properties:
+                  proposal:
+                    type: object
+                    additionalProperties: true
+                  policyReason:
+                    type: string
+                  executionOccurred:
+                    const: false
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/skill/followups:
+    post:
+      operationId: schedule_followup
+      summary: Persist a future check for an existing incident.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [incidentId, dueAt, purpose]
+              properties:
+                incidentId:
+                  type: string
+                dueAt:
+                  type: string
+                  format: date-time
+                purpose:
+                  type: string
+                  minLength: 3
+                  maxLength: 1000
+      responses:
+        "200":
+          description: Persisted follow-up.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [followUp, persisted]
+                properties:
+                  followUp:
+                    $ref: "#/components/schemas/FollowUp"
+                  persisted:
+                    const: true
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/skill/followups/{id}:
+    get:
+      operationId: get_followup_status
+      summary: Read the persisted status and attempt count of one follow-up.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current follow-up state.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [followUp]
+                properties:
+                  followUp:
+                    $ref: "#/components/schemas/FollowUp"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Follow-up not found.
+  /api/skill/incidents/{id}/outcome:
+    post:
+      operationId: record_incident_outcome
+      summary: Record a resolution or move the case to manual review; execute no member action.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [outcome, summary]
+              properties:
+                outcome:
+                  type: string
+                  enum: [resolved, manual_review]
+                summary:
+                  type: string
+                  minLength: 3
+                  maxLength: 1000
+      responses:
+        "200":
+          description: Persisted outcome. destructiveActionOccurred is always false.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [incident, destructiveActionOccurred]
+                properties:
+                  incident:
+                    $ref: "#/components/schemas/Incident"
+                  destructiveActionOccurred:
+                    const: false
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+components:
+  securitySchemes:
+    skillBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+      description: High-entropy TEND_SKILL_API_KEY stored in Minds Connection and server secrets.
+  schemas:
+    MemoryReceipt:
+      type: object
+      required:
+        [id, claim, sourceType, learnedAt, confidence, status, whyRelevant]
+      properties:
+        id:
+          type: string
+        claim:
+          type: string
+        sourceType:
+          type: string
+        learnedAt:
+          type: string
+          format: date-time
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        status:
+          type: string
+          enum: [active, corrected, archived]
+        whyRelevant:
+          type: string
+    Incident:
+      type: object
+      required: [id, status, riskLevel, confidence, summary]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        summary:
+          type: string
+      additionalProperties: true
+    FollowUp:
+      type: object
+      required:
+        [id, incidentId, dueAt, purpose, status, attemptCount, idempotencyKey]
+      properties:
+        id:
+          type: string
+        incidentId:
+          type: string
+        dueAt:
+          type: string
+          format: date-time
+        purpose:
+          type: string
+        status:
+          type: string
+          enum: [scheduled, claimed, retrying, completed, failed]
+        attemptCount:
+          type: integer
+          minimum: 0
+        idempotencyKey:
+          type: string
+    ActionProposalInput:
+      type: object
+      additionalProperties: false
+      required: [incidentId, type, targetId, content]
+      properties:
+        incidentId:
+          type: string
+        type:
+          type: string
+          description: execute_timeout and delete_message are intentionally absent.
+          enum:
+            - observe
+            - record_pattern
+            - public_nudge
+            - private_reminder
+            - moderator_review
+            - recommend_timeout
+            - positive_prompt
+        targetId:
+          type: [string, "null"]
+        content:
+          type: string
+          minLength: 3
+          maxLength: 2000
+  responses:
+    Unauthorized:
+      description: Missing or invalid bearer credential.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ok:
+                const: false
+              error:
+                type: string
+    InvalidRequest:
+      description: Schema, policy, or resource validation failed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ok:
+                const: false
+              error:
+                type: string

@@ -1,0 +1,26 @@
+{
+  "name": "@tend/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "db:migrate": "tsx src/scripts/migrate.ts",
+    "demo:reset": "tsx src/scripts/reset.ts"
+  },
+  "dependencies": {
+    "@tend/core": "workspace:*",
+    "better-sqlite3": "13.0.3",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "7.6.13",
+    "tsx": "4.20.5",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "Jules's comment crosses Kai's known personal boundary despite otherwise permissive banter norms.",
+  "classification": "accidental_harm",
+  "riskLevel": "medium",
+  "confidence": 0.91,
+  "needsHumanReview": true,
+  "policyMatches": [
+    "Playful roasting is normally allowed.",
+    "Respect member-stated personal boundaries.",
+    "New members receive a gentle reminder first.",
+    "Never ban automatically."
+  ],
+  "memoryReceipts": [
+    {
+      "receiptId": "memory-kai-voice-boundary",
+      "influence": "Kai previously asked the community not to joke about their voice; this changes an ambiguous joke into a boundary crossing."
+    }
+  ],
+  "proposedActions": [
+    {
+      "type": "private_reminder",
+      "targetId": "member-jules",
+      "content": "Hey Jules — quick heads-up: playful roasting is usually welcome here, but Kai has asked us not to joke about their voice. Please leave that topic out going forward. Thanks for helping keep the space comfortable.",
+      "rationale": "A gentle private reminder is proportionate for a new member and avoids public shaming."
+    }
+  ],
+  "followUps": [
+    {
+      "purpose": "Check for renewed conflict and prepare a supportive, demo-safe check-in for Kai.",
+      "delayMinutes": 30
+    }
+  ],
+  "reasoningForModerator": "The words alone are ambiguous. The active, creator-approved receipt about Kai's voice makes the boundary relevant. A private reminder addresses the harm without punishment; approval is required before any live message.",
+  "uncertainties": [
+    "The message does not establish malicious intent.",
+    "Jules may not know the earlier boundary."
+  ]
+}
