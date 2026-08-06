@@ -15,6 +15,7 @@
 - `pnpm worker:dev`: run the Discord/follow-up worker.
 - `pnpm demo:reset` / `pnpm worker:once`: reset or advance persisted demo state.
 - `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm test:e2e`: quality gates.
+- `pnpm openapi:lint`: validate the Custom TEND Skill contract.
 - `pnpm minds:doctor`, `pnpm minds:proof`, `pnpm minds:usage`: live Minds diagnostics.
 
 ## Conventions

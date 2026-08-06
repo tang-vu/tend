@@ -27,6 +27,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - run: pnpm openapi:lint
       - run: pnpm secrets:check
 
   browser:

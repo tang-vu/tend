@@ -165,8 +165,9 @@ Never paste secret values into chat. `.env`, `.env.local`, databases, and logs a
 | `pnpm test`          | Vitest unit/integration suite                        |
 | `pnpm test:e2e`      | Desktop/mobile Playwright critical path              |
 | `pnpm build`         | All package and production web builds                |
+| `pnpm openapi:lint`  | Validate the Custom TEND Skill OpenAPI document      |
 | `pnpm secrets:check` | Reasonable source secret scan                        |
-| `pnpm verify`        | Lint, types, tests, build, and secret scan           |
+| `pnpm verify`        | Lint, types, tests, build, OpenAPI, and secret scan  |
 
 ## Testing
 

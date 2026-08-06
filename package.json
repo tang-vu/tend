@@ -27,11 +27,13 @@
     "build": "pnpm -r --if-present build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "openapi:lint": "redocly lint docs/tend-skill-openapi.yaml",
     "secrets:check": "node scripts/secret-check.mjs",
-    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm secrets:check"
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm openapi:lint && pnpm secrets:check"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
+    "@redocly/cli": "2.41.0",
     "@types/node": "24.10.0",
     "@vitest/coverage-v8": "4.1.10",
     "prettier": "3.6.2",

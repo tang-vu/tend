@@ -62,6 +62,7 @@ Ship a credential-free, persisted three-act TEND demo plus compile-ready live Mi
 - 2026-08-06: expanded Playwright coverage passed 6/6 tests across overview, incident detail, memories, settings, onboarding, and the full demo. Browser console/page errors now fail the suite; a server/client relative-time hydration mismatch found by this gate was fixed.
 - 2026-08-06: CI actions were upgraded to current Node 24-runtime releases and pinned to full commit SHAs after GitHub reported Node 20 action-runtime deprecation.
 - 2026-08-06: pnpm was upgraded from the registry-withdrawn 11.13.0 release to current stable 11.20.0 after the newer setup action correctly rejected the broken release.
+- 2026-08-06: the Custom TEND Skill document passed Redocly OAS 3.1 validation; the validator is pinned and runs in CI.
 - 2026-08-06: client-bundle and tracked-artifact scans found no server secret names, databases, logs, build caches, or local environment files.
 - 2026-08-06: Docker image `tend:local` built successfully with the standalone Next server and returned HTTP 200 at startup. This tool environment then sent detached containers SIGTERM after about 16 seconds, so sustained container smoke remains an external rerun.
 - 2026-08-05: Playwright desktop and mobile projects passed independently; 1440×900 and 390×844 showed no horizontal overflow.

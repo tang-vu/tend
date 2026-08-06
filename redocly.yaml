@@ -1,0 +1,6 @@
+extends:
+  - recommended
+
+rules:
+  # Deployment is intentionally unset until the owner provides an HTTPS URL.
+  no-server-example.com: off
