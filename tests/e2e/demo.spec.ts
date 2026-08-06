@@ -50,12 +50,20 @@ test("three-act demo persists memory, approval, and autonomous resolution", asyn
     page.getByText("Memory that changed the decision"),
   ).toBeVisible();
   await expect(page.getByText("No ban · No timeout")).toBeVisible();
+  await page.screenshot({
+    fullPage: true,
+    path: testInfo.outputPath("demo-incident.png"),
+  });
 
   await page
     .getByRole("button", { name: "Approve & schedule follow-up" })
     .click();
   await expect(page.getByText("Persisted due job")).toBeVisible();
   await expect(page.getByText("Local worker is active.")).toBeVisible();
+  await page.screenshot({
+    fullPage: true,
+    path: testInfo.outputPath("demo-countdown.png"),
+  });
 
   await expect(
     page.getByRole("heading", { name: "Repair held. The loop is closed." }),

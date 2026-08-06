@@ -1827,6 +1827,69 @@ button:disabled {
   color: var(--muted);
 }
 
+.route-loading {
+  margin: 0 auto;
+  max-width: 1280px;
+  min-height: 70vh;
+  padding: 112px 32px;
+  width: 100%;
+}
+
+.skeleton {
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+  background: linear-gradient(90deg, #e7e5db 20%, #f2f1e9 50%, #e7e5db 80%);
+  background-size: 220% 100%;
+  border-radius: 14px;
+}
+
+.skeleton-kicker {
+  height: 12px;
+  margin-bottom: 24px;
+  width: 190px;
+}
+
+.skeleton-title {
+  height: 62px;
+  margin-bottom: 18px;
+  max-width: 640px;
+}
+
+.skeleton-copy {
+  height: 20px;
+  margin-bottom: 54px;
+  max-width: 460px;
+}
+
+.skeleton-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.skeleton-card {
+  height: 240px;
+}
+
+@keyframes skeleton-pulse {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .route-loading {
+    padding: 80px 18px;
+  }
+
+  .skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skeleton-card {
+    height: 160px;
+  }
+}
+
 .loading-ring {
   animation: spin 1s linear infinite;
   border: 3px solid #dce4d7;

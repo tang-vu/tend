@@ -1,6 +1,6 @@
 # TEND implementation plan
 
-Updated: 2026-08-05
+Updated: 2026-08-06
 
 ## Goal
 
@@ -8,15 +8,15 @@ Ship a credential-free, persisted three-act TEND demo plus compile-ready live Mi
 
 ## Status
 
-| Phase | Scope                                                           | Status                                           |
-| ----- | --------------------------------------------------------------- | ------------------------------------------------ |
-| 0     | Inspect, official research, durable instructions, risk register | Complete                                         |
-| 1     | Workspace, strict tooling, SQLite persistence, domain packages  | Complete                                         |
-| 2     | Policy, mock Minds, scenario services, worker, primary UI       | Complete                                         |
-| 3     | Live Minds, diagnostics/proof, Skill API and OpenAPI            | Complete (live verification pending credentials) |
-| 4     | Safe Discord gateway and approved action executor               | Complete (live verification pending credentials) |
-| 5     | Tests, responsive/accessibility polish, visual/security QA      | In progress                                      |
-| 6     | Submission docs, full gates, final skeptical review             | Pending                                          |
+| Phase | Scope                                                           | Status                                            |
+| ----- | --------------------------------------------------------------- | ------------------------------------------------- |
+| 0     | Inspect, official research, durable instructions, risk register | Complete                                          |
+| 1     | Workspace, strict tooling, SQLite persistence, domain packages  | Complete                                          |
+| 2     | Policy, mock Minds, scenario services, worker, primary UI       | Complete                                          |
+| 3     | Live Minds, diagnostics/proof, Skill API and OpenAPI            | Complete (live verification pending credentials)  |
+| 4     | Safe Discord gateway and approved action executor               | Complete (live verification pending credentials)  |
+| 5     | Tests, responsive/accessibility polish, visual/security QA      | Complete                                          |
+| 6     | Submission docs, full gates, final skeptical review             | Complete (external credentials/deployment remain) |
 
 ## Acceptance spine
 
@@ -57,4 +57,8 @@ Ship a credential-free, persisted three-act TEND demo plus compile-ready live Mi
 - 2026-08-05: production Next build passed; local HTTP story reached scheduled then resolved through the persisted worker.
 - 2026-08-05: Vitest passed 25 tests across policy, prompts, Minds, jobs, persistence, and Discord boundaries.
 - 2026-08-06: skeptical safety review separated demo/live follow-up processors, disabled demo mutations in live mode, made Skill readiness explicit, and strengthened bearer comparison and CI setup.
+- 2026-08-06: `pnpm verify` passed: lint, strict typecheck, 26 Vitest tests, production build, and secret scan.
+- 2026-08-06: production Playwright passed 4/4 desktop/mobile tests at 1440×900 and 390×844; landing, incident, countdown, and resolved screenshots were inspected without page overflow or dev overlays.
+- 2026-08-06: client-bundle and tracked-artifact scans found no server secret names, databases, logs, build caches, or local environment files.
+- 2026-08-06: Docker image `tend:local` built successfully with the standalone Next server and returned HTTP 200 at startup. This tool environment then sent detached containers SIGTERM after about 16 seconds, so sustained container smoke remains an external rerun.
 - 2026-08-05: Playwright desktop and mobile projects passed independently; 1440×900 and 390×844 showed no horizontal overflow.

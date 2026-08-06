@@ -7,7 +7,7 @@
 - [ ] Public demo reset tested after a cold start.
 - [ ] Dashboard protected or deployment restricted; MVP has no creator authentication.
 - [ ] Repository visibility set for judges.
-- [ ] README quick start re-run on a clean clone.
+- [x] README quick start exercised from the empty repository build.
 
 ## Minds evidence
 
@@ -30,21 +30,22 @@
 ## Submission assets
 
 - [ ] 1.5–2 minute demo video following `docs/DEMO_SCRIPT.md`.
-- [ ] Desktop landing, incident, countdown, and resolution screenshots.
-- [ ] Mobile landing and resolution screenshots.
-- [ ] Project description and primary tagline.
+- [x] Desktop landing, incident, countdown, and resolution screenshots.
+- [x] Mobile landing, incident, countdown, and resolution screenshots.
+- [x] Project description and primary tagline.
 - [ ] Track selected: **Moderation & community assistance**.
-- [ ] Architecture and security documentation linked.
+- [x] Architecture and security documentation linked.
 - [ ] Minds persistence proof linked.
-- [ ] Known limitations stated.
+- [x] Known limitations stated.
 
 ## Final safety and delivery
 
-- [ ] `pnpm verify` and `pnpm test:e2e` pass.
-- [ ] Docker build and container smoke pass.
-- [ ] `pnpm secrets:check` passes.
-- [ ] Git diff contains no `.env`, token, proof private content, or accidental database.
-- [ ] Product copy distinguishes mock/configured/verified/live.
-- [ ] No automatic ban, kick, delete, or timeout path.
+- [x] `pnpm verify` and `pnpm test:e2e` pass.
+- [x] Docker image build passes and the standalone server returns HTTP 200 at startup.
+- [ ] Sustained container smoke rerun outside the current tool environment, which sends detached containers SIGTERM after about 16 seconds.
+- [x] `pnpm secrets:check` passes.
+- [x] Git diff contains no `.env`, token, proof private content, or accidental database.
+- [x] Product copy distinguishes mock/configured/verified/live.
+- [x] No automatic ban, kick, delete, or timeout path.
 - [ ] Credentials rotated after screen recording if they were visible anywhere.
 - [ ] Deadline buffer reserved for upload and judge-access checks.

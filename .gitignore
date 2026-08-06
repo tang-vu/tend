@@ -2,6 +2,7 @@ node_modules/
 .pnpm-store/
 .next/
 dist/
+*.tsbuildinfo
 coverage/
 playwright-report/
 test-results/
@@ -17,4 +18,3 @@ data/
 *.log
 .DS_Store
 Thumbs.db
-

@@ -6,6 +6,8 @@ TEND is a persistent Discord community steward that remembers creator values, me
 
 ![TEND resolved demo](docs/screenshots/demo-resolved-desktop.png)
 
+Visual QA captures: [landing desktop](docs/screenshots/landing-desktop.png), [incident desktop](docs/screenshots/demo-incident-desktop.png), [countdown desktop](docs/screenshots/demo-countdown-desktop.png), [resolved desktop](docs/screenshots/demo-resolved-desktop.png), plus matching mobile captures in [`docs/screenshots`](docs/screenshots/).
+
 If the screenshot has not been generated in a fresh clone, run `pnpm test:e2e`; the latest full-resolution captures are written below `test-results/`.
 
 ## Problem
