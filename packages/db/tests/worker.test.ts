@@ -23,6 +23,7 @@ function setup(now = new Date("2026-08-05T12:00:00.000Z")) {
 
 afterEach(() => {
   for (const database of databases.splice(0)) database.close();
+  vi.unstubAllEnvs();
 });
 
 describe("persisted follow-up worker", () => {
@@ -199,5 +200,27 @@ describe("Custom Skill idempotency", () => {
         now,
       ),
     ).toThrow(/already used/);
+  });
+});
+
+describe("live storage bootstrap", () => {
+  it("never seeds fictional demo members or demo metrics", () => {
+    vi.stubEnv("TEND_MODE", "live");
+    vi.stubEnv("DISCORD_GUILD_ID", "guild-live");
+    vi.stubEnv("DISCORD_ALLOWED_CHANNEL_IDS", "channel-a,channel-b");
+    const database = openDatabase(":memory:");
+    databases.push(database);
+    const snapshot = new SqliteTendRepository(database).getSnapshot();
+
+    expect(snapshot).toMatchObject({
+      community: {
+        mode: "live",
+        externalGuildId: "guild-live",
+        monitoredChannelIds: ["channel-a", "channel-b"],
+      },
+      members: [],
+      memories: [],
+      metrics: { isDemoData: false },
+    });
   });
 });

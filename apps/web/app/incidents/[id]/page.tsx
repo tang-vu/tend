@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { IncidentControls } from "@/components/incident-controls";
 import { MemoryIcon, ShieldIcon } from "@/components/icons";
+import { LiveDashboardLocked } from "@/components/live-dashboard-locked";
+import { creatorDashboardAvailable } from "@/lib/http";
 import { getRepository } from "@/lib/server";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +13,7 @@ export default async function IncidentPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
   const { id } = await params;
   const snapshot = getRepository().getSnapshot();
   const incident = snapshot.incidents.find((item) => item.id === id);

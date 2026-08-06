@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { CheckIcon, ShieldIcon } from "@/components/icons";
+import { LiveDashboardLocked } from "@/components/live-dashboard-locked";
+import { creatorDashboardAvailable } from "@/lib/http";
 import { getRepository, readiness } from "@/lib/server";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +14,7 @@ function readinessLabel(value: "configured_unverified" | "not_configured") {
 }
 
 export default function SettingsPage() {
+  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
   const snapshot = getRepository().getSnapshot();
   const status = readiness();
 

@@ -65,7 +65,7 @@ The deterministic outcome processor is selected only in demo mode. In live mode,
 
 ## Storage and migration path
 
-SQLite runs in WAL mode with foreign keys and a busy timeout. JSON arrays are stored as validated text. Repository interfaces prevent UI, prompt, and Discord code from depending on SQLite types.
+SQLite runs in WAL mode with foreign keys and a busy timeout. JSON arrays are stored as validated text. Repository interfaces prevent UI, prompt, and Discord code from depending on SQLite types. A fresh demo database receives the fictional Green Room scenario; a fresh live database instead receives a minimal `mode: live` community bound to the configured guild/channel allowlist, with no fictional members, receipts, incidents, or demo metrics.
 
 Scale path:
 

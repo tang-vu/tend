@@ -188,7 +188,7 @@ Playwright runs at 1440×900 and 390×844 and asserts no horizontal overflow.
 
 Community messages are explicitly untrusted data and cannot override policy. Live responses are Zod-validated with one repair attempt; failure creates manual review without a hidden LLM. Receipts can be corrected or archived, and only active receipts become evidence. No protected-trait inference or covert profiling is allowed.
 
-See [Security](docs/SECURITY.md) and [Privacy](docs/PRIVACY.md). The MVP has no creator authentication; do not expose it publicly with live credentials until auth and per-community authorization exist.
+See [Security](docs/SECURITY.md) and [Privacy](docs/PRIVACY.md). The MVP has no creator authentication, so live mode disables dashboard data and mutations by default. Live integrations remain headless/fail-safe until creator auth and per-community authorization exist; demo mode remains fully usable.
 
 ## Hackathon judging alignment
 
@@ -220,7 +220,7 @@ Estimated moderator minutes saved uses a visible demo assumption: four minutes f
 
 ## Known limitations
 
-- One seeded community and no authentication or billing.
+- One seeded community and no authentication or billing; live dashboard access is deliberately disabled until creator auth exists.
 - SQLite and embedded scheduling target one instance.
 - Live Minds, Discord, and Skill flows compile but await owner credentials and verification.
 - Live follow-ups fail closed to retry/manual review until a fresh Discord observation source is configured; only demo mode produces the seeded “no renewed conflict” outcome.

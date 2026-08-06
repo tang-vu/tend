@@ -1,6 +1,7 @@
 import "server-only";
 
 import { timingSafeEqual } from "node:crypto";
+import { creatorDashboardEnabled } from "@tend/core";
 import { NextResponse } from "next/server";
 
 function bearerMatches(request: Request, expected: string): boolean {
@@ -22,6 +23,24 @@ export function requireDemoMode(): Response | null {
         error: "Demo seed and reset operations are disabled in live mode.",
       },
       { status: 409 },
+    );
+  }
+  return null;
+}
+
+export function creatorDashboardAvailable(): boolean {
+  return creatorDashboardEnabled(process.env.TEND_MODE);
+}
+
+export function requireCreatorDashboard(): Response | null {
+  if (!creatorDashboardAvailable()) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Creator dashboard access is disabled in live mode until authentication is configured.",
+      },
+      { status: 503 },
     );
   }
   return null;

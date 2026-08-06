@@ -284,6 +284,78 @@ export interface TendRepository {
 export class SqliteTendRepository implements TendRepository {
   constructor(private readonly database: TendDatabase) {}
 
+  private initializeLive(now = new Date()): TendSnapshot {
+    const timestamp = now.toISOString();
+    const communityId = "community-live-tend";
+    const monitoredChannels = (process.env.DISCORD_ALLOWED_CHANNEL_IDS ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const initialize = this.database.transaction(() => {
+      this.database
+        .prepare(
+          `INSERT INTO communities (
+            id, name, platform, external_guild_id, monitored_channel_ids, mode, creator_tone,
+            autonomy_policy, retention_policy, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, 'live', ?, ?, ?, ?, ?)`,
+        )
+        .run(
+          communityId,
+          "TEND Live Community",
+          "discord",
+          process.env.DISCORD_GUILD_ID ?? null,
+          JSON.stringify(monitoredChannels),
+          "Warm, direct, private-first, and restorative.",
+          JSON.stringify({
+            autonomousActionTypes: ["observe", "record_pattern"],
+            alwaysRequireApproval: [
+              "public_nudge",
+              "private_reminder",
+              "moderator_review",
+              "recommend_timeout",
+              "execute_timeout",
+              "delete_message",
+            ],
+            newMemberGentleFirst: true,
+            allowMemberCheckIns: false,
+          }),
+          JSON.stringify({
+            messageExcerptDays: 30,
+            auditDays: 180,
+            allowMemberDeletionRequest: true,
+          }),
+          timestamp,
+          timestamp,
+        );
+      this.database
+        .prepare(
+          `INSERT INTO community_tenets (
+            id, community_id, title, statement, category, source, active, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)`,
+        )
+        .run(
+          "tenet-live-human-authority",
+          communityId,
+          "Consequential actions need a person",
+          "Deletion, restriction, and member contact require explicit creator approval.",
+          "escalation",
+          "TEND safety baseline",
+          timestamp,
+          timestamp,
+        );
+      this.insertAudit(
+        communityId,
+        null,
+        "tend",
+        "community.live_initialized",
+        "Live community storage initialized from server-side guild and channel configuration; no demo members or memories were created.",
+        timestamp,
+      );
+    });
+    initialize();
+    return this.getSnapshot();
+  }
+
   resetDemo(now = new Date()): TendSnapshot {
     const timestamp = now.toISOString();
     const reset = this.database.transaction(() => {
@@ -420,11 +492,13 @@ export class SqliteTendRepository implements TendRepository {
   }
 
   getSnapshot(): TendSnapshot {
-    let communityRow = this.database
-      .prepare("SELECT * FROM communities WHERE id = ?")
-      .get(DEMO_IDS.community) as Row | undefined;
+    const communityRow = this.database
+      .prepare("SELECT * FROM communities ORDER BY created_at LIMIT 1")
+      .get() as Row | undefined;
     if (!communityRow) {
-      return this.resetDemo();
+      return process.env.TEND_MODE === "live"
+        ? this.initializeLive()
+        : this.resetDemo();
     }
     const community = communityFromRow(communityRow);
     const tenets = (
@@ -504,7 +578,7 @@ export class SqliteTendRepository implements TendRepository {
       repeatConflictRate: completedFollowUps > 0 ? 0 : 0,
       estimatedModeratorMinutesSaved:
         resolvedWithoutPunishment * 4 + completedFollowUps * 3,
-      isDemoData: true,
+      isDemoData: community.mode === "demo",
     });
 
     return {

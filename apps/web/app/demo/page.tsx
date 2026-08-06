@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DemoExperience } from "@/components/demo-experience";
 import { SiteHeader } from "@/components/site-header";
+import { LiveDashboardLocked } from "@/components/live-dashboard-locked";
+import { creatorDashboardAvailable } from "@/lib/http";
 import { getRepository, readiness } from "@/lib/server";
 
 export const metadata: Metadata = {
@@ -11,6 +13,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default function DemoPage() {
+  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
   const initialState = {
     ok: true,
     snapshot: getRepository().getSnapshot(),

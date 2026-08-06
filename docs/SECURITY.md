@@ -50,7 +50,7 @@ The Skill and internal worker surfaces use distinct bearer credentials. Inputs a
 
 `TEND_MODE=live` is compatible only with `MINDS_MODE=live`; `live/mock` and `demo/live` combinations select the unavailable/manual-review adapter. Real Discord content can therefore never reach the deterministic demo fixture, and demo content cannot be sent to Minds accidentally.
 
-The hackathon MVP has no authentication, so the dashboard must not be exposed to an untrusted public audience with live credentials. Add creator authentication and per-community authorization before real multi-user use.
+The hackathon MVP has no creator authentication. Therefore `TEND_MODE=live` disables dashboard pages plus snapshot, approval, rejection, and memory-mutation APIs. Live intake can create manual-review/approval work, but no browser can inspect or approve it until real creator authentication and per-community authorization are implemented. Demo mode remains fully usable without credentials.
 
 ## Persistence
 

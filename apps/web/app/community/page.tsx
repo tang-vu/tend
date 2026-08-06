@@ -6,6 +6,8 @@ import {
   SproutIcon,
 } from "@/components/icons";
 import { DashboardShell } from "@/components/dashboard-shell";
+import { LiveDashboardLocked } from "@/components/live-dashboard-locked";
+import { creatorDashboardAvailable } from "@/lib/http";
 import { getRepository, readiness } from "@/lib/server";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +17,7 @@ function stateLabel(status: string) {
 }
 
 export default function CommunityPage() {
+  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
   const snapshot = getRepository().getSnapshot();
   const health = readiness();
   const incident = snapshot.incidents[0];

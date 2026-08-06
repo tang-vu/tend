@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { MemoryManager } from "@/components/memory-manager";
+import { LiveDashboardLocked } from "@/components/live-dashboard-locked";
+import { creatorDashboardAvailable } from "@/lib/http";
 import { getRepository } from "@/lib/server";
 
 export const dynamic = "force-dynamic";
 
 export default function MemoriesPage() {
+  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
   const snapshot = getRepository().getSnapshot();
   return (
     <DashboardShell
