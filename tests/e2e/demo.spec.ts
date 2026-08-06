@@ -31,6 +31,14 @@ test("landing presents the product and enters the demo", async ({
     page.getByRole("heading", { name: /Moderation shouldn’t reset/ }),
   ).toBeVisible();
   await expect(page.getByText("AutoMod keeps a server clean.")).toBeVisible();
+  const iconHref = await page.locator('link[rel="icon"]').getAttribute("href");
+  const ogImage = await page
+    .locator('meta[property="og:image"]')
+    .getAttribute("content");
+  expect(iconHref).toBeTruthy();
+  expect(ogImage).toBeTruthy();
+  expect((await page.request.get(iconHref!)).status()).toBe(200);
+  expect((await page.request.get(ogImage!)).status()).toBe(200);
   await page.screenshot({
     fullPage: true,
     path: testInfo.outputPath("landing.png"),
