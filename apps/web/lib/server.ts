@@ -8,6 +8,7 @@ import {
   SqliteTendRepository,
   type TendRepository,
 } from "@tend/db";
+import { selectMindsProvider } from "@tend/core";
 import {
   createLiveMindsAdapterFromEnv,
   MockMindsAdapter,
@@ -28,9 +29,18 @@ export function getRepository(): TendRepository {
 
 export function getMindsAdapter(): MindsAdapter {
   if (globalState.__tendMindsAdapter) return globalState.__tendMindsAdapter;
-  const requested = process.env.MINDS_MODE ?? "mock";
-  if (requested === "mock") {
+  const selected = selectMindsProvider(
+    process.env.TEND_MODE,
+    process.env.MINDS_MODE,
+  );
+  if (selected === "mock") {
     globalState.__tendMindsAdapter = new MockMindsAdapter();
+    return globalState.__tendMindsAdapter;
+  }
+  if (selected === "unavailable") {
+    globalState.__tendMindsAdapter = new UnavailableMindsAdapter(
+      "TEND_MODE and MINDS_MODE must both select demo/mock or live/live. Manual review is required.",
+    );
     return globalState.__tendMindsAdapter;
   }
   try {

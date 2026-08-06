@@ -8,13 +8,27 @@ export class DiscordJsActionGateway implements DiscordActionGateway {
     private readonly config: DiscordWorkerConfig,
   ) {}
 
-  async sendChannelMessage(content: string): Promise<string> {
-    const channelId = [...this.config.allowedChannelIds][0];
-    if (!channelId) throw new Error("No allowlisted channel is configured.");
+  async sendChannelMessage(
+    content: string,
+    requestedChannelId: string | null,
+  ): Promise<string> {
+    const configuredChannels = [...this.config.allowedChannelIds];
+    const channelId = requestedChannelId ?? configuredChannels[0];
+    if (!channelId || !this.config.allowedChannelIds.has(channelId)) {
+      throw new Error("Public nudge destination is not allowlisted.");
+    }
+    if (!requestedChannelId && configuredChannels.length !== 1) {
+      throw new Error(
+        "Public nudge requires an explicit source channel when multiple channels are allowlisted.",
+      );
+    }
     const channel = await this.client.channels.fetch(channelId);
     if (!channel?.isSendable())
       throw new Error("Configured channel cannot receive messages.");
-    const sent = await (channel as SendableChannels).send({ content });
+    const sent = await (channel as SendableChannels).send({
+      content,
+      allowedMentions: { parse: [] },
+    });
     return `Discord public nudge sent with message ${sent.id}.`;
   }
 
@@ -27,8 +41,12 @@ export class DiscordJsActionGateway implements DiscordActionGateway {
         "Private reminders require explicit test-server authorization.",
       );
     }
-    const user = await this.client.users.fetch(targetId);
-    const sent = await user.send({ content });
+    const guild = await this.getAllowlistedGuild();
+    const member = await guild.members.fetch(targetId);
+    const sent = await member.send({
+      content,
+      allowedMentions: { parse: [] },
+    });
     return `Discord private reminder sent with message ${sent.id}.`;
   }
 
@@ -42,6 +60,7 @@ export class DiscordJsActionGateway implements DiscordActionGateway {
       throw new Error("Moderator channel cannot receive messages.");
     const sent = await (channel as SendableChannels).send({
       content: `TEND review requested:\n${content}`,
+      allowedMentions: { parse: [] },
     });
     return `Discord moderator notification sent with message ${sent.id}.`;
   }

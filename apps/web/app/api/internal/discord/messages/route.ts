@@ -63,12 +63,24 @@ export async function POST(request: Request) {
       message: input.message,
       conversationContext: input.conversationContext,
     });
+    const destinationBoundDecision = {
+      ...analysis.decision,
+      proposedActions: analysis.decision.proposedActions.map((action) => ({
+        ...action,
+        targetId:
+          action.type === "public_nudge"
+            ? input.channelId
+            : action.type === "private_reminder"
+              ? input.actorId
+              : action.targetId,
+      })),
+    };
     const incident = repository.recordAnalyzedIncident({
       externalMessageId: input.externalMessageId,
       actorId: input.actorId,
       messageExcerpt: input.message,
       conversationContext: input.conversationContext,
-      decision: analysis.decision,
+      decision: destinationBoundDecision,
       forceManualReview: analysis.status !== "ok",
     });
     repository.markMessageProcessed(

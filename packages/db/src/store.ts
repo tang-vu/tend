@@ -11,6 +11,7 @@ import {
   memberProfileSchema,
   memoryReceiptSchema,
   proposedActionSchema,
+  TEND_PROMPT_VERSION,
   type AuditEvent,
   type ActionType,
   type Community,
@@ -660,7 +661,7 @@ export class SqliteTendRepository implements TendRepository {
           JSON.stringify(
             decision.memoryReceipts.map((receipt) => receipt.receiptId),
           ),
-          "tend-steward-v1.0.0",
+          TEND_PROMPT_VERSION,
           timestamp,
           null,
         );
@@ -1227,7 +1228,7 @@ export class SqliteTendRepository implements TendRepository {
           JSON.stringify(
             input.decision.memoryReceipts.map((memory) => memory.receiptId),
           ),
-          "tend-steward-v1.0.0",
+          TEND_PROMPT_VERSION,
           timestamp,
         );
       for (const [

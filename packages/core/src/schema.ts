@@ -207,36 +207,52 @@ export const auditEventSchema = z.object({
 });
 export type AuditEvent = z.infer<typeof auditEventSchema>;
 
-export const mindDecisionSchema = z.object({
-  summary: z.string(),
-  classification: incidentSchema.shape.classification,
-  riskLevel: riskLevelSchema,
-  confidence: z.number().min(0).max(1),
-  needsHumanReview: z.boolean(),
-  policyMatches: z.array(z.string()),
-  memoryReceipts: z.array(
-    z.object({
-      receiptId: z.string(),
-      influence: z.string(),
-    }),
-  ),
-  proposedActions: z.array(
-    z.object({
-      type: actionTypeSchema,
-      targetId: z.string().nullable(),
-      content: z.string(),
-      rationale: z.string(),
-    }),
-  ),
-  followUps: z.array(
-    z.object({
-      purpose: z.string(),
-      delayMinutes: z.number().nonnegative(),
-    }),
-  ),
-  reasoningForModerator: z.string(),
-  uncertainties: z.array(z.string()),
-});
+const boundedDecisionString = z.string().min(1).max(2_000);
+
+export const mindDecisionSchema = z
+  .object({
+    summary: boundedDecisionString.max(1_000),
+    classification: incidentSchema.shape.classification,
+    riskLevel: riskLevelSchema,
+    confidence: z.number().min(0).max(1),
+    needsHumanReview: z.boolean(),
+    policyMatches: z.array(boundedDecisionString.max(500)).max(20),
+    memoryReceipts: z
+      .array(
+        z
+          .object({
+            receiptId: z.string().min(1).max(200),
+            influence: boundedDecisionString.max(1_000),
+          })
+          .strict(),
+      )
+      .max(20),
+    proposedActions: z
+      .array(
+        z
+          .object({
+            type: actionTypeSchema,
+            targetId: z.string().min(1).max(200).nullable(),
+            content: boundedDecisionString,
+            rationale: boundedDecisionString.max(1_000),
+          })
+          .strict(),
+      )
+      .max(20),
+    followUps: z
+      .array(
+        z
+          .object({
+            purpose: boundedDecisionString.max(1_000),
+            delayMinutes: z.number().finite().nonnegative().max(525_600),
+          })
+          .strict(),
+      )
+      .max(20),
+    reasoningForModerator: boundedDecisionString,
+    uncertainties: z.array(boundedDecisionString.max(1_000)).max(20),
+  })
+  .strict();
 export type MindDecision = z.infer<typeof mindDecisionSchema>;
 
 export const demoPhaseSchema = z.enum([

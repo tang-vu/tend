@@ -1,7 +1,10 @@
 import type { ProposedAction } from "@tend/core";
 
 export interface DiscordActionGateway {
-  sendChannelMessage(content: string): Promise<string>;
+  sendChannelMessage(
+    content: string,
+    channelId: string | null,
+  ): Promise<string>;
   sendPrivateReminder(targetId: string, content: string): Promise<string>;
   notifyModerator(content: string): Promise<string>;
   timeoutMember(
@@ -45,7 +48,7 @@ export async function executeApprovedDiscordAction(
   if (action.type === "public_nudge") {
     return {
       executed: true,
-      result: await gateway.sendChannelMessage(action.content),
+      result: await gateway.sendChannelMessage(action.content, action.targetId),
     };
   }
   if (action.type === "private_reminder") {

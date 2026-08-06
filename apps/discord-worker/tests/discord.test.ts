@@ -102,6 +102,18 @@ describe("Discord action execution", () => {
     expect(adapter.sendPrivateReminder).toHaveBeenCalledOnce();
   });
 
+  it("binds public nudges to the approved target channel", async () => {
+    const adapter = gateway();
+    await executeApprovedDiscordAction(
+      action({ type: "public_nudge", targetId: "channel-1" }),
+      adapter,
+    );
+    expect(adapter.sendChannelMessage).toHaveBeenCalledWith(
+      "Please respect the known boundary.",
+      "channel-1",
+    );
+  });
+
   it("never implements message deletion and gates timeout by approval", async () => {
     const adapter = gateway();
     expect(

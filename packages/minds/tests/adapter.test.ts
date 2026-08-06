@@ -46,7 +46,22 @@ const input = {
     updatedAt: new Date().toISOString(),
   },
   tenets: [],
-  activeMemories: [],
+  activeMemories: [
+    {
+      id: "memory-kai-voice-boundary",
+      communityId: "community",
+      subjectType: "member" as const,
+      subjectId: "member-kai",
+      claim: "Kai asked people not to joke about their voice.",
+      sourceType: "member_request" as const,
+      sourceReference: "creator-approved request",
+      learnedAt: new Date().toISOString(),
+      confidence: 1,
+      status: "active" as const,
+      whyRelevant: "Known boundary",
+      mindReference: null,
+    },
+  ],
   message: "message",
   conversationContext: [],
 };
@@ -79,6 +94,46 @@ describe("LiveMindsAdapter", () => {
     const result = await adapter.analyzeIncident(input);
     expect(result.status).toBe("ok");
     expect(result.decision.riskLevel).toBe("medium");
+  });
+
+  it("rejects fabricated memory references after schema validation", async () => {
+    const client = clientWithReplies([
+      {
+        timedOut: false,
+        reply: {
+          messageText: JSON.stringify({
+            ...DEMO_DECISION,
+            memoryReceipts: [
+              { receiptId: "fabricated", influence: "Invented evidence" },
+            ],
+          }),
+        },
+      },
+    ]);
+    const adapter = new LiveMindsAdapter({
+      builderApiKey: "not-logged",
+      mindId: "mind-1",
+      client,
+    });
+    const result = await adapter.analyzeIncident(input);
+    expect(result).toMatchObject({
+      status: "manual_review",
+      reference: { provider: "unavailable" },
+    });
+  });
+
+  it("rejects oversized and unknown response fields", async () => {
+    const oversized = { ...DEMO_DECISION, hiddenReasoning: "x" };
+    const adapter = new LiveMindsAdapter({
+      builderApiKey: "not-logged",
+      mindId: "mind-1",
+      client: clientWithReplies([
+        { timedOut: false, reply: { messageText: JSON.stringify(oversized) } },
+        { timedOut: false, reply: { messageText: "x".repeat(65 * 1024) } },
+      ]),
+    });
+    const result = await adapter.analyzeIncident(input);
+    expect(result.status).toBe("manual_review");
   });
 
   it("repairs invalid JSON once", async () => {

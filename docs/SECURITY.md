@@ -26,7 +26,10 @@ Discord messages are untrusted data. Prompt builders:
 - forbid secret disclosure and fabricated memory;
 - request concise moderator explanations, never hidden chain-of-thought;
 - validate the entire output;
+- reject oversized output, unknown fields, and references to receipts that were not supplied as active evidence;
 - apply deterministic policy after validation.
+
+Creator policy is separated from evidence data. Memory receipts and community messages are JSON-escaped inside explicitly non-authoritative data blocks, so stored delimiter-like text cannot become trusted instructions.
 
 Representative override phrases are tested. Detection is defense in depth, not permission to execute community text.
 
@@ -37,12 +40,15 @@ Representative override phrases are tested. Detection is defense in depth, not p
 - Request only Guilds, GuildMessages, MessageContent, and DirectMessages intents for MVP behavior.
 - Filter bot/self messages.
 - Enforce one guild and a channel allowlist both in the worker and web intake.
+- Bind public nudges to the source allowlisted channel, verify private-reminder recipients against the allowlisted guild, and disable Discord mention expansion.
 - Use discord.js for rate-limit handling, heartbeat, resume, and reconnect behavior.
 - Keep the bot role below moderator roles and omit Administrator.
 
 ## Web and Skill APIs
 
 The Skill and internal worker surfaces use distinct bearer credentials. Inputs are bounded with Zod. Skill tools can read context, propose, schedule, and record outcomes; they cannot perform Discord enforcement. A production reverse proxy should add rate limiting, payload caps, TLS, and request logging with header redaction.
+
+`TEND_MODE=live` is compatible only with `MINDS_MODE=live`; `live/mock` and `demo/live` combinations select the unavailable/manual-review adapter. Real Discord content can therefore never reach the deterministic demo fixture, and demo content cannot be sent to Minds accidentally.
 
 The hackathon MVP has no authentication, so the dashboard must not be exposed to an untrusted public audience with live credentials. Add creator authentication and per-community authorization before real multi-user use.
 
