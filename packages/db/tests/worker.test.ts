@@ -155,6 +155,43 @@ describe("Discord persistence boundaries", () => {
     expect(snapshot.actions[0]?.status).toBe("proposed");
     expect(repository.claimNextApprovedAction()).toBeNull();
   });
+
+  it("replaces low-confidence proposals with a moderator-review item", () => {
+    const database = openDatabase(":memory:");
+    databases.push(database);
+    const repository = new SqliteTendRepository(database);
+    const now = new Date("2026-08-05T12:00:00.000Z");
+    repository.resetDemo(now);
+
+    repository.recordAnalyzedIncident(
+      {
+        externalMessageId: "discord-message-low-confidence",
+        actorId: DEMO_IDS.jules,
+        messageExcerpt: "An ambiguous message",
+        conversationContext: [],
+        decision: {
+          ...DEMO_DECISION,
+          confidence: 0.2,
+          proposedActions: [
+            {
+              type: "private_reminder",
+              targetId: DEMO_IDS.jules,
+              content: "This proposal must not remain actionable.",
+              rationale: "The test deliberately supplies a low-confidence action.",
+            },
+          ],
+        },
+        forceManualReview: false,
+      },
+      now,
+    );
+
+    const snapshot = repository.getSnapshot();
+    expect(snapshot.incidents).toMatchObject([{ status: "manual_review" }]);
+    expect(snapshot.actions).toMatchObject([
+      { type: "moderator_review", targetId: null, status: "proposed" },
+    ]);
+  });
 });
 
 describe("Custom Skill idempotency", () => {
@@ -200,6 +237,33 @@ describe("Custom Skill idempotency", () => {
         now,
       ),
     ).toThrow(/already used/);
+  });
+
+  it("requires completed follow-up evidence before resolving an incident", async () => {
+    const { repository, now } = setup();
+
+    expect(() =>
+      repository.recordIncidentOutcome(
+        DEMO_IDS.incident,
+        "resolved",
+        "No further conflict occurred.",
+        now,
+      ),
+    ).toThrow(/completed follow-up/);
+
+    await runDueFollowUp(repository, {
+      now: new Date(now.getTime() + 13_000),
+      processor: new DemoFollowUpProcessor(),
+    });
+
+    expect(
+      repository.recordIncidentOutcome(
+        DEMO_IDS.incident,
+        "resolved",
+        "The completed follow-up found no further conflict.",
+        new Date(now.getTime() + 14_000),
+      ).status,
+    ).toBe("resolved");
   });
 });
 

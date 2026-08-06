@@ -177,6 +177,7 @@ paths:
     post:
       operationId: record_incident_outcome
       summary: Record a resolution or move the case to manual review; execute no member action.
+      description: A resolved outcome is accepted only when the incident has a completed persisted follow-up.
       parameters:
         - in: path
           name: id

@@ -14,9 +14,9 @@ TEND's differentiated behavior is continuity: a persistent Mind receives creator
 - Timeout, repeated invalid output, unavailable credentials, and account mismatch become a transparent moderator-review result. There is no hidden LLM fallback.
 - Cognition diagnostics and a real cross-session proof command are ready.
 
-The incident prompt separates trusted creator policy from approved evidence and `<UNTRUSTED_CONVERSATION_DATA>` / `<UNTRUSTED_TRIGGER_MESSAGE_DATA>`. Every data block is escaped and explicitly non-authoritative. After schema validation, TEND rejects references to any receipt that was not supplied as active evidence, downgrades unavailable destructive proposals, treats low confidence as manual review, and keeps live proposals approval-gated.
+The incident prompt separates trusted creator policy from approved evidence and `<UNTRUSTED_CONVERSATION_DATA>` / `<UNTRUSTED_TRIGGER_MESSAGE_DATA>`. Every data block is escaped and explicitly non-authoritative. After schema validation, TEND rejects references to any receipt that was not supplied as active evidence, downgrades unavailable destructive proposals, replaces low-confidence proposals with a moderator-review item, and keeps live proposals approval-gated.
 
-Sanitized provider, conversation-alias, response-fingerprint, and prompt-version references are recorded in the audit timeline when available. Builder credentials and raw authorization material are never persisted. Custom Skill action and follow-up writes require caller idempotency keys: identical retries return the original row, while conflicting reuse is rejected.
+Sanitized provider, conversation-alias, response-fingerprint, and prompt-version references are recorded in the audit timeline when available. Builder credentials and raw authorization material are never persisted. Custom Skill action and follow-up writes require caller idempotency keys: identical retries return the original row, while conflicting reuse is rejected. Skill callers cannot record a resolved outcome until the repository contains a completed follow-up for that incident.
 
 ## Live setup
 

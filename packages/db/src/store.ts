@@ -1262,6 +1262,18 @@ export class SqliteTendRepository implements TendRepository {
       .prepare("SELECT community_id FROM incidents WHERE id = ?")
       .get(incidentId) as { community_id: string } | undefined;
     if (!row) throw new Error("Incident not found.");
+    if (outcome === "resolved") {
+      const completedFollowUp = this.database
+        .prepare(
+          "SELECT 1 FROM follow_ups WHERE incident_id = ? AND status = 'completed' LIMIT 1",
+        )
+        .get(incidentId);
+      if (!completedFollowUp) {
+        throw new Error(
+          "Resolved outcomes require evidence from a completed follow-up.",
+        );
+      }
+    }
     const normalized = summary.trim();
     if (normalized.length < 3 || normalized.length > 1_000) {
       throw new Error(
@@ -1356,10 +1368,18 @@ export class SqliteTendRepository implements TendRepository {
           input.analysisReference?.promptVersion ?? TEND_PROMPT_VERSION,
           timestamp,
         );
-      for (const [
-        proposalIndex,
-        proposal,
-      ] of input.decision.proposedActions.entries()) {
+      const governedProposals =
+        status === "manual_review"
+          ? [
+              {
+                type: "moderator_review" as const,
+                targetId: null,
+                content:
+                  "Review the original message and community context manually.",
+              },
+            ]
+          : input.decision.proposedActions;
+      for (const [proposalIndex, proposal] of governedProposals.entries()) {
         const safeType =
           proposal.type === "execute_timeout" ||
           proposal.type === "delete_message"

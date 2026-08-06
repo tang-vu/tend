@@ -73,5 +73,6 @@ Ship a credential-free, persisted three-act TEND demo plus compile-ready live Mi
 - 2026-08-06: the unauthenticated dashboard attack surface was closed: live mode now disables dashboard pages, snapshot reads, approvals, rejections, and memory mutations until creator authentication exists.
 - 2026-08-06: live storage bootstrap was separated from demo seeding; a fresh live database now contains only its configured guild/channels and the immutable human-authority baseline, never Kai/Jules or demo metrics.
 - 2026-08-06: client-bundle and tracked-artifact scans found no server secret names, databases, logs, build caches, or local environment files.
+- 2026-08-06: final policy hardening made low-confidence analysis non-actionable and required completed follow-up evidence before the Skill can resolve an incident.
 - 2026-08-06: Docker image `tend:local` built successfully with the standalone Next server and returned HTTP 200 at startup. This tool environment then sent detached containers SIGTERM after about 16 seconds, so sustained container smoke remains an external rerun.
 - 2026-08-05: Playwright desktop and mobile projects passed independently; 1440×900 and 390×844 showed no horizontal overflow.

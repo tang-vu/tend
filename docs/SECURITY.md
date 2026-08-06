@@ -7,6 +7,8 @@
 - Timeout can execute only after a persisted creator approval and atomic worker claim.
 - Public nudges, private reminders, moderator notifications, timeout recommendations, and timeout execution require approval.
 - Model output is a proposal. The policy engine is authoritative.
+- Low-confidence or forced-review analysis discards member-facing proposals and creates only a moderator-review item.
+- The Skill may mark an incident resolved only after a persisted follow-up has completed; otherwise it fails closed.
 - Demo reset/teaching/incident endpoints return `409` in live mode.
 - The demo-only “no renewed conflict” follow-up outcome is never selected in live mode; missing live observation retries and surfaces manual review.
 
