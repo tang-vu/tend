@@ -8,6 +8,8 @@ TEND is a persistent Discord community steward that remembers creator values, me
 
 Live credential-free demo: **https://tend.tangvu.dev**
 
+Continuing development in a new session? Start with [`docs/HANDOFF.md`](docs/HANDOFF.md).
+
 Visual QA captures: [landing desktop](docs/screenshots/landing-desktop.png), [learned receipts desktop](docs/screenshots/demo-learned-desktop.png), [incident desktop](docs/screenshots/demo-incident-desktop.png), [countdown desktop](docs/screenshots/demo-countdown-desktop.png), [resolved desktop](docs/screenshots/demo-resolved-desktop.png), plus matching mobile captures in [`docs/screenshots`](docs/screenshots/).
 
 Tracked judge-ready captures live in `docs/screenshots`. Run `pnpm test:e2e` to generate the latest full-resolution run below `test-results/`.

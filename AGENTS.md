@@ -1,5 +1,7 @@
 # TEND repository guide
 
+For current deployment state, verified external integrations, operational commands, and remaining work, read `docs/HANDOFF.md` before changing the project.
+
 ## Layout
 
 - `apps/web`: Next.js dashboard, route handlers, and Skill API.

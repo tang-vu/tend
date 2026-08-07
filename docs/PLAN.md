@@ -78,5 +78,6 @@ Ship a credential-free, persisted three-act TEND demo plus compile-ready live Mi
 - 2026-08-06: live Minds discovery, cognition access, and genuine cross-session Kai/voice recall were verified; the sanitized proof records confidence `0.95` without credentials.
 - 2026-08-07: an always-on Windows/PM2 deployment profile was added for the credential-free demo, with a dedicated Cloudflare tunnel and ignored persistent SQLite state.
 - 2026-08-07: `https://tend.tangvu.dev` passed public HTTPS health, landing/static-asset, and complete persisted three-act workflow verification through its dedicated Cloudflare tunnel.
+- 2026-08-07: `docs/HANDOFF.md` captured the public runtime, PM2/tunnel operations, secret boundaries, verification evidence, safe update procedure, and prioritized remaining work for continuation in a new chat.
 - 2026-08-06: Docker image `tend:local` built successfully with the standalone Next server and returned HTTP 200 at startup. This tool environment then sent detached containers SIGTERM after about 16 seconds, so sustained container smoke remains an external rerun.
 - 2026-08-05: Playwright desktop and mobile projects passed independently; 1440×900 and 390×844 showed no horizontal overflow.
