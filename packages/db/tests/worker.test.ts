@@ -177,7 +177,8 @@ describe("Discord persistence boundaries", () => {
               type: "private_reminder",
               targetId: DEMO_IDS.jules,
               content: "This proposal must not remain actionable.",
-              rationale: "The test deliberately supplies a low-confidence action.",
+              rationale:
+                "The test deliberately supplies a low-confidence action.",
             },
           ],
         },
@@ -286,5 +287,159 @@ describe("live storage bootstrap", () => {
       memories: [],
       metrics: { isDemoData: false },
     });
+  });
+
+  it("records exhausted follow-up audit against the live community", async () => {
+    vi.stubEnv("TEND_MODE", "live");
+    vi.stubEnv("DISCORD_GUILD_ID", "guild-live");
+    vi.stubEnv("DISCORD_ALLOWED_CHANNEL_IDS", "channel-a");
+    const database = openDatabase(":memory:");
+    databases.push(database);
+    const repository = new SqliteTendRepository(database);
+    const now = new Date("2026-08-05T12:00:00.000Z");
+    const incident = repository.recordAnalyzedIncident(
+      {
+        externalMessageId: "live-message-followup-failure",
+        actorId: "live-member",
+        messageExcerpt: "An ambiguous live message",
+        conversationContext: [],
+        decision: DEMO_DECISION,
+        forceManualReview: false,
+      },
+      now,
+    );
+    repository.scheduleFollowUp(
+      {
+        incidentId: incident.id,
+        dueAt: new Date(now.getTime() + 1_000),
+        purpose: "Check the allowlisted channel for renewed conflict.",
+        idempotencyKey: "live:followup:failure",
+      },
+      now,
+    );
+
+    await expect(
+      runDueFollowUp(repository, {
+        now: new Date(now.getTime() + 1_001),
+        backoffMs: [],
+      }),
+    ).resolves.toMatchObject({ status: "failed" });
+
+    expect(repository.getSnapshot()).toMatchObject({
+      community: { id: "community-live-tend" },
+      incidents: [{ status: "manual_review" }],
+      followUps: [{ status: "failed" }],
+      auditEvents: expect.arrayContaining([
+        expect.objectContaining({ eventType: "followup.failed" }),
+      ]),
+    });
+  });
+
+  it("rejects seeded demo evidence for a live follow-up", async () => {
+    vi.stubEnv("TEND_MODE", "live");
+    vi.stubEnv("DISCORD_GUILD_ID", "guild-live");
+    vi.stubEnv("DISCORD_ALLOWED_CHANNEL_IDS", "channel-a");
+    const database = openDatabase(":memory:");
+    databases.push(database);
+    const repository = new SqliteTendRepository(database);
+    const now = new Date("2026-08-05T12:00:00.000Z");
+    const incident = repository.recordAnalyzedIncident(
+      {
+        externalMessageId: "live-message-seeded-evidence",
+        actorId: "live-member",
+        messageExcerpt: "Another ambiguous live message",
+        conversationContext: [],
+        decision: DEMO_DECISION,
+        forceManualReview: false,
+      },
+      now,
+    );
+    repository.scheduleFollowUp(
+      {
+        incidentId: incident.id,
+        dueAt: new Date(now.getTime() + 1_000),
+        purpose: "Check for renewed conflict using fresh evidence.",
+        idempotencyKey: "live:followup:no-seeded-evidence",
+      },
+      now,
+    );
+
+    await expect(
+      runDueFollowUp(repository, {
+        now: new Date(now.getTime() + 1_001),
+        processor: new DemoFollowUpProcessor(),
+        backoffMs: [],
+      }),
+    ).resolves.toMatchObject({ status: "failed" });
+
+    expect(repository.getSnapshot()).toMatchObject({
+      incidents: [{ status: "manual_review" }],
+      followUps: [
+        {
+          status: "failed",
+          lastError: "Seeded demo evidence cannot complete a live follow-up.",
+        },
+      ],
+      pulse: null,
+    });
+  });
+
+  it("accepts a structured live-observation outcome without demo identifiers", async () => {
+    vi.stubEnv("TEND_MODE", "live");
+    vi.stubEnv("DISCORD_GUILD_ID", "guild-live");
+    vi.stubEnv("DISCORD_ALLOWED_CHANNEL_IDS", "channel-a");
+    const database = openDatabase(":memory:");
+    databases.push(database);
+    const repository = new SqliteTendRepository(database);
+    const now = new Date("2026-08-05T12:00:00.000Z");
+    const incident = repository.recordAnalyzedIncident(
+      {
+        externalMessageId: "live-message-observed",
+        actorId: "live-member",
+        messageExcerpt: "A live message with a later observation",
+        conversationContext: [],
+        decision: DEMO_DECISION,
+        forceManualReview: false,
+      },
+      now,
+    );
+    repository.scheduleFollowUp(
+      {
+        incidentId: incident.id,
+        dueAt: new Date(now.getTime() + 1_000),
+        purpose: "Evaluate fresh allowlisted Discord context.",
+        idempotencyKey: "live:followup:observed",
+      },
+      now,
+    );
+    const processor: FollowUpProcessor = {
+      process: vi.fn().mockResolvedValue({
+        incidentStatus: "resolved",
+        evidenceKind: "live_observation",
+        headline: "Repair held after a fresh check.",
+        summary: "A fresh allowlisted observation found no renewed conflict.",
+        positivePrompt: "Reinforce the community norm that helped repair hold.",
+      }),
+    };
+
+    await expect(
+      runDueFollowUp(repository, {
+        now: new Date(now.getTime() + 1_001),
+        processor,
+        backoffMs: [],
+      }),
+    ).resolves.toMatchObject({ status: "completed" });
+
+    const snapshot = repository.getSnapshot();
+    expect(snapshot).toMatchObject({
+      community: { id: "community-live-tend" },
+      incidents: [{ status: "resolved" }],
+      followUps: [{ status: "completed" }],
+      pulse: {
+        communityId: "community-live-tend",
+        headline: "Repair held after a fresh check.",
+      },
+    });
+    expect(snapshot.pulse?.id).not.toBe(DEMO_IDS.pulse);
   });
 });

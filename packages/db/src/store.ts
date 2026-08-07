@@ -177,6 +177,14 @@ export interface CommunityPulse {
   createdAt: string;
 }
 
+export interface FollowUpCompletion {
+  incidentStatus: "resolved" | "manual_review";
+  evidenceKind: "seeded_demo" | "live_observation";
+  summary: string;
+  headline?: string;
+  positivePrompt?: string;
+}
+
 export interface TendSnapshot {
   community: Community;
   tenets: CommunityTenet[];
@@ -214,7 +222,11 @@ export interface TendRepository {
     now?: Date,
   ): TendSnapshot;
   claimNextDue(now?: Date): FollowUp | null;
-  completeFollowUp(followUpId: string, now?: Date): void;
+  completeFollowUp(
+    followUpId: string,
+    completion: FollowUpCompletion,
+    now?: Date,
+  ): void;
   retryFollowUp(
     followUpId: string,
     error: string,
@@ -811,9 +823,14 @@ export class SqliteTendRepository implements TendRepository {
     }
     const action = this.database
       .prepare(
-        "SELECT incident_id FROM proposed_actions WHERE id = ? AND status = 'proposed'",
+        `SELECT proposed_actions.incident_id, incidents.community_id
+         FROM proposed_actions
+         JOIN incidents ON incidents.id = proposed_actions.incident_id
+         WHERE proposed_actions.id = ? AND proposed_actions.status = 'proposed'`,
       )
-      .get(actionId) as { incident_id: string } | undefined;
+      .get(actionId) as
+      | { incident_id: string; community_id: string }
+      | undefined;
     if (!action) throw new Error("Only proposed actions can be edited.");
     this.database
       .prepare(
@@ -821,7 +838,7 @@ export class SqliteTendRepository implements TendRepository {
       )
       .run(normalized, actionId);
     this.insertAudit(
-      DEMO_IDS.community,
+      action.community_id,
       action.incident_id,
       "creator",
       "action.edited",
@@ -841,7 +858,13 @@ export class SqliteTendRepository implements TendRepository {
     const dueAt = new Date(now.getTime() + demoDelayMs).toISOString();
     const approve = this.database.transaction(() => {
       const action = this.database
-        .prepare("SELECT * FROM proposed_actions WHERE id = ?")
+        .prepare(
+          `SELECT proposed_actions.*, incidents.community_id, communities.mode AS community_mode
+           FROM proposed_actions
+           JOIN incidents ON incidents.id = proposed_actions.incident_id
+           JOIN communities ON communities.id = incidents.community_id
+           WHERE proposed_actions.id = ?`,
+        )
         .get(actionId) as Row | undefined;
       if (!action) throw new Error("Action not found.");
       if (action.status === "executed") return;
@@ -873,25 +896,31 @@ export class SqliteTendRepository implements TendRepository {
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         )
         .run(
-          DEMO_IDS.followUp,
+          action.community_mode === "demo"
+            ? DEMO_IDS.followUp
+            : `followup-${randomUUID()}`,
           action.incident_id,
           dueAt,
           "Re-evaluate the conversation for renewed conflict and prepare a supportive community update.",
           "scheduled",
           0,
           null,
-          "demo:followup:voice-boundary:v1",
+          action.community_mode === "demo"
+            ? "demo:followup:voice-boundary:v1"
+            : `approved-action:${actionId}:followup:v1`,
           null,
           timestamp,
           null,
         );
-      this.database
-        .prepare(
-          "UPDATE demo_state SET phase = ?, updated_at = ? WHERE community_id = ?",
-        )
-        .run("scheduled", timestamp, DEMO_IDS.community);
+      if (action.community_mode === "demo") {
+        this.database
+          .prepare(
+            "UPDATE demo_state SET phase = ?, updated_at = ? WHERE community_id = ?",
+          )
+          .run("scheduled", timestamp, action.community_id);
+      }
       this.insertAudit(
-        DEMO_IDS.community,
+        String(action.community_id),
         String(action.incident_id),
         "creator",
         "action.approved",
@@ -901,7 +930,7 @@ export class SqliteTendRepository implements TendRepository {
         timestamp,
       );
       this.insertAudit(
-        DEMO_IDS.community,
+        String(action.community_id),
         String(action.incident_id),
         "tend",
         "followup.scheduled",
@@ -916,7 +945,12 @@ export class SqliteTendRepository implements TendRepository {
   rejectAction(actionId: string, now = new Date()): TendSnapshot {
     const timestamp = now.toISOString();
     const action = this.database
-      .prepare("SELECT * FROM proposed_actions WHERE id = ?")
+      .prepare(
+        `SELECT proposed_actions.*, incidents.community_id
+         FROM proposed_actions
+         JOIN incidents ON incidents.id = proposed_actions.incident_id
+         WHERE proposed_actions.id = ?`,
+      )
       .get(actionId) as Row | undefined;
     if (!action) throw new Error("Action not found.");
     this.database
@@ -928,7 +962,7 @@ export class SqliteTendRepository implements TendRepository {
       .prepare("UPDATE incidents SET status = 'manual_review' WHERE id = ?")
       .run(action.incident_id);
     this.insertAudit(
-      DEMO_IDS.community,
+      String(action.community_id),
       String(action.incident_id),
       "creator",
       "action.rejected",
@@ -943,12 +977,16 @@ export class SqliteTendRepository implements TendRepository {
     status: "active" | "corrected" | "archived",
     now = new Date(),
   ): TendSnapshot {
+    const receipt = this.database
+      .prepare("SELECT community_id FROM memory_receipts WHERE id = ?")
+      .get(receiptId) as { community_id: string } | undefined;
+    if (!receipt) throw new Error("Memory receipt not found.");
     const result = this.database
       .prepare("UPDATE memory_receipts SET status = ? WHERE id = ?")
       .run(status, receiptId);
     if (result.changes !== 1) throw new Error("Memory receipt not found.");
     this.insertAudit(
-      DEMO_IDS.community,
+      receipt.community_id,
       null,
       "creator",
       `memory.${status}`,
@@ -984,16 +1022,40 @@ export class SqliteTendRepository implements TendRepository {
     return claim();
   }
 
-  completeFollowUp(followUpId: string, now = new Date()): void {
+  completeFollowUp(
+    followUpId: string,
+    completion: FollowUpCompletion,
+    now = new Date(),
+  ): void {
     const timestamp = now.toISOString();
+    const summary = completion.summary.trim();
+    if (summary.length < 3 || summary.length > 1_000) {
+      throw new Error(
+        "Follow-up summary must be between 3 and 1,000 characters.",
+      );
+    }
     const complete = this.database.transaction(() => {
       const row = this.database
-        .prepare("SELECT * FROM follow_ups WHERE id = ?")
+        .prepare(
+          `SELECT follow_ups.*, incidents.community_id, communities.mode AS community_mode
+           FROM follow_ups
+           JOIN incidents ON incidents.id = follow_ups.incident_id
+           JOIN communities ON communities.id = incidents.community_id
+           WHERE follow_ups.id = ?`,
+        )
         .get(followUpId) as Row | undefined;
       if (!row) throw new Error("Follow-up not found.");
       if (row.status === "completed") return;
       if (row.status !== "claimed")
         throw new Error("Only claimed follow-ups can complete.");
+      if (
+        completion.evidenceKind === "seeded_demo" &&
+        row.community_mode !== "demo"
+      ) {
+        throw new Error(
+          "Seeded demo evidence cannot complete a live follow-up.",
+        );
+      }
       this.database
         .prepare(
           "UPDATE follow_ups SET status = 'completed', completed_at = ?, last_error = NULL WHERE id = ?",
@@ -1001,42 +1063,55 @@ export class SqliteTendRepository implements TendRepository {
         .run(timestamp, followUpId);
       this.database
         .prepare(
-          "UPDATE incidents SET status = 'resolved', resolved_at = ? WHERE id = ?",
-        )
-        .run(timestamp, row.incident_id);
-      this.database
-        .prepare(
-          `INSERT OR IGNORE INTO community_pulses
-           (id, community_id, headline, summary, positive_prompt, created_at)
-           VALUES (?, ?, ?, ?, ?, ?)`,
+          "UPDATE incidents SET status = ?, resolved_at = ? WHERE id = ?",
         )
         .run(
-          DEMO_IDS.pulse,
-          DEMO_IDS.community,
-          "Repair held. No renewed conflict.",
-          "TEND checked the persisted case after the intervention. No further voice jokes or escalation appeared, so the incident is resolved.",
-          "Share one creative risk you took this week—and one kind response that helped.",
-          timestamp,
+          completion.incidentStatus,
+          completion.incidentStatus === "resolved" ? timestamp : null,
+          row.incident_id,
         );
-      this.database
-        .prepare(
-          "UPDATE demo_state SET phase = 'resolved', updated_at = ? WHERE community_id = ?",
-        )
-        .run(timestamp, DEMO_IDS.community);
+      if (completion.incidentStatus === "resolved") {
+        this.database
+          .prepare(
+            `INSERT OR IGNORE INTO community_pulses
+             (id, community_id, headline, summary, positive_prompt, created_at)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+          )
+          .run(
+            row.community_mode === "demo"
+              ? DEMO_IDS.pulse
+              : `pulse-${randomUUID()}`,
+            row.community_id,
+            completion.headline ?? "Follow-up completed.",
+            summary,
+            completion.positivePrompt ??
+              "Invite the community to reinforce a healthy norm.",
+            timestamp,
+          );
+      }
+      if (row.community_mode === "demo") {
+        this.database
+          .prepare(
+            "UPDATE demo_state SET phase = 'resolved', updated_at = ? WHERE community_id = ?",
+          )
+          .run(timestamp, row.community_id);
+      }
       this.insertAudit(
-        DEMO_IDS.community,
+        String(row.community_id),
         String(row.incident_id),
         "worker",
         "followup.completed",
-        "Due-job worker re-evaluated the case and found no renewed conflict.",
+        `Due-job worker completed with ${completion.evidenceKind} evidence; incident moved to ${completion.incidentStatus}.`,
         timestamp,
       );
       this.insertAudit(
-        DEMO_IDS.community,
+        String(row.community_id),
         String(row.incident_id),
         "tend",
-        "incident.resolved",
-        "Incident resolved from follow-up evidence; positive community prompt prepared.",
+        completion.incidentStatus === "resolved"
+          ? "incident.resolved"
+          : "incident.manual_review",
+        summary,
         timestamp,
       );
     });
@@ -1056,17 +1131,17 @@ export class SqliteTendRepository implements TendRepository {
          WHERE id = ? AND status = 'claimed'`,
       )
       .run(nextDueAt.toISOString(), error.slice(0, 500), followUpId);
-    const incident = this.database
-      .prepare("SELECT incident_id FROM follow_ups WHERE id = ?")
-      .get(followUpId) as { incident_id: string } | undefined;
-    this.insertAudit(
-      DEMO_IDS.community,
-      incident?.incident_id ?? null,
-      "worker",
-      "followup.retry_scheduled",
-      `Transient follow-up failure; bounded retry scheduled at ${nextDueAt.toISOString()}.`,
-      now.toISOString(),
-    );
+    const incident = this.followUpOwnership(followUpId);
+    if (incident) {
+      this.insertAudit(
+        incident.community_id,
+        incident.incident_id,
+        "worker",
+        "followup.retry_scheduled",
+        `Transient follow-up failure; bounded retry scheduled at ${nextDueAt.toISOString()}.`,
+        now.toISOString(),
+      );
+    }
   }
 
   failFollowUp(followUpId: string, error: string, now = new Date()): void {
@@ -1075,22 +1150,22 @@ export class SqliteTendRepository implements TendRepository {
         "UPDATE follow_ups SET status = 'failed', last_error = ? WHERE id = ?",
       )
       .run(error.slice(0, 500), followUpId);
-    const incident = this.database
-      .prepare("SELECT incident_id FROM follow_ups WHERE id = ?")
-      .get(followUpId) as { incident_id: string } | undefined;
+    const incident = this.followUpOwnership(followUpId);
     if (incident) {
       this.database
         .prepare("UPDATE incidents SET status = 'manual_review' WHERE id = ?")
         .run(incident.incident_id);
     }
-    this.insertAudit(
-      DEMO_IDS.community,
-      incident?.incident_id ?? null,
-      "worker",
-      "followup.failed",
-      "Follow-up exhausted bounded retries and requires manual review.",
-      now.toISOString(),
-    );
+    if (incident) {
+      this.insertAudit(
+        incident.community_id,
+        incident.incident_id,
+        "worker",
+        "followup.failed",
+        "Follow-up exhausted bounded retries and requires manual review.",
+        now.toISOString(),
+      );
+    }
   }
 
   hasProcessedMessage(externalMessageId: string): boolean {
@@ -1493,6 +1568,21 @@ export class SqliteTendRepository implements TendRepository {
          WHERE id = ? AND status = 'executing'`,
       )
       .run(now.toISOString(), result.slice(0, 500), actionId);
+  }
+
+  private followUpOwnership(
+    followUpId: string,
+  ): { incident_id: string; community_id: string } | undefined {
+    return this.database
+      .prepare(
+        `SELECT follow_ups.incident_id, incidents.community_id
+         FROM follow_ups
+         JOIN incidents ON incidents.id = follow_ups.incident_id
+         WHERE follow_ups.id = ?`,
+      )
+      .get(followUpId) as
+      | { incident_id: string; community_id: string }
+      | undefined;
   }
 
   private insertAudit(

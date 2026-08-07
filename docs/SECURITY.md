@@ -11,6 +11,7 @@
 - The Skill may mark an incident resolved only after a persisted follow-up has completed; otherwise it fails closed.
 - Demo reset/teaching/incident endpoints return `409` in live mode.
 - The demo-only “no renewed conflict” follow-up outcome is never selected in live mode; missing live observation retries and surfaces manual review.
+- Follow-up completion carries an explicit evidence kind. The repository rejects seeded demo evidence for live communities and derives audit/pulse ownership through the persisted incident, preventing cross-community or demo-ID attribution.
 
 ## Secrets
 

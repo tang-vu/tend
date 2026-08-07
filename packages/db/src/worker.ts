@@ -1,8 +1,8 @@
 import type { FollowUp } from "@tend/core";
-import type { TendRepository } from "./store";
+import type { FollowUpCompletion, TendRepository } from "./store";
 
 export interface FollowUpProcessor {
-  process(followUp: FollowUp): Promise<void>;
+  process(followUp: FollowUp): Promise<FollowUpCompletion>;
 }
 
 export interface WorkerResult {
@@ -14,13 +14,21 @@ export interface WorkerResult {
 const DEFAULT_BACKOFF_MS = [2_000, 5_000] as const;
 
 export class DemoFollowUpProcessor implements FollowUpProcessor {
-  async process(): Promise<void> {
-    await Promise.resolve();
+  async process(): Promise<FollowUpCompletion> {
+    return Promise.resolve({
+      incidentStatus: "resolved",
+      evidenceKind: "seeded_demo",
+      headline: "Repair held. No renewed conflict.",
+      summary:
+        "TEND checked the persisted case after the intervention. No further voice jokes or escalation appeared, so the incident is resolved.",
+      positivePrompt:
+        "Share one creative risk you took this week—and one kind response that helped.",
+    });
   }
 }
 
 export class FailClosedFollowUpProcessor implements FollowUpProcessor {
-  async process(): Promise<void> {
+  async process(): Promise<FollowUpCompletion> {
     await Promise.resolve();
     throw new Error(
       "No live observation source is configured for this follow-up; moderator review is required.",
@@ -43,8 +51,8 @@ export async function runDueFollowUp(
   const processor = options.processor ?? new FailClosedFollowUpProcessor();
   const backoff = options.backoffMs ?? DEFAULT_BACKOFF_MS;
   try {
-    await processor.process(followUp);
-    repository.completeFollowUp(followUp.id, now);
+    const completion = await processor.process(followUp);
+    repository.completeFollowUp(followUp.id, completion, now);
     return {
       status: "completed",
       followUpId: followUp.id,

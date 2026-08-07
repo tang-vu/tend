@@ -44,12 +44,13 @@ The Mind is the live agent-memory and continuity layer. SQLite is the auditable 
 1. Approval writes an idempotent action transition and a future follow-up row.
 2. A poller selects only due `scheduled`/`retrying` jobs.
 3. An atomic update changes one row to `claimed` and increments attempts.
-4. Completion resolves the incident and writes the community pulse.
-5. Transient failure uses bounded backoff; exhausted attempts become `failed` and visible manual review.
+4. A processor returns a typed completion with an explicit evidence kind, incident outcome, and bounded summary. The repository derives the owning community from the follow-up rather than trusting a caller-supplied ID.
+5. Resolved outcomes write a community-scoped pulse; manual-review outcomes never fabricate a positive resolution.
+6. Transient failure uses bounded backoff; exhausted attempts become `failed` and visible manual review in the incident's owning community.
 
 The embedded web poller starts through Next instrumentation for a one-process demo. `pnpm worker:dev` is the independent worker. Production scale replaces both with queue-backed workers.
 
-The deterministic outcome processor is selected only in demo mode. In live mode, a due follow-up without a fresh Discord observation source fails closed, retries with bounded backoff, and then becomes visible manual review; it never fabricates “no further conflict.”
+The deterministic outcome processor emits `seeded_demo` evidence and is selected only in demo mode. Storage rejects that evidence kind for a live community even if a caller wires the wrong processor. Live completion requires a `live_observation` outcome; until a fresh Discord observation source is connected, the live processor fails closed, retries with bounded backoff, and then becomes visible manual review. It never fabricates “no further conflict.”
 
 ## Trust boundaries
 
