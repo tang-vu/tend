@@ -6,6 +6,8 @@ TEND is a persistent Discord community steward that remembers creator values, me
 
 ![TEND resolved demo](docs/screenshots/demo-resolved-desktop.png)
 
+Live credential-free demo: **https://tend.tangvu.dev**
+
 Visual QA captures: [landing desktop](docs/screenshots/landing-desktop.png), [learned receipts desktop](docs/screenshots/demo-learned-desktop.png), [incident desktop](docs/screenshots/demo-incident-desktop.png), [countdown desktop](docs/screenshots/demo-countdown-desktop.png), [resolved desktop](docs/screenshots/demo-resolved-desktop.png), plus matching mobile captures in [`docs/screenshots`](docs/screenshots/).
 
 Tracked judge-ready captures live in `docs/screenshots`. Run `pnpm test:e2e` to generate the latest full-resolution run below `test-results/`.
@@ -83,7 +85,7 @@ Everything simulated is labeled: Mock Minds uses a readable fixture and Discord 
 
 Deployment health is available at `GET /api/health`. It verifies that persisted community state can be read, returns no incident or member data, and is the Docker image healthcheck target.
 
-For the repository owner's always-on Windows/PM2 deployment profile, see [`ops/windows`](ops/windows/README.md). The profile exposes only the labeled demo through a dedicated Cloudflare tunnel and keeps live Minds credentials out of the hosted process.
+For the repository owner's always-on Windows/PM2 deployment profile, see [`ops/windows`](ops/windows/README.md). The profile exposes only the labeled demo through a dedicated Cloudflare tunnel and keeps live Minds credentials out of the hosted process. The public health endpoint and full persisted three-act flow were verified through `https://tend.tangvu.dev` on 2026-08-07.
 
 ## Live Minds setup
 

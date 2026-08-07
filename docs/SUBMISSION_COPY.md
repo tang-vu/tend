@@ -32,7 +32,7 @@ The credential-free demo uses a clearly labeled deterministic Mock Minds decisio
 - **Tagline:** Moderation shouldn’t reset with every message.
 - **Track:** Moderation & community assistance
 - **Repository:** https://github.com/tang-vu/tend
-- **Live demo:** [ADD HTTPS DEPLOYMENT]
+- **Live demo:** https://tend.tangvu.dev
 - **Demo video:** [ADD VIDEO URL]
 - **Minds persistence proof:** https://github.com/tang-vu/tend/blob/main/docs/evidence/minds-persistence-proof.md
 

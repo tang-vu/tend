@@ -2,10 +2,10 @@
 
 ## Product and deployment
 
-- [ ] Working HTTPS deployment created from the verified Docker image.
+- [x] Working HTTPS deployment created from the verified production build.
 - [ ] Persistent writable volume configured for `TEND_DB_PATH`.
 - [ ] Public demo reset tested after a cold start.
-- [ ] Dashboard protected or deployment restricted; MVP has no creator authentication.
+- [x] Public deployment restricted to labeled demo/mock mode; live dashboard remains fail-closed because the MVP has no creator authentication.
 - [ ] Repository visibility set for judges.
 - [x] README quick start exercised from the empty repository build.
 
