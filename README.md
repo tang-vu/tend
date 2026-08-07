@@ -83,6 +83,8 @@ Everything simulated is labeled: Mock Minds uses a readable fixture and Discord 
 
 Deployment health is available at `GET /api/health`. It verifies that persisted community state can be read, returns no incident or member data, and is the Docker image healthcheck target.
 
+For the repository owner's always-on Windows/PM2 deployment profile, see [`ops/windows`](ops/windows/README.md). The profile exposes only the labeled demo through a dedicated Cloudflare tunnel and keeps live Minds credentials out of the hosted process.
+
 ## Live Minds setup
 
 1. Create/select a Mind and Builder key at the [Minds Builder console](https://build.hellominds.ai/).

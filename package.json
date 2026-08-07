@@ -25,6 +25,7 @@
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
     "build": "pnpm -r --if-present build",
+    "host:prepare": "node ops/windows/prepare-standalone.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "openapi:lint": "redocly lint docs/tend-skill-openapi.yaml",
