@@ -10,7 +10,7 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
 - Health: `https://tend.tangvu.dev/api/health`
 - Repository: `https://github.com/tang-vu/tend`, branch `main`
 - Use `git log -1 --oneline` for the deployed source revision; the repository is kept synchronized after each release.
-- Latest verified CI at handoff: https://github.com/tang-vu/tend/actions/runs/31194396324
+- Latest verified CI at handoff: https://github.com/tang-vu/tend/actions/runs/31264268802
 - Public deployment is intentionally `TEND_MODE=demo` + `MINDS_MODE=mock`.
 - Live Minds discovery, cognition access, messaging, and cross-session recall were separately verified with owner credentials. See `docs/evidence/minds-persistence-proof.md`.
 
