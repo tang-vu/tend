@@ -1,4 +1,5 @@
 import {
+  ActivityType,
   ChannelType,
   Client,
   Events,
@@ -125,12 +126,30 @@ client.on(Events.MessageCreate, async (message) => {
   );
   if (!filtered.accepted) return;
   if (!config.workerApiKey) return;
+  process.stdout.write(
+    `${JSON.stringify({
+      event: "discord_message_accepted",
+      externalMessageId: message.id,
+      guildMatched: message.guildId === config.guildId,
+      channelMatched: config.allowedChannelIds.has(message.channelId),
+      rawMessagePrinted: false,
+    })}\n`,
+  );
   try {
     const intake = new HttpTendIncidentIntake(
       config.baseUrl,
       config.workerApiKey,
     );
-    await intake.submit(envelope, await nearbyContext(message));
+    const result = await intake.submit(envelope, await nearbyContext(message));
+    process.stdout.write(
+      `${JSON.stringify({
+        event: "discord_intake_succeeded",
+        externalMessageId: message.id,
+        duplicate: result.duplicate,
+        incidentIdPresent: Boolean(result.incidentId),
+        rawMessagePrinted: false,
+      })}\n`,
+    );
   } catch (error) {
     process.stderr.write(
       `${JSON.stringify({
@@ -145,6 +164,12 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 client.once(Events.ClientReady, (readyClient) => {
+  readyClient.user.setPresence({
+    status: "online",
+    activities: [
+      { name: "community repair loops", type: ActivityType.Watching },
+    ],
+  });
   process.stdout.write(
     `${JSON.stringify({
       event: "discord_worker_ready",

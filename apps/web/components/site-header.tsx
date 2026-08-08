@@ -30,9 +30,11 @@ export function SiteHeader({ dashboard = false }: { dashboard?: boolean }) {
             <Link href="/community">Overview</Link>
             <Link href="/memories">Memory</Link>
             <Link href="/settings">Settings</Link>
-            <Link className="nav-demo" href="/demo">
-              Demo controller
-            </Link>
+            {process.env.TEND_MODE !== "live" && (
+              <Link className="nav-demo" href="/demo">
+                Demo controller
+              </Link>
+            )}
             {process.env.TEND_MODE === "live" && <LogoutButton />}
           </>
         ) : (

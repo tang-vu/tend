@@ -26,9 +26,11 @@ export default async function CommunityPage() {
   return (
     <DashboardShell
       actions={
-        <Link className="button button-primary" href="/demo">
-          Run the story
-        </Link>
+        process.env.TEND_MODE !== "live" ? (
+          <Link className="button button-primary" href="/demo">
+            Run the story
+          </Link>
+        ) : undefined
       }
       description="A calm read on what needs attention, what TEND remembers, and what will happen next."
       eyebrow="The Green Room · Community overview"

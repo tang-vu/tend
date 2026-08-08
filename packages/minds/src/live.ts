@@ -11,6 +11,7 @@ import {
   type MindDecision,
 } from "@tend/core";
 import { stewardAlias } from "./aliases";
+import { parseJsonResponseCandidates } from "./response-json";
 import type {
   AnalyzeFollowUpInput,
   AnalyzeIncidentInput,
@@ -57,18 +58,6 @@ export class MindsUnavailableError extends Error {
     super(message);
     this.name = "MindsUnavailableError";
   }
-}
-
-function extractJson(text: string): unknown {
-  if (Buffer.byteLength(text, "utf8") > 64 * 1024) {
-    throw new Error("Minds response exceeded the 64 KiB safety limit.");
-  }
-  const trimmed = text.trim();
-  const unfenced = trimmed
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/\s*```$/, "")
-    .trim();
-  return JSON.parse(unfenced);
 }
 
 function safeManualReview(reason: string): MindDecision {
@@ -366,19 +355,19 @@ export class LiveMindsAdapter implements MindsAdapter {
   }
 
   private parseDecision(text: string) {
-    try {
-      return mindDecisionSchema.safeParse(extractJson(text));
-    } catch {
-      return mindDecisionSchema.safeParse(null);
+    for (const candidate of parseJsonResponseCandidates(text)) {
+      const parsed = mindDecisionSchema.safeParse(candidate);
+      if (parsed.success) return parsed;
     }
+    return mindDecisionSchema.safeParse(null);
   }
 
   private parseFollowUpAssessment(text: string) {
-    try {
-      return followUpAssessmentSchema.safeParse(extractJson(text));
-    } catch {
-      return followUpAssessmentSchema.safeParse(null);
+    for (const candidate of parseJsonResponseCandidates(text)) {
+      const parsed = followUpAssessmentSchema.safeParse(candidate);
+      if (parsed.success) return parsed;
     }
+    return followUpAssessmentSchema.safeParse(null);
   }
 }
 

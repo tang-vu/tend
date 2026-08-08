@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 
+const STEWARD_CONVERSATION_GENERATION = "v2";
+
 function safePart(value: string): string {
   const normalized = value
     .toLowerCase()
@@ -10,7 +12,7 @@ function safePart(value: string): string {
 }
 
 export function stewardAlias(communityId: string): string {
-  return `tend-steward-${safePart(communityId)}`;
+  return `tend-steward-${STEWARD_CONVERSATION_GENERATION}-${safePart(communityId)}`;
 }
 
 export function proofAlias(

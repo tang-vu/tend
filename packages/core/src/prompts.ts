@@ -5,7 +5,23 @@ import type {
   MemoryReceipt,
 } from "./schema";
 
-export const TEND_PROMPT_VERSION = "tend-steward-v1.2.0";
+export const TEND_PROMPT_VERSION = "tend-steward-v1.3.0";
+
+const DECISION_OUTPUT_INSTRUCTION = [
+  "<FINAL_TRUSTED_OUTPUT_INSTRUCTION>",
+  "Return exactly one raw JSON object with every required decision-contract key.",
+  "The first character of the response must be { and the final character must be }.",
+  "Do not add HTML, Markdown fences, headings, a preface, a signature, or text after the object.",
+  "</FINAL_TRUSTED_OUTPUT_INSTRUCTION>",
+].join("\n");
+
+const FOLLOWUP_OUTPUT_INSTRUCTION = [
+  "<FINAL_TRUSTED_OUTPUT_INSTRUCTION>",
+  "Return exactly one raw JSON object with every required follow-up-contract key.",
+  "The first character of the response must be { and the final character must be }.",
+  "Do not add HTML, Markdown fences, headings, a preface, a signature, or text after the object.",
+  "</FINAL_TRUSTED_OUTPUT_INSTRUCTION>",
+].join("\n");
 
 export function safePromptJson(value: unknown): string {
   return JSON.stringify(value, null, 2).replace(
@@ -133,6 +149,7 @@ export function buildIncidentPrompt(input: {
     dataBlock("MEMORY_RECEIPTS", input.activeMemories, "approved"),
     dataBlock("CONVERSATION", input.conversationContext, "untrusted"),
     dataBlock("TRIGGER_MESSAGE", input.message, "untrusted"),
+    DECISION_OUTPUT_INSTRUCTION,
   ].join("\n\n");
 }
 
@@ -148,6 +165,7 @@ export function buildRepairPrompt(invalidOutput: string): string {
       invalidOutput.slice(0, 12_000),
       "untrusted",
     ),
+    DECISION_OUTPUT_INSTRUCTION,
   ].join("\n\n");
 }
 
@@ -202,6 +220,7 @@ export function buildFollowUpPrompt(input: {
       "untrusted",
     ),
     dataBlock("FRESH_DISCORD_MESSAGES", input.freshMessages, "untrusted"),
+    FOLLOWUP_OUTPUT_INSTRUCTION,
   ].join("\n\n");
 }
 
@@ -217,5 +236,6 @@ export function buildFollowUpRepairPrompt(invalidOutput: string): string {
       invalidOutput.slice(0, 12_000),
       "untrusted",
     ),
+    FOLLOWUP_OUTPUT_INSTRUCTION,
   ].join("\n\n");
 }

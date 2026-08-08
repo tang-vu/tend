@@ -3,10 +3,10 @@
 ## Product and deployment
 
 - [x] Working HTTPS deployment created from the verified production build.
-- [ ] Persistent writable volume configured for `TEND_DB_PATH`.
-- [ ] Public demo reset tested after a cold start.
+- [x] Persistent writable host path configured for `TEND_DB_PATH`; learned state survived a verified PM2 stop/start cycle.
+- [x] Public demo reset tested after a cold start and returned to `ready` with no incidents, memories, or follow-ups.
 - [x] Public deployment restricted to labeled demo/mock mode; live dashboard separately fails closed without a valid signed creator session.
-- [ ] Repository visibility set for judges.
+- [x] Repository visibility verified for judges with an unauthenticated HTTP 200 response.
 - [x] README quick start exercised from the empty repository build.
 
 ## Minds evidence
@@ -34,7 +34,7 @@
 - [x] Mobile landing, incident, countdown, and resolution screenshots.
 - [x] Project description and primary tagline.
 - [x] Form-ready short/full submission copy in `docs/SUBMISSION_COPY.md`.
-- [ ] Track selected: **Moderation & community assistance**.
+- [x] Track selected: **Moderation & community assistance**.
 - [x] Architecture and security documentation linked.
 - [x] Minds persistence proof linked.
 - [x] Known limitations stated.

@@ -40,7 +40,7 @@ export class HttpTendIncidentIntake implements TendIncidentIntake {
           message: message.content,
           conversationContext,
         }),
-        signal: AbortSignal.timeout(190_000),
+        signal: AbortSignal.timeout(300_000),
       },
     );
     const payload = (await response.json()) as {

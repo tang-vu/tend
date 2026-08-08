@@ -13,9 +13,11 @@ export default async function MemoriesPage() {
   return (
     <DashboardShell
       actions={
-        <Link className="button button-primary" href="/demo">
-          Teach in demo
-        </Link>
+        process.env.TEND_MODE !== "live" ? (
+          <Link className="button button-primary" href="/demo">
+            Teach in demo
+          </Link>
+        ) : undefined
       }
       description="An auditable mirror of creator-approved facts. Corrected and archived receipts are excluded from active evidence."
       eyebrow="Memory & tenets"

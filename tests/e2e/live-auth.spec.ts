@@ -36,6 +36,11 @@ test("live dashboard fails closed, creates a secure session, and signs out", asy
   await expect(
     page.getByRole("heading", { name: "Good evening, creator." }),
   ).toBeVisible();
+  await expect(page.getByText("Live mode", { exact: true })).toBeVisible();
+  await expect(page.getByText("Demo mode", { exact: true })).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "Demo controller", exact: true }),
+  ).toHaveCount(0);
 
   const sessionCookie = (await page.context().cookies()).find(
     (cookie) => cookie.name === "tend_creator_session",

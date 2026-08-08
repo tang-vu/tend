@@ -146,6 +146,27 @@ describe("LiveMindsAdapter", () => {
     expect(result.decision.riskLevel).toBe("medium");
   });
 
+  it("accepts structured JSON surrounded by a Mind HTML paragraph envelope", async () => {
+    const client = clientWithReplies([
+      {
+        timedOut: false,
+        reply: {
+          messageText: `<p>Validated assessment.</p><p>${JSON.stringify(DEMO_DECISION)}</p>`,
+        },
+      },
+    ]);
+    const adapter = new LiveMindsAdapter({
+      builderApiKey: "not-logged",
+      mindId: "mind-1",
+      client,
+    });
+
+    const result = await adapter.analyzeIncident(input);
+
+    expect(result.status).toBe("ok");
+    expect(client.sendMessage).toHaveBeenCalledTimes(1);
+  });
+
   it("rejects fabricated memory references after schema validation", async () => {
     const client = clientWithReplies([
       {

@@ -16,6 +16,7 @@ export function DashboardShell({
   description: string;
   actions?: ReactNode;
 }) {
+  const mode = process.env.TEND_MODE === "live" ? "live" : "demo";
   return (
     <div className="dashboard-page">
       <SiteHeader dashboard />
@@ -24,7 +25,7 @@ export function DashboardShell({
           <div>
             <div className="dashboard-kicker">
               <span>{eyebrow}</span>
-              <ModeBadge compact />
+              <ModeBadge compact mode={mode} />
             </div>
             <h1>{title}</h1>
             <p>{description}</p>
@@ -36,7 +37,10 @@ export function DashboardShell({
       <footer className="dashboard-footer">
         <span>TEND · The Green Room</span>
         <span>
-          Transparent demo state · <Link href="/settings">Readiness</Link>
+          {mode === "live"
+            ? "Authenticated live state"
+            : "Transparent demo state"}{" "}
+          · <Link href="/settings">Readiness</Link>
         </span>
       </footer>
     </div>

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { parseJsonResponseCandidates } from "./response-json";
 
 export const persistenceProofResultSchema = z
   .object({
@@ -13,37 +14,13 @@ export type PersistenceProofResult = z.infer<
   typeof persistenceProofResultSchema
 >;
 
-function decodeHtmlEntities(value: string): string {
-  return value
-    .replaceAll("&quot;", '"')
-    .replaceAll("&#34;", '"')
-    .replaceAll("&#39;", "'")
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">")
-    .replaceAll("&amp;", "&");
-}
-
 export function parsePersistenceProofResponse(text: string): unknown {
-  if (Buffer.byteLength(text, "utf8") > 64 * 1024) return null;
-
-  const trimmed = text.trim();
-  const candidates = [
-    trimmed,
-    trimmed.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, ""),
-  ];
-  const preformatted = trimmed.match(
-    /<pre(?:\s[^>]*)?>([\s\S]*?)<\/pre>/i,
-  )?.[1];
-  if (preformatted) candidates.push(decodeHtmlEntities(preformatted.trim()));
-
-  for (const candidate of candidates) {
-    try {
-      return JSON.parse(candidate);
-    } catch {
-      // Try the next supported response envelope.
-    }
-  }
-  return null;
+  const candidates = parseJsonResponseCandidates(text);
+  return (
+    candidates.find(
+      (candidate) => persistenceProofResultSchema.safeParse(candidate).success,
+    ) ?? null
+  );
 }
 
 export function evaluatePersistenceProof(value: unknown) {

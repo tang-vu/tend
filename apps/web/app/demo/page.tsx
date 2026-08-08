@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { DemoExperience } from "@/components/demo-experience";
 import { SiteHeader } from "@/components/site-header";
 import { LiveDashboardLocked } from "@/components/live-dashboard-locked";
@@ -14,6 +15,7 @@ export const dynamic = "force-dynamic";
 
 export default async function DemoPage() {
   if (!(await creatorDashboardAvailable())) return <LiveDashboardLocked />;
+  if (process.env.TEND_MODE === "live") redirect("/community");
   const initialState = {
     ok: true,
     snapshot: getRepository().getSnapshot(),

@@ -48,6 +48,14 @@ describe("persistence proof evaluation", () => {
     expect(evaluatePersistenceProof(parsed).proven).toBe(true);
   });
 
+  it("parses JSON surrounded by the Mind's paragraph prose", () => {
+    const parsed = parsePersistenceProofResponse(
+      '<p>Assessment follows.</p><p>{"recalledEarlierBoundary":true,"recalledFact":"Kai asked people not to joke about their voice","effectOnDecision":"The recalled boundary changes the decision.","confidence":0.95}</p><p>- TEND</p>',
+    );
+
+    expect(evaluatePersistenceProof(parsed).proven).toBe(true);
+  });
+
   it("rejects oversized proof responses", () => {
     expect(parsePersistenceProofResponse("x".repeat(64 * 1024 + 1))).toBeNull();
   });

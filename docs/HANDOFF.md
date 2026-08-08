@@ -9,7 +9,7 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
 - Public credential-free demo: **https://tend.tangvu.dev**
 - Health: `https://tend.tangvu.dev/api/health`
 - Repository: `https://github.com/tang-vu/tend`, branch `main`
-- Last completed product commit before the current authentication update: `b440de4`
+- Use `git log -1 --oneline` for the deployed source revision; the repository is kept synchronized after each release.
 - Latest verified CI at handoff: https://github.com/tang-vu/tend/actions/runs/31194396324
 - Public deployment is intentionally `TEND_MODE=demo` + `MINDS_MODE=mock`.
 - Live Minds discovery, cognition access, messaging, and cross-session recall were separately verified with owner credentials. See `docs/evidence/minds-persistence-proof.md`.
@@ -106,7 +106,7 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 
 ## Verification status
 
-- `pnpm verify`: passed after the authentication update with 59/59 Vitest tests, production build, OpenAPI validation, and secret scan.
+- Release verification passed with lint, typecheck, 61/61 Vitest tests, production build, OpenAPI validation, and secret scan. On Windows, stop `tend-web` before rebuilding because the running standalone server locks `.next/standalone`.
 - Browser coverage: 14/14 demo desktop/mobile tests plus 1/1 dedicated live-mode authentication test passed. The live test covers unauthorized reads/mutations, cross-origin rejection, credential failure/success, cookie attributes, authenticated state, logout, post-logout rejection, and the 429 throttle boundary.
 - Updated standalone deployment: local/public health and landing returned 200; CSP, frame denial, and HSTS reached the Cloudflare hostname; the public fictional scenario was reset to `ready` with no incidents, memories, or follow-ups.
 - Playwright: 14/14 desktop/mobile tests passed in CI.
@@ -115,6 +115,8 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 - Secret scan: passed.
 - Docker image build: passed in CI.
 - Public HTTPS health, landing, CSS, and full three-act persisted demo: passed.
+- The public host retained the `learned` scenario and four memory receipts across a verified PM2 stop/start, then reset to `ready` with no incidents, memories, or follow-ups.
+- The public repository returned HTTP 200 without authentication.
 - Git working tree and `origin/main`: synchronized when this handoff was written.
 
 Never claim a later check passed without rerunning it after material changes.
