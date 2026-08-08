@@ -221,8 +221,8 @@ Estimated moderator minutes saved uses a visible demo assumption: four minutes f
 
 ## Roadmap
 
-1. Live Minds recall proof and privately equipped Skill.
-2. Dedicated Discord test-server verification.
+1. Privately equip and verify the Custom TEND Skill.
+2. Dedicated Discord test-server verification, including fresh follow-up observation.
 3. Creator authentication, community authorization, CSRF/rate-limit controls.
 4. PostgreSQL, queue leases, automated retention/deletion, tenant isolation.
 5. Moderator collaboration, outcome feedback, and governance exports.
@@ -232,8 +232,8 @@ Estimated moderator minutes saved uses a visible demo assumption: four minutes f
 
 - One seeded community and no authentication or billing; live dashboard access is deliberately disabled until creator auth exists.
 - SQLite and embedded scheduling target one instance.
-- Live Minds, Discord, and Skill flows compile but await owner credentials and verification.
-- Live follow-ups fail closed to retry/manual review until a fresh Discord observation source is configured; only demo mode produces the seeded “no renewed conflict” outcome.
+- Live Minds discovery and cross-session recall are verified. Discord delivery, Discord follow-up observation, and Skill equipment still await dedicated external verification.
+- Live follow-up observation is implemented for the independent Discord worker: it reads only the persisted allowlisted source channel, caps fresh non-bot messages at 50, asks the persistent Mind for a validated assessment, and requires grounded evidence plus at least 0.75 confidence to resolve. Missing or uncertain evidence becomes retry/manual review.
 - Demo onboarding form is a UX walkthrough; the reset scenario owns durable demo configuration.
 - Retention policy is visible but automated purging is not implemented.
 - Discord nearby context is capped; attachments are not analyzed.

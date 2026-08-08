@@ -8,10 +8,11 @@
 - Public nudges, private reminders, moderator notifications, timeout recommendations, and timeout execution require approval.
 - Model output is a proposal. The policy engine is authoritative.
 - Low-confidence or forced-review analysis discards member-facing proposals and creates only a moderator-review item.
-- The Skill may mark an incident resolved only after a persisted follow-up has completed; otherwise it fails closed.
+- The Skill may record a resolved outcome only after a persisted follow-up has both completed and resolved the incident. A completed manual-review follow-up is not sufficient evidence and cannot be upgraded by a later Skill call.
 - Demo reset/teaching/incident endpoints return `409` in live mode.
 - The demo-only “no renewed conflict” follow-up outcome is never selected in live mode; missing live observation retries and surfaces manual review.
 - Follow-up completion carries an explicit evidence kind. The repository rejects seeded demo evidence for live communities and derives audit/pulse ownership through the persisted incident, preventing cross-community or demo-ID attribution.
+- Live resolution requires a persisted source channel, a fresh allowlisted Discord fetch, a validated live Minds response, at least one grounded supplied message ID, and confidence of 0.75 or greater. Silence, low confidence, or an explicit uncertain assessment becomes manual review.
 
 ## Secrets
 
@@ -29,7 +30,7 @@ Discord messages are untrusted data. Prompt builders:
 - forbid secret disclosure and fabricated memory;
 - request concise moderator explanations, never hidden chain-of-thought;
 - validate the entire output;
-- reject oversized output, unknown fields, and references to receipts that were not supplied as active evidence;
+- reject oversized output, unknown fields, references to receipts that were not supplied as active evidence, and follow-up message IDs outside the fresh observation;
 - apply deterministic policy after validation.
 
 Creator policy is separated from evidence data. Memory receipts and community messages are JSON-escaped inside explicitly non-authoritative data blocks, so stored delimiter-like text cannot become trusted instructions.
@@ -43,6 +44,7 @@ Representative override phrases are tested. Detection is defense in depth, not p
 - Request only Guilds, GuildMessages, MessageContent, and DirectMessages intents for MVP behavior.
 - Filter bot/self messages.
 - Enforce one guild and a channel allowlist both in the worker and web intake.
+- Persist the source channel with each live incident and recheck it before fetching follow-up context; cap the fetch at 50 newer non-bot text messages.
 - Bind public nudges to the source allowlisted channel, verify private-reminder recipients against the allowlisted guild, and disable Discord mention expansion.
 - Use discord.js for rate-limit handling, heartbeat, resume, and reconnect behavior.
 - Keep the bot role below moderator roles and omit Administrator.
@@ -59,6 +61,7 @@ The hackathon MVP has no creator authentication. Therefore `TEND_MODE=live` disa
 
 - SQLite foreign keys and WAL are enabled.
 - Jobs and Discord actions use atomic claim transitions.
+- The embedded web poller is disabled in live mode so only the observation-capable Discord worker can claim live follow-ups.
 - Effect records have unique idempotency keys.
 - Retried follow-ups are bounded and eventually visible as failed/manual review.
 - Audit payloads are summaries, not secret-bearing raw requests.

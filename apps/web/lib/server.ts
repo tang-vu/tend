@@ -64,7 +64,12 @@ export async function runWorkerOnce() {
 }
 
 export function ensureLocalWorker(): void {
-  if (globalState.__tendWorkerTimer || process.env.NODE_ENV === "test") return;
+  if (
+    globalState.__tendWorkerTimer ||
+    process.env.NODE_ENV === "test" ||
+    process.env.TEND_MODE === "live"
+  )
+    return;
   globalState.__tendWorkerTimer = setInterval(() => {
     void runWorkerOnce().catch(() => {
       // The repository records bounded worker failures. Secrets and raw messages are never logged.

@@ -1,7 +1,10 @@
 import { createMindsClient } from "@animocabrands/minds-client-lib";
 import {
+  buildFollowUpPrompt,
+  buildFollowUpRepairPrompt,
   buildIncidentPrompt,
   buildRepairPrompt,
+  followUpAssessmentSchema,
   mindDecisionSchema,
   safePromptJson,
   TEND_PROMPT_VERSION,
@@ -9,9 +12,11 @@ import {
 } from "@tend/core";
 import { stewardAlias } from "./aliases";
 import type {
+  AnalyzeFollowUpInput,
   AnalyzeIncidentInput,
   MindsAdapter,
   MindsAnalysisResult,
+  MindsFollowUpResult,
   MindsReference,
   TeachMemoryInput,
 } from "./types";
@@ -87,6 +92,30 @@ function safeManualReview(reason: string): MindDecision {
     followUps: [],
     reasoningForModerator: reason,
     uncertainties: ["No validated Minds decision is available."],
+  };
+}
+
+function safeFollowUpManualReview(reason: string): MindsFollowUpResult {
+  return {
+    assessment: {
+      incidentStatus: "manual_review",
+      confidence: 0,
+      summary:
+        "No validated live Minds follow-up assessment was available; moderator review is required.",
+      headline: null,
+      positivePrompt: null,
+      observedMessageIds: [],
+      reasoningForModerator: reason,
+      uncertainties: ["Fresh observations were not validated by the Mind."],
+    },
+    reference: {
+      provider: "unavailable",
+      conversationAlias: null,
+      responseFingerprint: null,
+      promptVersion: TEND_PROMPT_VERSION,
+    },
+    status: "manual_review",
+    notice: "Live Minds unavailable; no hidden LLM fallback was used.",
   };
 }
 
@@ -213,6 +242,73 @@ export class LiveMindsAdapter implements MindsAdapter {
     }
   }
 
+  async analyzeFollowUp(
+    input: AnalyzeFollowUpInput,
+  ): Promise<MindsFollowUpResult> {
+    const alias = stewardAlias(input.community.id);
+    try {
+      await this.validateMind();
+      await this.client.ensureConversation(alias, this.config.mindId);
+      const first = await this.sendAndWait(alias, buildFollowUpPrompt(input));
+      if (first.timedOut || !first.reply?.messageText) {
+        throw new MindsUnavailableError(
+          "Minds did not reply to the follow-up before the configured timeout.",
+        );
+      }
+
+      let parsed = this.parseFollowUpAssessment(first.reply.messageText);
+      let fingerprint = first.reply.fingerprint ?? null;
+      let repaired = false;
+      if (!parsed.success) {
+        const second = await this.sendAndWait(
+          alias,
+          buildFollowUpRepairPrompt(first.reply.messageText),
+        );
+        if (second.timedOut || !second.reply?.messageText) {
+          throw new MindsUnavailableError(
+            "Minds timed out during its follow-up structured-output repair.",
+          );
+        }
+        parsed = this.parseFollowUpAssessment(second.reply.messageText);
+        if (!parsed.success) {
+          throw new MindsUnavailableError(
+            "Minds returned invalid follow-up data after one repair.",
+          );
+        }
+        fingerprint = second.reply.fingerprint ?? null;
+        repaired = true;
+      }
+
+      this.assertKnownMessageReferences(
+        parsed.data.observedMessageIds,
+        input.freshMessages.map((message) => message.id),
+      );
+      return {
+        assessment: parsed.data,
+        reference: {
+          provider: "live",
+          conversationAlias: alias,
+          responseFingerprint: fingerprint,
+          promptVersion: TEND_PROMPT_VERSION,
+        },
+        status: "ok",
+        notice: repaired
+          ? "Validated live Minds follow-up after one schema repair."
+          : "Validated live Minds follow-up response.",
+      };
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unknown Minds follow-up communication failure.";
+      const fallback = safeFollowUpManualReview(message);
+      return {
+        ...fallback,
+        reference: { ...fallback.reference, conversationAlias: alias },
+      };
+    }
+  }
+
   private async validateMind(): Promise<void> {
     const minds = await this.client.listMinds();
     if (!minds.some((mind) => mind.mindId === this.config.mindId)) {
@@ -231,6 +327,18 @@ export class LiveMindsAdapter implements MindsAdapter {
     if (referencedIds.some((id) => !allowed.has(id))) {
       throw new MindsUnavailableError(
         "Minds referenced evidence that was not supplied as an active memory receipt.",
+      );
+    }
+  }
+
+  private assertKnownMessageReferences(
+    referencedIds: string[],
+    observedIds: string[],
+  ): void {
+    const allowed = new Set(observedIds);
+    if (referencedIds.some((id) => !allowed.has(id))) {
+      throw new MindsUnavailableError(
+        "Minds referenced a message outside the fresh Discord observation.",
       );
     }
   }
@@ -262,6 +370,14 @@ export class LiveMindsAdapter implements MindsAdapter {
       return mindDecisionSchema.safeParse(extractJson(text));
     } catch {
       return mindDecisionSchema.safeParse(null);
+    }
+  }
+
+  private parseFollowUpAssessment(text: string) {
+    try {
+      return followUpAssessmentSchema.safeParse(extractJson(text));
+    } catch {
+      return followUpAssessmentSchema.safeParse(null);
     }
   }
 }

@@ -114,6 +114,7 @@ export const incidentSchema = z.object({
   id: z.string(),
   communityId: z.string(),
   externalMessageId: z.string(),
+  sourceChannelId: z.string().nullable(),
   actorId: z.string(),
   affectedMemberIds: z.array(z.string()),
   messageExcerpt: z.string(),
@@ -254,6 +255,20 @@ export const mindDecisionSchema = z
   })
   .strict();
 export type MindDecision = z.infer<typeof mindDecisionSchema>;
+
+export const followUpAssessmentSchema = z
+  .object({
+    incidentStatus: z.enum(["resolved", "manual_review"]),
+    confidence: z.number().min(0).max(1),
+    summary: z.string().min(3).max(1_000),
+    headline: z.string().min(3).max(200).nullable(),
+    positivePrompt: z.string().min(3).max(500).nullable(),
+    observedMessageIds: z.array(z.string().min(1).max(200)).max(50),
+    reasoningForModerator: z.string().min(3).max(2_000),
+    uncertainties: z.array(z.string().min(1).max(1_000)).max(20),
+  })
+  .strict();
+export type FollowUpAssessment = z.infer<typeof followUpAssessmentSchema>;
 
 export const demoPhaseSchema = z.enum([
   "ready",

@@ -16,7 +16,7 @@ Conventional moderation bots judge isolated messages. TEND helps creators stewar
 
 The creator sees why a memory mattered, the confidence and uncertainty, a proportionate intervention, and a complete audit timeline. Contact with members and every consequential action require explicit approval; ban and kick are unavailable. A persisted due-job worker later checks the case, records the outcome, and prepares a community-health update without another creator prompt.
 
-The credential-free demo uses a clearly labeled deterministic Mock Minds decision and seeded follow-up observation. SQLite persistence, policy enforcement, approval, job claim, autonomous state transition, and audit history are real. The live adapter uses the official Minds server-side client and includes a genuine cross-session recall proof command ready for owner credentials.
+The credential-free demo uses a clearly labeled deterministic Mock Minds decision and seeded follow-up observation. SQLite persistence, policy enforcement, approval, job claim, autonomous state transition, and audit history are real. The live adapter uses the official Minds server-side client and has a genuine cross-session recall proof. Its live follow-up path fetches bounded fresh context from the persisted allowlisted Discord channel, asks the same Mind to assess whether repair held, validates every referenced message ID, and resolves only with grounded evidence at 75% confidence or higher. Dedicated Discord execution remains explicitly unverified until the test-server checklist is completed.
 
 ## Judging alignment
 

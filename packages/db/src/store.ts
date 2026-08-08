@@ -105,6 +105,7 @@ function incidentFromRow(row: Row): Incident {
     id: row.id,
     communityId: row.community_id,
     externalMessageId: row.external_message_id,
+    sourceChannelId: row.source_channel_id ?? null,
     actorId: row.actor_id,
     affectedMemberIds: parseJson(row.affected_member_ids),
     messageExcerpt: row.message_excerpt,
@@ -183,6 +184,21 @@ export interface FollowUpCompletion {
   summary: string;
   headline?: string;
   positivePrompt?: string;
+  evidenceReference?: {
+    provider: "live";
+    conversationAlias: string | null;
+    responseFingerprint: string | null;
+    promptVersion: string;
+    observedMessageCount: number;
+  };
+}
+
+export interface FollowUpContext {
+  followUp: FollowUp;
+  incident: Incident;
+  community: Community;
+  tenets: CommunityTenet[];
+  activeMemories: MemoryReceipt[];
 }
 
 export interface TendSnapshot {
@@ -267,9 +283,11 @@ export interface TendRepository {
     now?: Date,
   ): Incident;
   getFollowUp(followUpId: string): FollowUp | null;
+  getFollowUpContext(followUpId: string): FollowUpContext | null;
   recordAnalyzedIncident(
     input: {
       externalMessageId: string;
+      sourceChannelId?: string | null;
       actorId: string;
       messageExcerpt: string;
       conversationContext: Array<{
@@ -1104,6 +1122,16 @@ export class SqliteTendRepository implements TendRepository {
         `Due-job worker completed with ${completion.evidenceKind} evidence; incident moved to ${completion.incidentStatus}.`,
         timestamp,
       );
+      if (completion.evidenceReference) {
+        this.insertAudit(
+          String(row.community_id),
+          String(row.incident_id),
+          "mind",
+          "mind.followup_reference",
+          JSON.stringify(completion.evidenceReference),
+          timestamp,
+        );
+      }
       this.insertAudit(
         String(row.community_id),
         String(row.incident_id),
@@ -1334,8 +1362,10 @@ export class SqliteTendRepository implements TendRepository {
     now = new Date(),
   ): Incident {
     const row = this.database
-      .prepare("SELECT community_id FROM incidents WHERE id = ?")
-      .get(incidentId) as { community_id: string } | undefined;
+      .prepare("SELECT community_id, status FROM incidents WHERE id = ?")
+      .get(incidentId) as
+      | { community_id: string; status: Incident["status"] }
+      | undefined;
     if (!row) throw new Error("Incident not found.");
     if (outcome === "resolved") {
       const completedFollowUp = this.database
@@ -1343,9 +1373,9 @@ export class SqliteTendRepository implements TendRepository {
           "SELECT 1 FROM follow_ups WHERE incident_id = ? AND status = 'completed' LIMIT 1",
         )
         .get(incidentId);
-      if (!completedFollowUp) {
+      if (!completedFollowUp || row.status !== "resolved") {
         throw new Error(
-          "Resolved outcomes require evidence from a completed follow-up.",
+          "Resolved outcomes require a completed follow-up that resolved the incident.",
         );
       }
     }
@@ -1381,9 +1411,56 @@ export class SqliteTendRepository implements TendRepository {
     return row ? followUpFromRow(row) : null;
   }
 
+  getFollowUpContext(followUpId: string): FollowUpContext | null {
+    const ownership = this.database
+      .prepare(
+        `SELECT follow_ups.*, incidents.community_id
+         FROM follow_ups
+         JOIN incidents ON incidents.id = follow_ups.incident_id
+         WHERE follow_ups.id = ?`,
+      )
+      .get(followUpId) as Row | undefined;
+    if (!ownership) return null;
+
+    const communityId = String(ownership.community_id);
+    const community = communityFromRow(
+      this.database
+        .prepare("SELECT * FROM communities WHERE id = ?")
+        .get(communityId) as Row,
+    );
+    const incident = incidentFromRow(
+      this.database
+        .prepare("SELECT * FROM incidents WHERE id = ?")
+        .get(ownership.incident_id) as Row,
+    );
+    const tenets = (
+      this.database
+        .prepare(
+          "SELECT * FROM community_tenets WHERE community_id = ? ORDER BY created_at",
+        )
+        .all(communityId) as Row[]
+    ).map(tenetFromRow);
+    const activeMemories = (
+      this.database
+        .prepare(
+          "SELECT * FROM memory_receipts WHERE community_id = ? AND status = 'active' ORDER BY learned_at",
+        )
+        .all(communityId) as Row[]
+    ).map(memoryFromRow);
+
+    return {
+      followUp: followUpFromRow(ownership),
+      incident,
+      community,
+      tenets,
+      activeMemories,
+    };
+  }
+
   recordAnalyzedIncident(
     input: {
       externalMessageId: string;
+      sourceChannelId?: string | null;
       actorId: string;
       messageExcerpt: string;
       conversationContext: Array<{
@@ -1417,15 +1494,16 @@ export class SqliteTendRepository implements TendRepository {
       this.database
         .prepare(
           `INSERT INTO incidents (
-            id, community_id, external_message_id, actor_id, affected_member_ids, message_excerpt,
+            id, community_id, external_message_id, source_channel_id, actor_id, affected_member_ids, message_excerpt,
             conversation_context, status, risk_level, confidence, summary, reasoning,
             classification, policy_matches, memory_receipt_ids, prompt_version, created_at, resolved_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)`,
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)`,
         )
         .run(
           id,
           snapshot.community.id,
           input.externalMessageId,
+          input.sourceChannelId ?? null,
           input.actorId,
           JSON.stringify([]),
           input.messageExcerpt.slice(0, 1_000),

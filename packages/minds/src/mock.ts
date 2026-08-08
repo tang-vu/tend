@@ -2,9 +2,11 @@ import { mindDecisionSchema, TEND_PROMPT_VERSION } from "@tend/core";
 import demoDecisionFixture from "./fixtures/demo-decision.json" with { type: "json" };
 import { stewardAlias } from "./aliases";
 import type {
+  AnalyzeFollowUpInput,
   AnalyzeIncidentInput,
   MindsAdapter,
   MindsAnalysisResult,
+  MindsFollowUpResult,
   MindsReference,
   TeachMemoryInput,
 } from "./types";
@@ -76,6 +78,33 @@ export class MockMindsAdapter implements MindsAdapter {
       status: "ok",
       notice:
         "Deterministic Mock Minds fixture. No external model call occurred.",
+    };
+  }
+
+  async analyzeFollowUp(
+    _input: AnalyzeFollowUpInput,
+  ): Promise<MindsFollowUpResult> {
+    await Promise.resolve();
+    return {
+      assessment: {
+        incidentStatus: "manual_review",
+        confidence: 0,
+        summary: "Mock Minds does not produce live Discord follow-up evidence.",
+        headline: null,
+        positivePrompt: null,
+        observedMessageIds: [],
+        reasoningForModerator:
+          "The deterministic demo uses its dedicated seeded follow-up processor.",
+        uncertainties: ["No live Discord observation was assessed."],
+      },
+      reference: {
+        provider: "mock",
+        conversationAlias: null,
+        responseFingerprint: null,
+        promptVersion: TEND_PROMPT_VERSION,
+      },
+      status: "manual_review",
+      notice: "No live external model call occurred.",
     };
   }
 }

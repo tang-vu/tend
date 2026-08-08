@@ -1,6 +1,8 @@
 import type {
   Community,
   CommunityTenet,
+  FollowUpAssessment,
+  Incident,
   MemoryReceipt,
   MindDecision,
 } from "@tend/core";
@@ -22,6 +24,21 @@ export interface TeachMemoryInput {
   statement: string;
 }
 
+export interface AnalyzeFollowUpInput {
+  community: Community;
+  tenets: CommunityTenet[];
+  activeMemories: MemoryReceipt[];
+  incident: Incident;
+  purpose: string;
+  observedAt: string;
+  freshMessages: Array<{
+    id: string;
+    author: string;
+    content: string;
+    createdAt: string;
+  }>;
+}
+
 export interface MindsReference {
   provider: "mock" | "live" | "unavailable";
   conversationAlias: string | null;
@@ -36,8 +53,16 @@ export interface MindsAnalysisResult {
   notice: string;
 }
 
+export interface MindsFollowUpResult {
+  assessment: FollowUpAssessment;
+  reference: MindsReference;
+  status: "ok" | "manual_review";
+  notice: string;
+}
+
 export interface MindsAdapter {
   readonly mode: "mock" | "live" | "unavailable";
   teach(input: TeachMemoryInput): Promise<MindsReference>;
   analyzeIncident(input: AnalyzeIncidentInput): Promise<MindsAnalysisResult>;
+  analyzeFollowUp(input: AnalyzeFollowUpInput): Promise<MindsFollowUpResult>;
 }

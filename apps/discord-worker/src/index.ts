@@ -8,45 +8,50 @@ import {
 } from "discord.js";
 import {
   DemoFollowUpProcessor,
-  FailClosedFollowUpProcessor,
   openDatabase,
   runDueFollowUp,
   SqliteTendRepository,
 } from "@tend/db";
+import { createLiveMindsAdapterFromEnv } from "@tend/minds";
 import { readWorkerConfig } from "./config";
 import { DiscordJsActionGateway } from "./discord-gateway";
+import { DiscordJsObservationGateway } from "./discord-observation";
 import { executeApprovedDiscordAction } from "./executor";
 import { filterDiscordMessage, type DiscordMessageEnvelope } from "./filter";
+import { DiscordMindsFollowUpProcessor } from "./followup";
 import { HttpTendIncidentIntake, type ContextMessage } from "./intake";
 
 const config = readWorkerConfig();
 const repository = new SqliteTendRepository(openDatabase());
 
 async function runPersistedWork(): Promise<void> {
-  const followUpProcessor =
-    config.mode === "live"
-      ? new FailClosedFollowUpProcessor()
-      : new DemoFollowUpProcessor();
-  await runDueFollowUp(repository, { processor: followUpProcessor });
-  if (config.mode !== "live" || !client.isReady()) return;
-  const action = repository.claimNextApprovedAction();
-  if (!action) return;
-  try {
-    const outcome = await executeApprovedDiscordAction(
-      action,
-      new DiscordJsActionGateway(client, config),
-    );
-    if (outcome.executed)
-      repository.markActionExecuted(action.id, outcome.result);
-    else repository.markActionFailed(action.id, outcome.result);
-  } catch (error) {
-    repository.markActionFailed(
-      action.id,
-      error instanceof Error
-        ? error.message
-        : "Unknown Discord execution error.",
-    );
+  if (config.mode === "demo") {
+    await runDueFollowUp(repository, {
+      processor: new DemoFollowUpProcessor(),
+    });
+    return;
   }
+  if (!client.isReady() || !liveFollowUpProcessor) return;
+  const action = repository.claimNextApprovedAction();
+  if (action) {
+    try {
+      const outcome = await executeApprovedDiscordAction(
+        action,
+        new DiscordJsActionGateway(client, config),
+      );
+      if (outcome.executed)
+        repository.markActionExecuted(action.id, outcome.result);
+      else repository.markActionFailed(action.id, outcome.result);
+    } catch (error) {
+      repository.markActionFailed(
+        action.id,
+        error instanceof Error
+          ? error.message
+          : "Unknown Discord execution error.",
+      );
+    }
+  }
+  await runDueFollowUp(repository, { processor: liveFollowUpProcessor });
 }
 
 const client = new Client({
@@ -58,6 +63,15 @@ const client = new Client({
   ],
   partials: [Partials.Channel],
 });
+
+const liveFollowUpProcessor =
+  config.mode === "live"
+    ? new DiscordMindsFollowUpProcessor(
+        repository,
+        new DiscordJsObservationGateway(client, config),
+        createLiveMindsAdapterFromEnv(),
+      )
+    : null;
 
 async function nearbyContext(message: Message): Promise<ContextMessage[]> {
   if (
@@ -142,7 +156,25 @@ client.once(Events.ClientReady, (readyClient) => {
   );
 });
 
-const timer = setInterval(() => void runPersistedWork(), 1_000);
+let persistedWorkRunning = false;
+const timer = setInterval(() => {
+  if (persistedWorkRunning) return;
+  persistedWorkRunning = true;
+  void runPersistedWork()
+    .catch((error) => {
+      process.stderr.write(
+        `${JSON.stringify({
+          event: "persisted_work_failed",
+          error: error instanceof Error ? error.name : "UnknownError",
+          secretPrinted: false,
+          rawMessagePrinted: false,
+        })}\n`,
+      );
+    })
+    .finally(() => {
+      persistedWorkRunning = false;
+    });
+}, 1_000);
 
 async function shutdown() {
   clearInterval(timer);

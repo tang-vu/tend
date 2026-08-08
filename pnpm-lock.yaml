@@ -40,6 +40,9 @@ importers:
       "@tend/db":
         specifier: workspace:*
         version: link:../../packages/db
+      "@tend/minds":
+        specifier: workspace:*
+        version: link:../../packages/minds
       discord.js:
         specifier: 14.27.0
         version: 14.27.0

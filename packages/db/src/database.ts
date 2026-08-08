@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS incidents (
   id TEXT PRIMARY KEY,
   community_id TEXT NOT NULL REFERENCES communities(id) ON DELETE CASCADE,
   external_message_id TEXT NOT NULL UNIQUE,
+  source_channel_id TEXT,
   actor_id TEXT NOT NULL,
   affected_member_ids TEXT NOT NULL,
   message_excerpt TEXT NOT NULL,
@@ -159,6 +160,20 @@ function defaultDatabasePath(): string {
 
 export type TendDatabase = Database.Database;
 
+function ensureColumn(
+  database: TendDatabase,
+  table: string,
+  column: string,
+  definition: string,
+): void {
+  const columns = database.pragma(`table_info(${table})`) as Array<{
+    name: string;
+  }>;
+  if (!columns.some((candidate) => candidate.name === column)) {
+    database.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
+
 export function openDatabase(filename = defaultDatabasePath()): TendDatabase {
   if (filename !== ":memory:") {
     fs.mkdirSync(path.dirname(filename), { recursive: true });
@@ -168,5 +183,6 @@ export function openDatabase(filename = defaultDatabasePath()): TendDatabase {
   database.pragma("journal_mode = WAL");
   database.pragma("busy_timeout = 5000");
   database.exec(MIGRATION_SQL);
+  ensureColumn(database, "incidents", "source_channel_id", "TEXT");
   return database;
 }

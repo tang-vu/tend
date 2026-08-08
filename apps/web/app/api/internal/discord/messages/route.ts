@@ -77,6 +77,7 @@ export async function POST(request: Request) {
     };
     const incident = repository.recordAnalyzedIncident({
       externalMessageId: input.externalMessageId,
+      sourceChannelId: input.channelId,
       actorId: input.actorId,
       messageExcerpt: input.message,
       conversationContext: input.conversationContext,

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { DEMO_DECISION } from "@tend/core";
+import { stewardAlias } from "../src/aliases";
 import {
   createLiveMindsAdapterFromEnv,
   LiveMindsAdapter,
@@ -64,6 +65,55 @@ const input = {
   ],
   message: "message",
   conversationContext: [],
+};
+
+const followUpInput = {
+  community: input.community,
+  tenets: input.tenets,
+  activeMemories: input.activeMemories,
+  incident: {
+    id: "incident-1",
+    communityId: "community",
+    externalMessageId: "message-1",
+    sourceChannelId: "channel-1",
+    actorId: "member-1",
+    affectedMemberIds: [],
+    messageExcerpt: "Original message",
+    conversationContext: [],
+    status: "monitoring" as const,
+    riskLevel: "medium" as const,
+    confidence: 0.9,
+    summary: "A boundary may have been crossed.",
+    reasoning: "Known context made the boundary relevant.",
+    classification: "accidental_harm" as const,
+    policyMatches: [],
+    memoryReceiptIds: ["memory-kai-voice-boundary"],
+    promptVersion: "test",
+    createdAt: new Date().toISOString(),
+    resolvedAt: null,
+  },
+  purpose: "Check whether repair held.",
+  observedAt: new Date().toISOString(),
+  freshMessages: [
+    {
+      id: "fresh-message-1",
+      author: "Member",
+      content: "Thanks for the reminder. I understand the boundary.",
+      createdAt: new Date().toISOString(),
+    },
+  ],
+};
+
+const validFollowUpAssessment = {
+  incidentStatus: "resolved" as const,
+  confidence: 0.92,
+  summary: "The fresh exchange indicates that repair held.",
+  headline: "Repair held after the reminder.",
+  positivePrompt: "Invite members to reinforce respectful creative feedback.",
+  observedMessageIds: ["fresh-message-1"],
+  reasoningForModerator:
+    "The member acknowledged the boundary without renewed conflict.",
+  uncertainties: [],
 };
 
 describe("LiveMindsAdapter", () => {
@@ -178,5 +228,56 @@ describe("LiveMindsAdapter", () => {
         proposedActions: [{ type: "moderator_review" }],
       },
     });
+  });
+
+  it("validates a structured follow-up in the persistent conversation", async () => {
+    const client = clientWithReplies([
+      {
+        timedOut: false,
+        reply: { messageText: JSON.stringify(validFollowUpAssessment) },
+      },
+    ]);
+    const adapter = new LiveMindsAdapter({
+      builderApiKey: "not-logged",
+      mindId: "mind-1",
+      client,
+    });
+
+    const result = await adapter.analyzeFollowUp(followUpInput);
+
+    expect(result).toMatchObject({
+      status: "ok",
+      assessment: { incidentStatus: "resolved", confidence: 0.92 },
+      reference: { provider: "live" },
+    });
+    expect(client.ensureConversation).toHaveBeenCalledWith(
+      stewardAlias("community"),
+      "mind-1",
+    );
+  });
+
+  it("rejects follow-up references outside the fresh Discord window", async () => {
+    const adapter = new LiveMindsAdapter({
+      builderApiKey: "not-logged",
+      mindId: "mind-1",
+      client: clientWithReplies([
+        {
+          timedOut: false,
+          reply: {
+            messageText: JSON.stringify({
+              ...validFollowUpAssessment,
+              observedMessageIds: ["fabricated-message"],
+            }),
+          },
+        },
+      ]),
+    });
+
+    await expect(adapter.analyzeFollowUp(followUpInput)).resolves.toMatchObject(
+      {
+        status: "manual_review",
+        reference: { provider: "unavailable" },
+      },
+    );
   });
 });

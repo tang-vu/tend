@@ -37,7 +37,7 @@ DISCORD_MOD_CHANNEL_ID=<moderator channel ID>
 DISCORD_TEST_SERVER_AUTHORIZED=true
 ```
 
-`TEND_WORKER_API_KEY` must match the web process. Live Minds variables are also required for model analysis; otherwise the internal intake creates a transparent manual-review result.
+`TEND_WORKER_API_KEY` must match the web process. `MINDS_MODE=live`, `MINDS_BUILDER_API_KEY`, and `MINDS_MIND_ID` are required by the live worker for incident and follow-up analysis. The worker fails startup or follow-up safely when they are unavailable; it never substitutes Mock Minds.
 
 ## Run
 
@@ -64,6 +64,18 @@ The worker prints readiness metadata but never the bot token. Send a harmless te
 5. Test timeout only with a consenting test account. The MVP uses ten minutes.
 
 Deletion is not implemented. Ban and kick are unavailable.
+
+## Fresh follow-up test
+
+1. Create a harmless incident in one allowlisted channel and approve its proposed reminder.
+2. Post one or more consenting test replies after the trigger message. Do not use production member content.
+3. Wait until the persisted follow-up is due. The independent worker must execute the approved action before claiming the follow-up.
+4. Verify the worker fetched only newer non-bot messages from the persisted source channel.
+5. Verify the audit contains `mind.followup_reference` with provider, alias, fingerprint, prompt version, and message count—but no raw message content.
+6. Verify a grounded assessment at confidence ≥ 0.75 can resolve and create a pulse.
+7. Repeat with no new message, low confidence, an unavailable Mind, and a non-allowlisted channel. These cases must become manual review or bounded failure, never a fabricated resolution.
+
+This path is implemented and covered by local/CI tests. Do not mark Discord follow-up as externally verified until the steps above have been captured in the dedicated test server.
 
 ## Disable
 

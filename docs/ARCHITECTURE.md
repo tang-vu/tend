@@ -9,6 +9,7 @@ flowchart LR
   Worker -->|Authenticated sanitized intake| Web
   Web --> Core[Domain schemas + policy engine]
   Web --> Minds[Minds adapter]
+  Worker -->|Fresh allowlisted follow-up evidence| Minds
   Minds -->|Mock fixture| Mock[Deterministic demo]
   Minds -->|Server-side official client| Live[Persistent Mind]
   Web --> DB[(SQLite repository)]
@@ -48,9 +49,9 @@ The Mind is the live agent-memory and continuity layer. SQLite is the auditable 
 5. Resolved outcomes write a community-scoped pulse; manual-review outcomes never fabricate a positive resolution.
 6. Transient failure uses bounded backoff; exhausted attempts become `failed` and visible manual review in the incident's owning community.
 
-The embedded web poller starts through Next instrumentation for a one-process demo. `pnpm worker:dev` is the independent worker. Production scale replaces both with queue-backed workers.
+The embedded web poller starts through Next instrumentation only in demo mode. In live mode the Discord worker exclusively owns follow-up claims so the web process cannot race the observation-capable worker. `pnpm worker:dev` runs that independent worker. Production scale replaces both with queue-backed workers.
 
-The deterministic outcome processor emits `seeded_demo` evidence and is selected only in demo mode. Storage rejects that evidence kind for a live community even if a caller wires the wrong processor. Live completion requires a `live_observation` outcome; until a fresh Discord observation source is connected, the live processor fails closed, retries with bounded backoff, and then becomes visible manual review. It never fabricates “no further conflict.”
+The deterministic outcome processor emits `seeded_demo` evidence and is selected only in demo mode. Storage rejects that evidence kind for a live community even if a caller wires the wrong processor. In live mode, the incident's persisted source channel is rechecked against the guild/channel allowlist, then up to 50 newer non-bot messages are supplied to the same persistent Mind as escaped untrusted data. The output receives strict schema and message-ID grounding checks. Resolution requires at least one referenced fresh message and confidence of 0.75 or greater; epistemic uncertainty becomes completed/manual review, while transport or validation failure retries with bounded backoff and then fails closed.
 
 ## Trust boundaries
 
@@ -81,7 +82,8 @@ Scale path:
 - One local community and no creator authentication.
 - SQLite and the embedded poller assume one web instance.
 - Live Minds discovery, cognition health, messaging, and cross-session recall are verified. Skill equipment and Discord delivery still require external setup and have not been verified.
-- Live follow-up observation is deliberately fail-closed until fresh Discord context is connected to the processor.
+- Fresh Discord follow-up observation is implemented and test-verified but still awaits execution evidence from the dedicated test server.
 - Nearby Discord context is capped at eight earlier non-bot messages.
+- Follow-up context is capped at 50 newer non-bot text messages; attachments are not analyzed.
 - Timeout uses a fixed ten-minute MVP duration after explicit approval.
 - No ban, kick, billing, or multi-platform connector.

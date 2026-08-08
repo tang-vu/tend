@@ -11,12 +11,13 @@ TEND's differentiated behavior is continuity: a persistent Mind receives creator
 - Stable, sanitized aliases use a purpose prefix, normalized community ID, and SHA-256 suffix.
 - Live analysis validates the configured Mind, ensures the conversation, captures the latest history fingerprint, sends the versioned prompt, and waits via `waitForReply`.
 - Responses are parsed with Zod. Invalid output receives one correction prompt.
+- Live follow-ups reuse the same stable community conversation. Fresh allowlisted Discord messages enter a separate escaped follow-up prompt and must produce a validated assessment whose message IDs are a subset of the supplied observation.
 - Timeout, repeated invalid output, unavailable credentials, and account mismatch become a transparent moderator-review result. There is no hidden LLM fallback.
 - Cognition diagnostics and a real cross-session proof command are ready.
 
-The incident prompt separates trusted creator policy from approved evidence and `<UNTRUSTED_CONVERSATION_DATA>` / `<UNTRUSTED_TRIGGER_MESSAGE_DATA>`. Every data block is escaped and explicitly non-authoritative. After schema validation, TEND rejects references to any receipt that was not supplied as active evidence, downgrades unavailable destructive proposals, replaces low-confidence proposals with a moderator-review item, and keeps live proposals approval-gated.
+The incident prompt separates trusted creator policy from approved evidence and `<UNTRUSTED_CONVERSATION_DATA>` / `<UNTRUSTED_TRIGGER_MESSAGE_DATA>`. The follow-up prompt places new channel observations inside `<UNTRUSTED_FRESH_DISCORD_MESSAGES_DATA>`. Every data block is escaped and explicitly non-authoritative. After schema validation, TEND rejects references to receipts or follow-up messages that were not supplied, downgrades unavailable destructive proposals, replaces low-confidence proposals with moderator review, and keeps live proposals approval-gated.
 
-Sanitized provider, conversation-alias, response-fingerprint, and prompt-version references are recorded in the audit timeline when available. Builder credentials and raw authorization material are never persisted. Custom Skill action and follow-up writes require caller idempotency keys: identical retries return the original row, while conflicting reuse is rejected. Skill callers cannot record a resolved outcome until the repository contains a completed follow-up for that incident.
+Sanitized provider, conversation-alias, response-fingerprint, and prompt-version references are recorded in the audit timeline when available. Builder credentials and raw authorization material are never persisted. Custom Skill action and follow-up writes require caller idempotency keys: identical retries return the original row, while conflicting reuse is rejected. Skill callers cannot record a resolved outcome unless a completed follow-up has already resolved that incident; a completed manual-review outcome cannot be upgraded through the Skill.
 
 ## Live setup
 
@@ -58,6 +59,6 @@ The command exits `2` if recall was not proven. It never hard-codes success. A d
 | Cross-session Mind recall   | Verified 2026-08-06            |
 | Cognition health            | Verified 2026-08-06            |
 
-Live incident analysis is implemented. Live autonomous follow-up deliberately fails closed until fresh Discord evidence is wired into the follow-up processor; the deterministic resolved outcome belongs only to labeled demo mode.
+Live incident analysis and the fresh Discord → persistent Mind follow-up path are implemented and test-verified. Autonomous resolution additionally requires at least one referenced fresh message and confidence of 0.75 or greater; uncertainty completes as manual review, while transport/provider/schema failures use bounded retry and then fail closed. Dedicated Discord-server execution has not yet been externally verified, so it must not be described as live-delivered evidence.
 
 The sanitized live result is recorded in [`docs/evidence/minds-persistence-proof.md`](evidence/minds-persistence-proof.md).

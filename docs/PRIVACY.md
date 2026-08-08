@@ -10,6 +10,8 @@ TEND is designed for minimum necessary memory, not covert profiling.
 - Decision references, confidence, policy matches, action state, and sanitized audit summaries.
 - Follow-up outcomes.
 
+For a live follow-up, the worker reads at most 50 newer non-bot text messages from the incident's allowlisted source channel and sends that bounded observation to the configured persistent Mind. TEND does not create additional application message rows for this observation; it persists only the outcome, count, and sanitized provider reference. The external Mind may retain conversation context according to the creator's Minds configuration, so real deployment requires clear community notice and an appropriate retention policy.
+
 TEND does not infer or retain hidden psychological profiles or protected, medical, sexual, religious, or political traits. It does not infer member intent as fact.
 
 ## Receipts and corrections
