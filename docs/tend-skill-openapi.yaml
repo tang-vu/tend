@@ -10,8 +10,8 @@ info:
     propose non-destructive actions, schedule persisted follow-ups, and record outcomes.
     These tools cannot directly delete messages, timeout members, kick, or ban.
 servers:
-  - url: https://YOUR-TEND-DEPLOYMENT.example.com
-    description: Replace with the deployed HTTPS TEND base URL before configuring Minds.
+  - url: https://tend.tangvu.dev
+    description: Public TEND demo API protected by the private Skill bearer connection.
 security:
   - skillBearer: []
 paths:

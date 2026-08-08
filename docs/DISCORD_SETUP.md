@@ -1,6 +1,6 @@
 # Discord test-server setup
 
-Live Discord behavior has not been verified because owner credentials were not provided. Use a dedicated test server; never begin with a production community.
+Live Discord Gateway connectivity, the dedicated test-server boundary, channel visibility, least-privilege permissions, and bot self-loop rejection were verified on 2026-08-08. A human-authored intake and approved reminder delivery still need to be captured before claiming end-to-end Discord delivery. Use only the dedicated test server; never begin with a production community.
 
 ## Create and invite the app
 
@@ -76,6 +76,8 @@ Deletion is not implemented. Ban and kick are unavailable.
 7. Repeat with no new message, low confidence, an unavailable Mind, and a non-allowlisted channel. These cases must become manual review or bounded failure, never a fabricated resolution.
 
 This path is implemented and covered by local/CI tests. Do not mark Discord follow-up as externally verified until the steps above have been captured in the dedicated test server.
+
+The Windows host keeps the public demo isolated on port 3000 and runs this live path privately on port 3001 using `ops/windows/ecosystem.live.config.cjs`. See `docs/evidence/discord-live-proof.md` for the sanitized verification record.
 
 ## Disable
 

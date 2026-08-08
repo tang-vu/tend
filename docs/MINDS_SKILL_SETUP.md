@@ -1,6 +1,6 @@
 # Custom TEND Skill setup
 
-Status: local API and OpenAPI contract implemented. Deployment, Minds Connection, equipment, publication, and live verification have not been performed.
+Status: the API and OpenAPI contract are deployed at `tend.tangvu.dev` with a dedicated ignored bearer key. Minds Connection, equipment, publication, and live tool-call verification still require the owner flow in Minds.
 
 ## Scope
 
@@ -20,7 +20,7 @@ There is intentionally no Discord execution tool. `propose_community_action` can
 1. Deploy the single TEND container behind HTTPS with persistent storage.
 2. Set `TEND_BASE_URL` to the public origin.
 3. Generate a high-entropy bearer secret locally and store it as `TEND_SKILL_API_KEY` in deployment secret storage. Never commit or paste it into chat.
-4. Replace the placeholder server URL in a deployment copy of `docs/tend-skill-openapi.yaml`.
+4. Confirm the deployed server URL in `docs/tend-skill-openapi.yaml`.
 5. Confirm that unauthenticated calls return `401` (or `503` while the server secret is absent).
 
 For production, place a reverse proxy in front of Next.js for request size limits and rate limiting. Rotate the bearer secret if access changes.
@@ -62,7 +62,7 @@ Expected safety properties:
 ## Status language for the demo
 
 - Implemented locally: yes.
-- Requires deployed URL: yes.
+- Deployed API and contract: yes.
 - Requires user configuration in Minds: yes.
 - Equipped: no.
 - Published: no.

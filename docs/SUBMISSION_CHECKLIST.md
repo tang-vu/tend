@@ -11,21 +11,21 @@
 
 ## Minds evidence
 
-- [ ] Builder API key and Mind configured in deployment secrets.
+- [x] Builder API key and Mind configured in the private live-integration process environment; public demo remains credential-free.
 - [x] `pnpm minds:doctor` saved as a sanitized artifact.
 - [x] `pnpm minds:proof` demonstrates genuine second-session recall.
 - [ ] Failed recall, if any, reported honestly and fixed before recording.
 - [x] Cognition balance checked.
 - [ ] Custom Skill deployed, permissions inspected, equipped, and tool calls tested.
-- [ ] Skill publication status described accurately.
+- [x] Skill publication status described accurately: API deployed, but the Minds Skill is not yet created, equipped, or published.
 
 ## Discord evidence
 
-- [ ] Dedicated test server and least-privilege bot role.
-- [ ] Guild/channel allowlists tested.
-- [ ] Bot/self loop test captured.
+- [x] Dedicated test server and least-privilege bot role verified.
+- [x] Guild/channel allowlists tested: configured bot can see the authorized guild and 1/1 allowlisted channel.
+- [x] Bot/self loop test captured; a bot-authored allowlisted-channel message left the incident count unchanged.
 - [ ] Approved test reminder delivered once and audited.
-- [ ] No production community contacted.
+- [x] No production community contacted; external checks were restricted to the explicitly authorized test server.
 
 ## Submission assets
 

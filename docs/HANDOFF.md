@@ -34,6 +34,8 @@ PM2 owns two TEND processes:
 | `tend-web`    | Next.js standalone server on `127.0.0.1:3000` | online         |
 | `tend-tunnel` | Dedicated Cloudflare named tunnel             | online         |
 
+The optional private live-integration profile adds `tend-live-web` on loopback port 3001 and `tend-discord-worker`. It loads the ignored root `.env` through `ops/windows/ecosystem.live.config.cjs`; the public port-3000 process still clears every live credential. Both live processes were online and saved in PM2 on 2026-08-08.
+
 Check without printing process environments:
 
 ```powershell
@@ -117,13 +119,15 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 - Public HTTPS health, landing, CSS, and full three-act persisted demo: passed.
 - The public host retained the `learned` scenario and four memory receipts across a verified PM2 stop/start, then reset to `ready` with no incidents, memories, or follow-ups.
 - The public repository returned HTTP 200 without authentication.
+- Discord Gateway login, the authorized guild, 1/1 allowlisted channel, least-privilege permissions, and bot self-loop rejection were externally verified in the dedicated test server. See `docs/evidence/discord-live-proof.md`.
+- The Custom TEND Skill API is deployed on the public hostname with a dedicated ignored runtime bearer key. Missing auth returns 401, valid auth returns 200, and a destructive `delete_message` proposal returns 400. The Minds Skill/Connection is not yet created, equipped, or published. See `docs/evidence/tend-skill-deployment-proof.md`.
 - Git working tree and `origin/main`: synchronized when this handoff was written.
 
 Never claim a later check passed without rerunning it after material changes.
 
 ## Important product/security boundaries
 
-- Public hosting is demo/mock only and visibly labeled.
+- Public hosting is demo/mock only and visibly labeled. Its server-side Skill API is protected by a dedicated bearer key stored in ignored runtime data; this does not grant creator-dashboard, Minds, worker, or Discord access.
 - The mock response is not described as a live Minds call.
 - Live Minds persistence proof is genuine and separately documented.
 - Consequential actions require explicit approval.
@@ -138,8 +142,8 @@ Never claim a later check passed without rerunning it after material changes.
 
 1. Record the 1.5-2 minute video using `docs/DEMO_SCRIPT.md` and the public URL.
 2. Complete and submit the remaining unchecked items in `docs/SUBMISSION_CHECKLIST.md`.
-3. Deploy/equip the Custom TEND Skill only after setting a server-side `TEND_SKILL_API_KEY`; never put the key in the OpenAPI file, repository, browser, or chat.
-4. Test Discord in a dedicated least-privilege server using `docs/DISCORD_SETUP.md`. Do not connect a production community.
+3. In the owner-authenticated Minds profile, create the Connection using the ignored `data/tend-skill-api.key`, ask the Mind to build from `docs/tend-skill-openapi.yaml`, inspect permissions, equip it, and test every operation. Never put the key in the OpenAPI file, repository, browser history, or chat.
+4. Complete the remaining human-authored Discord intake, explicit reminder approval, one-time delivery, and fresh-message follow-up tests in the already connected dedicated server. Do not connect a production community.
 5. Replace the single-creator boundary with managed identity, MFA/recovery, community roles, revocable sessions, and distributed throttling before multi-user or horizontally scaled deployment.
 6. For post-hackathon scaling, migrate SQLite to PostgreSQL and run queue-backed web/Discord workers.
 7. Arrange periodic SQLite backups and machine uptime monitoring if this host remains the public demo origin.

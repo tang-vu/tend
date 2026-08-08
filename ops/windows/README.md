@@ -7,6 +7,8 @@ This profile runs the credential-free public demo on the repository owner's alwa
 - The hosted process forces `TEND_MODE=demo` and `MINDS_MODE=mock`.
 - Live Minds credentials are explicitly cleared from the hosted process.
 - Live creator credentials are explicitly cleared; the fictional demo remains credential-free.
+- Worker and Discord credentials are explicitly cleared from the public process.
+- The Skill API uses a dedicated high-entropy bearer key persisted in the ignored `data/tend-skill-api.key`; it is never a creator, Minds, or Discord credential.
 - SQLite is persisted below the ignored `data/` directory.
 - The Cloudflare tunnel credential and concrete local config stay untracked.
 - `tend.tangvu.dev` is the only intended public hostname.
@@ -59,3 +61,21 @@ pm2 logs tend-tunnel --lines 50 --nostream
 ```
 
 Never commit `.env`, files below `data/`, tunnel credential JSON, database files, or PM2 logs.
+
+## Private live integration profile
+
+The optional `ecosystem.live.config.cjs` profile runs two loopback-only processes without changing the public demo:
+
+- `tend-live-web` on `127.0.0.1:3001`, using live Minds and `data/tend-live-test.db`;
+- `tend-discord-worker`, connected to the authorized test guild and the live web process.
+
+It loads only the required values from the ignored root `.env` and fails before startup if any required value is absent. Start it only after completing `docs/DISCORD_SETUP.md`:
+
+```powershell
+pm2 start ops/windows/ecosystem.live.config.cjs
+pm2 save
+Invoke-WebRequest http://127.0.0.1:3001/api/health -UseBasicParsing
+pm2 logs tend-discord-worker --lines 50 --nostream
+```
+
+Stop `tend-web` and `tend-live-web` before rebuilding because both execute the same standalone tree. After `pnpm build` and `pnpm host:prepare`, restart both web processes and the worker.
