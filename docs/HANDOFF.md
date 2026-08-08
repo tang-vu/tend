@@ -1,6 +1,6 @@
 # TEND continuation handoff
 
-Last updated: 2026-08-07 (Asia/Saigon).
+Last updated: 2026-08-08 (Asia/Saigon).
 
 Read `AGENTS.md` first. This document is the durable operational and implementation handoff for a new chat or maintainer.
 
@@ -9,7 +9,7 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
 - Public credential-free demo: **https://tend.tangvu.dev**
 - Health: `https://tend.tangvu.dev/api/health`
 - Repository: `https://github.com/tang-vu/tend`, branch `main`
-- Last product/deployment commit before this handoff: `841fc37`
+- Last completed product commit before the current authentication update: `b440de4`
 - Latest verified CI at handoff: https://github.com/tang-vu/tend/actions/runs/31194396324
 - Public deployment is intentionally `TEND_MODE=demo` + `MINDS_MODE=mock`.
 - Live Minds discovery, cognition access, messaging, and cross-session recall were separately verified with owner credentials. See `docs/evidence/minds-persistence-proof.md`.
@@ -106,7 +106,9 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 
 ## Verification status
 
-- `pnpm verify`: passed with 42 Vitest tests at handoff.
+- `pnpm verify`: passed after the authentication update with 59/59 Vitest tests, production build, OpenAPI validation, and secret scan.
+- Browser coverage: 14/14 demo desktop/mobile tests plus 1/1 dedicated live-mode authentication test passed. The live test covers unauthorized reads/mutations, cross-origin rejection, credential failure/success, cookie attributes, authenticated state, logout, post-logout rejection, and the 429 throttle boundary.
+- Updated standalone deployment: local/public health and landing returned 200; CSP, frame denial, and HSTS reached the Cloudflare hostname; the public fictional scenario was reset to `ready` with no incidents, memories, or follow-ups.
 - Playwright: 14/14 desktop/mobile tests passed in CI.
 - Production Next build: passed.
 - OpenAPI validation: passed.
@@ -124,7 +126,8 @@ Never claim a later check passed without rerunning it after material changes.
 - Live Minds persistence proof is genuine and separately documented.
 - Consequential actions require explicit approval.
 - Ban and kick are unavailable.
-- Live dashboard/data APIs fail closed because creator authentication is not implemented.
+- Live dashboard/data APIs fail closed unless two distinct 32+ character creator secrets are configured and an eight-hour signed session is valid.
+- Browser mutations require an exact trusted origin. The current auth model is single-creator/single-community, not production-grade multi-user identity or tenant authorization.
 - Community messages are untrusted data and cannot alter system policy.
 - The public demo has shared mutable scenario state; any visitor may reset/replay it. Do not store real member/community data in this deployment.
 - SQLite is suitable for this single-host hackathon deployment, not horizontal scaling.
@@ -135,7 +138,7 @@ Never claim a later check passed without rerunning it after material changes.
 2. Complete and submit the remaining unchecked items in `docs/SUBMISSION_CHECKLIST.md`.
 3. Deploy/equip the Custom TEND Skill only after setting a server-side `TEND_SKILL_API_KEY`; never put the key in the OpenAPI file, repository, browser, or chat.
 4. Test Discord in a dedicated least-privilege server using `docs/DISCORD_SETUP.md`. Do not connect a production community.
-5. Add real creator authentication before enabling any public live-mode dashboard.
+5. Replace the single-creator boundary with managed identity, MFA/recovery, community roles, revocable sessions, and distributed throttling before multi-user or horizontally scaled deployment.
 6. For post-hackathon scaling, migrate SQLite to PostgreSQL and run queue-backed web/Discord workers.
 7. Arrange periodic SQLite backups and machine uptime monitoring if this host remains the public demo origin.
 

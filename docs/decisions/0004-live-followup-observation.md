@@ -16,4 +16,4 @@ Only the outcome, observed-message count, and sanitized Minds reference are pers
 
 ## Consequences
 
-The Mind now participates in the complete live continuity loop rather than only first-pass incident analysis. Resolution is grounded in inspectable source identity and sanitized provider evidence. The design remains single-community/single-worker for the MVP; queue leases, paginated observation windows, attachment analysis, and creator authentication remain future work.
+The Mind now participates in the complete live continuity loop rather than only first-pass incident analysis. Resolution is grounded in inspectable source identity and sanitized provider evidence. The design remains single-community/single-worker for the MVP; queue leases, paginated observation windows, and attachment analysis remain future work. The later single-creator browser boundary is recorded in ADR 0005.

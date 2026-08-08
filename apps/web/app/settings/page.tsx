@@ -13,8 +13,8 @@ function readinessLabel(value: "configured_unverified" | "not_configured") {
     : "Not configured";
 }
 
-export default function SettingsPage() {
-  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
+export default async function SettingsPage() {
+  if (!(await creatorDashboardAvailable())) return <LiveDashboardLocked />;
   const snapshot = getRepository().getSnapshot();
   const status = readiness();
 
@@ -109,6 +109,17 @@ export default function SettingsPage() {
               <h2>Integration readiness</h2>
               <p>Configuration is not the same as verification.</p>
             </div>
+          </div>
+          <div className="integration-row">
+            <div>
+              <strong>Creator session</strong>
+              <span>Signed, expiring, HttpOnly browser boundary</span>
+            </div>
+            <span className="integration-state ready">
+              {process.env.TEND_MODE === "live"
+                ? "Verified"
+                : "Demo · not required"}
+            </span>
           </div>
           <div className="integration-row">
             <div>

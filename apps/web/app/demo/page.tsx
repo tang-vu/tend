@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function DemoPage() {
-  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
+export default async function DemoPage() {
+  if (!(await creatorDashboardAvailable())) return <LiveDashboardLocked />;
   const initialState = {
     ok: true,
     snapshot: getRepository().getSnapshot(),

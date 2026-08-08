@@ -4,7 +4,6 @@ import {
   buildFollowUpRepairPrompt,
   buildIncidentPrompt,
   buildRepairPrompt,
-  creatorDashboardEnabled,
   DEMO_TRIGGER,
   selectMindsProvider,
   type Community,
@@ -156,8 +155,5 @@ describe("Minds runtime mode selection", () => {
     expect(selectMindsProvider("live", "mock")).toBe("unavailable");
     expect(selectMindsProvider("demo", "live")).toBe("unavailable");
     expect(selectMindsProvider("invalid", "mock")).toBe("unavailable");
-    expect(creatorDashboardEnabled("demo")).toBe(true);
-    expect(creatorDashboardEnabled(undefined)).toBe(true);
-    expect(creatorDashboardEnabled("live")).toBe(false);
   });
 });

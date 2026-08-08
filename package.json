@@ -22,7 +22,7 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test && playwright test --config playwright.live.config.ts",
     "test:e2e:update": "playwright test --update-snapshots",
     "build": "pnpm -r --if-present build",
     "host:prepare": "node ops/windows/prepare-standalone.mjs",

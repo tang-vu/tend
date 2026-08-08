@@ -16,8 +16,8 @@ function stateLabel(status: string) {
   return status.replaceAll("_", " ");
 }
 
-export default function CommunityPage() {
-  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
+export default async function CommunityPage() {
+  if (!(await creatorDashboardAvailable())) return <LiveDashboardLocked />;
   const snapshot = getRepository().getSnapshot();
   const health = readiness();
   const incident = snapshot.incidents[0];

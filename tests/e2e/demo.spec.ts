@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const browserErrors = new WeakMap<Page, string[]>();
+const sameOriginHeaders = { origin: "http://127.0.0.1:3000" };
 
 test.beforeEach(async ({ page }) => {
   const errors: string[] = [];
@@ -122,9 +123,9 @@ test("three-act demo persists memory, approval, and autonomous resolution", asyn
 test("required product screens expose safe, responsive states", async ({
   page,
 }) => {
-  await page.request.post("/api/demo/reset");
-  await page.request.post("/api/demo/learn");
-  await page.request.post("/api/demo/incident");
+  await page.request.post("/api/demo/reset", { headers: sameOriginHeaders });
+  await page.request.post("/api/demo/learn", { headers: sameOriginHeaders });
+  await page.request.post("/api/demo/incident", { headers: sameOriginHeaders });
 
   await page.goto("/community");
   await expect(
@@ -214,9 +215,9 @@ test("authorized Skill tools preserve policy and retry idempotency", async ({
   const headers = {
     authorization: "Bearer e2e-skill-key-not-a-production-secret",
   };
-  await request.post("/api/demo/reset");
-  await request.post("/api/demo/learn");
-  await request.post("/api/demo/incident");
+  await request.post("/api/demo/reset", { headers: sameOriginHeaders });
+  await request.post("/api/demo/learn", { headers: sameOriginHeaders });
+  await request.post("/api/demo/incident", { headers: sameOriginHeaders });
 
   const context = await request.get("/api/skill/community-context", {
     headers,

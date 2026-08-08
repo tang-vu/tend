@@ -6,6 +6,7 @@ This profile runs the credential-free public demo on the repository owner's alwa
 
 - The hosted process forces `TEND_MODE=demo` and `MINDS_MODE=mock`.
 - Live Minds credentials are explicitly cleared from the hosted process.
+- Live creator credentials are explicitly cleared; the fictional demo remains credential-free.
 - SQLite is persisted below the ignored `data/` directory.
 - The Cloudflare tunnel credential and concrete local config stay untracked.
 - `tend.tangvu.dev` is the only intended public hostname.

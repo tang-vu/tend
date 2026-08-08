@@ -1,9 +1,11 @@
 import { activeEvidence, DEMO_TRIGGER } from "@tend/core";
 import { NextResponse } from "next/server";
-import { apiError, requireDemoMode } from "@/lib/http";
+import { apiError, requireDemoMode, requireSameOrigin } from "@/lib/http";
 import { getMindsAdapter, getRepository } from "@/lib/server";
 
-export async function POST() {
+export async function POST(request: Request) {
+  const invalidOrigin = requireSameOrigin(request);
+  if (invalidOrigin) return invalidOrigin;
   const disabled = requireDemoMode();
   if (disabled) return disabled;
   try {

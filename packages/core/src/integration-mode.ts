@@ -11,7 +11,3 @@ export function selectMindsProvider(
   if (applicationMode === "live" && providerMode === "live") return "live";
   return "unavailable";
 }
-
-export function creatorDashboardEnabled(tendMode: string | undefined): boolean {
-  return tendMode !== "live";
-}

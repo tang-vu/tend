@@ -5,7 +5,7 @@
 - [x] Working HTTPS deployment created from the verified production build.
 - [ ] Persistent writable volume configured for `TEND_DB_PATH`.
 - [ ] Public demo reset tested after a cold start.
-- [x] Public deployment restricted to labeled demo/mock mode; live dashboard remains fail-closed because the MVP has no creator authentication.
+- [x] Public deployment restricted to labeled demo/mock mode; live dashboard separately fails closed without a valid signed creator session.
 - [ ] Repository visibility set for judges.
 - [x] README quick start exercised from the empty repository build.
 

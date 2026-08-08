@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     include: [
       "apps/discord-worker/tests/**/*.test.ts",
+      "apps/web/tests/**/*.test.ts",
       "packages/core/tests/**/*.test.ts",
       "packages/db/tests/**/*.test.ts",
       "packages/minds/tests/**/*.test.ts",

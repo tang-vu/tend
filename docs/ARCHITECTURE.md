@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart LR
-  Creator[Creator dashboard] -->|Teach / approve / correct| Web[Next.js web + route handlers]
+  Creator[Creator dashboard] -->|Signed HttpOnly session| Web[Next.js web + route handlers]
   Discord[Allowlisted Discord channels] --> Worker[Discord gateway worker]
   Worker -->|Authenticated sanitized intake| Web
   Web --> Core[Domain schemas + policy engine]
@@ -57,7 +57,7 @@ The deterministic outcome processor emits `seeded_demo` evidence and is selected
 
 | Boundary                 | Control                                                         |
 | ------------------------ | --------------------------------------------------------------- |
-| Browser → route handlers | Zod validation, bounded strings, no client secrets              |
+| Browser → route handlers | signed creator session, exact origin, Zod, bounded inputs       |
 | Discord → worker         | bot/self filter, guild/channel allowlists, live-mode gate       |
 | Worker → web             | dedicated bearer credential and repeated allowlist check        |
 | Community content → Mind | explicit untrusted delimiters and anti-instruction prompt       |
@@ -79,7 +79,7 @@ Scale path:
 
 ## Current limits
 
-- One local community and no creator authentication.
+- One local community and one shared creator identity; no users, roles, MFA, recovery, or tenant authorization.
 - SQLite and the embedded poller assume one web instance.
 - Live Minds discovery, cognition health, messaging, and cross-session recall are verified. Skill equipment and Discord delivery still require external setup and have not been verified.
 - Fresh Discord follow-up observation is implemented and test-verified but still awaits execution evidence from the dedicated test server.

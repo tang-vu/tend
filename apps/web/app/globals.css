@@ -127,6 +127,20 @@ button:disabled {
   color: var(--forest);
 }
 
+.nav-sign-out {
+  background: transparent;
+  border: 0;
+  color: #4c5951;
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 0;
+}
+
+.nav-sign-out:hover {
+  color: var(--forest);
+}
+
 .wordmark {
   align-items: center;
   display: inline-flex;
@@ -2874,6 +2888,108 @@ button:disabled {
   margin: 0 0 24px;
 }
 
+.auth-page main {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - 82px);
+  padding: 48px 24px 88px;
+}
+
+.auth-card {
+  background: #fffdf7;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  max-width: 560px;
+  padding: clamp(32px, 6vw, 58px);
+  width: 100%;
+}
+
+.auth-icon {
+  align-items: center;
+  background: #e7efe4;
+  border-radius: 50%;
+  color: var(--forest);
+  display: flex;
+  height: 52px;
+  justify-content: center;
+  margin-bottom: 24px;
+  width: 52px;
+}
+
+.auth-icon svg {
+  height: 25px;
+  width: 25px;
+}
+
+.auth-card h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(36px, 7vw, 48px);
+  font-weight: 500;
+  margin: 10px 0 14px;
+}
+
+.auth-card > p,
+.auth-card > small {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.auth-card > small {
+  display: block;
+  margin-top: 22px;
+}
+
+.creator-login-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.creator-login-form label {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.creator-login-form input {
+  background: white;
+  border: 1px solid rgba(28, 48, 36, 0.25);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  min-height: 50px;
+  padding: 0 15px;
+}
+
+.creator-login-form .button {
+  margin-top: 6px;
+}
+
+.auth-error {
+  background: #f8e5df;
+  border-radius: 10px;
+  color: #853f36;
+  font-size: 13px;
+  margin: 0;
+  padding: 11px 13px;
+}
+
+.auth-configuration {
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  line-height: 1.65;
+  margin-top: 28px;
+  padding: 18px;
+}
+
+.auth-configuration code {
+  display: block;
+  font-size: 12px;
+  margin: 7px 0;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 1000px) {
   .hero {
     gap: 35px;
@@ -2935,6 +3051,10 @@ button:disabled {
   }
 
   .site-header nav a:not(.nav-demo) {
+    display: none;
+  }
+
+  .site-header nav .nav-sign-out {
     display: none;
   }
 

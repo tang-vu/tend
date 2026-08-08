@@ -13,7 +13,7 @@ export default async function IncidentPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (!creatorDashboardAvailable()) return <LiveDashboardLocked />;
+  if (!(await creatorDashboardAvailable())) return <LiveDashboardLocked />;
   const { id } = await params;
   const snapshot = getRepository().getSnapshot();
   const incident = snapshot.incidents.find((item) => item.id === id);

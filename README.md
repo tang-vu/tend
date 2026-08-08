@@ -94,8 +94,9 @@ For the repository owner's always-on Windows/PM2 deployment profile, see [`ops/w
 1. Create/select a Mind and Builder key at the [Minds Builder console](https://build.hellominds.ai/).
 2. Copy `.env.example` to an ignored root `.env.local` or `.env`.
 3. Set `MINDS_BUILDER_API_KEY`, `MINDS_MIND_ID`, `MINDS_MODE=live`, and `TEND_MODE=live`.
-4. Keep every variable server-side; never add `NEXT_PUBLIC_`.
-5. Run:
+4. Set distinct high-entropy `TEND_CREATOR_ACCESS_KEY` and `TEND_SESSION_SECRET` values of at least 32 characters, plus the exact browser-facing `TEND_PUBLIC_ORIGIN`.
+5. Keep every variable server-side; never add `NEXT_PUBLIC_`.
+6. Run:
 
    ```text
    pnpm minds:doctor
@@ -140,7 +141,10 @@ It exposes no Discord enforcement operation. Destructive types are absent from t
 | -------------------------------- | ----------------- | --------------------------------------------------------- |
 | `TEND_MODE`                      | No                | `demo` by default; `live` enables external boundaries     |
 | `TEND_BASE_URL`                  | Live worker/Skill | Web origin                                                |
+| `TEND_PUBLIC_ORIGIN`             | Live dashboard    | Exact trusted browser origin for mutation requests        |
 | `TEND_DB_PATH`                   | No                | SQLite path; defaults to `data/tend.db`                   |
+| `TEND_CREATOR_ACCESS_KEY`        | Live dashboard    | Single-creator sign-in credential; 32+ characters         |
+| `TEND_SESSION_SECRET`            | Live dashboard    | Distinct JWT signing secret; 32+ characters               |
 | `DEMO_ACCELERATION_FACTOR`       | No                | Demo-only follow-up acceleration                          |
 | `MINDS_MODE`                     | No                | `mock` by default or `live`                               |
 | `MINDS_BUILDER_API_KEY`          | Live Minds        | Server-only Builder credential                            |
@@ -198,7 +202,7 @@ Playwright runs at 1440×900 and 390×844 and asserts no horizontal overflow.
 
 Community messages are explicitly untrusted data and cannot override policy. Live responses are Zod-validated with one repair attempt; failure creates manual review without a hidden LLM. Receipts can be corrected or archived, and only active receipts become evidence. No protected-trait inference or covert profiling is allowed.
 
-See [Security](docs/SECURITY.md) and [Privacy](docs/PRIVACY.md). The MVP has no creator authentication, so live mode disables dashboard data and mutations by default. Live integrations remain headless/fail-safe until creator auth and per-community authorization exist; demo mode remains fully usable.
+See [Security](docs/SECURITY.md) and [Privacy](docs/PRIVACY.md). Live mode fails closed unless the single-creator authentication pair is configured and a signed session is valid. This is an appropriate one-community hackathon boundary, not multi-user identity or per-community authorization. Demo mode remains fully usable without credentials.
 
 ## Hackathon judging alignment
 
@@ -223,14 +227,14 @@ Estimated moderator minutes saved uses a visible demo assumption: four minutes f
 
 1. Privately equip and verify the Custom TEND Skill.
 2. Dedicated Discord test-server verification, including fresh follow-up observation.
-3. Creator authentication, community authorization, CSRF/rate-limit controls.
+3. Multi-user identity, per-community roles, distributed login throttling, and session revocation.
 4. PostgreSQL, queue leases, automated retention/deletion, tenant isolation.
 5. Moderator collaboration, outcome feedback, and governance exports.
 6. Additional connectors only after Discord safety is proven.
 
 ## Known limitations
 
-- One seeded community and no authentication or billing; live dashboard access is deliberately disabled until creator auth exists.
+- One community, one shared creator credential, and no billing. Multi-user accounts, role-based community authorization, recovery, MFA, and server-side session revocation are not implemented.
 - SQLite and embedded scheduling target one instance.
 - Live Minds discovery and cross-session recall are verified. Discord delivery, Discord follow-up observation, and Skill equipment still await dedicated external verification.
 - Live follow-up observation is implemented for the independent Discord worker: it reads only the persisted allowlisted source channel, caps fresh non-bot messages at 50, asks the persistent Mind for a validated assessment, and requires grounded evidence plus at least 0.75 confidence to resolve. Missing or uncertain evidence becomes retry/manual review.

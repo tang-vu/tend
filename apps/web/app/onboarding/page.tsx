@@ -1,7 +1,12 @@
 import { OnboardingForm } from "@/components/onboarding-form";
+import { LiveDashboardLocked } from "@/components/live-dashboard-locked";
 import { SiteHeader } from "@/components/site-header";
+import { creatorDashboardAvailable } from "@/lib/http";
 
-export default function OnboardingPage() {
+export const dynamic = "force-dynamic";
+
+export default async function OnboardingPage() {
+  if (!(await creatorDashboardAvailable())) return <LiveDashboardLocked />;
   return (
     <div className="onboarding-page">
       <SiteHeader />

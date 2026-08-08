@@ -16,7 +16,7 @@
 
 ## Secrets
 
-`MINDS_BUILDER_API_KEY`, `DISCORD_BOT_TOKEN`, `TEND_SKILL_API_KEY`, and `TEND_WORKER_API_KEY` are server/worker-only. No `NEXT_PUBLIC_` credential exists. `.env`, `.env.local`, and deployment secrets are ignored. Logs expose event names and opaque IDs, not authorization headers, tokens, or raw message content.
+`MINDS_BUILDER_API_KEY`, `DISCORD_BOT_TOKEN`, `TEND_SKILL_API_KEY`, `TEND_WORKER_API_KEY`, `TEND_CREATOR_ACCESS_KEY`, and `TEND_SESSION_SECRET` are server/worker-only. No `NEXT_PUBLIC_` credential exists. `.env`, `.env.local`, and deployment secrets are ignored. Logs expose event names and opaque IDs, not authorization headers, tokens, session cookies, or raw message content.
 
 Run `pnpm secrets:check` before every submission. If a secret ever enters Git history, revoke and rotate it; deleting the line is insufficient.
 
@@ -55,7 +55,9 @@ The Skill and internal worker surfaces use distinct bearer credentials. Inputs a
 
 `TEND_MODE=live` is compatible only with `MINDS_MODE=live`; `live/mock` and `demo/live` combinations select the unavailable/manual-review adapter. Real Discord content can therefore never reach the deterministic demo fixture, and demo content cannot be sent to Minds accidentally.
 
-The hackathon MVP has no creator authentication. Therefore `TEND_MODE=live` disables dashboard pages plus snapshot, approval, rejection, and memory-mutation APIs. Live intake can create manual-review/approval work, but no browser can inspect or approve it until real creator authentication and per-community authorization are implemented. Demo mode remains fully usable without credentials.
+In live mode, dashboard pages and the snapshot API require a signed creator session. Approval, rejection, memory mutation, login, logout, and demo mutations also require an exact same-origin request. Sessions use HS256 with fixed issuer/audience, a random token ID, and an eight-hour expiry in an `HttpOnly`, production-`Secure`, `SameSite=Strict` cookie. The access key is compared through fixed-length SHA-256 digests, failed logins are limited to five per client per 15 minutes, and protected responses are non-cacheable. Missing, partial, short, or reused auth secrets fail closed.
+
+This is a deliberately narrow single-creator/single-community boundary. The limiter is process-local, and there is no account recovery, MFA, role model, persistent session allowlist, immediate stolen-token revocation, or tenant authorization. A horizontally scaled or multi-user deployment must replace it with a mature identity provider, shared rate limiting, revocable sessions, and community-scoped authorization. Demo mode remains credential-free and contains only fictional state.
 
 ## Persistence
 

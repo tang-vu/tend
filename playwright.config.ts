@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/e2e",
+  testIgnore: "live-auth.spec.ts",
   fullyParallel: false,
   workers: 1,
   timeout: 45_000,
@@ -24,6 +25,7 @@ export default defineConfig({
     stdout: "pipe",
     stderr: "pipe",
     env: {
+      TEND_PUBLIC_ORIGIN: "http://127.0.0.1:3000",
       TEND_SKILL_API_KEY: "e2e-skill-key-not-a-production-secret",
       TEND_WORKER_API_KEY: "e2e-worker-key-not-a-production-secret",
     },

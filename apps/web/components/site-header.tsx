@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SproutIcon } from "./icons";
+import { LogoutButton } from "./logout-button";
 
 export function Wordmark() {
   return (
@@ -32,6 +33,7 @@ export function SiteHeader({ dashboard = false }: { dashboard?: boolean }) {
             <Link className="nav-demo" href="/demo">
               Demo controller
             </Link>
+            {process.env.TEND_MODE === "live" && <LogoutButton />}
           </>
         ) : (
           <>

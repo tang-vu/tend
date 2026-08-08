@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ShieldIcon } from "./icons";
 import { SiteHeader } from "./site-header";
 
@@ -10,10 +11,12 @@ export function LiveDashboardLocked() {
         <span className="eyebrow">Live safety lock</span>
         <h1>Creator access needs authentication.</h1>
         <p>
-          TEND has disabled live dashboard data and moderation controls. Add
-          creator authentication and community authorization before opening this
-          surface.
+          TEND has sealed live dashboard data and moderation controls. Sign in
+          with the server-configured creator access key to continue.
         </p>
+        <Link className="button button-primary" href="/login">
+          Creator sign in
+        </Link>
       </main>
     </div>
   );
