@@ -118,6 +118,7 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 - Secret scan: passed.
 - Docker image build: passed in CI.
 - The final demo video rendered locally at 114.7 seconds, 1920×1080/30 fps, H.264/AAC 48 kHz, -16.6 LUFS integrated, and -1.5 dBFS true peak. MiMo ASR word coverage is 95.2–100% across all six narration scenes. The ignored deliverable is `artifacts/video/tend-creative-minds-jam-demo.mp4`.
+- The uploaded demo video is `https://youtu.be/seHv0MV4Y0U`; unauthenticated YouTube oEmbed access returned HTTP 200 with the expected title on 2026-08-09.
 - Public HTTPS health, landing, CSS, and full three-act persisted demo: passed.
 - The public host retained the `learned` scenario and four memory receipts across a verified PM2 stop/start, then reset to `ready` with no incidents, memories, or follow-ups.
 - The public repository returned HTTP 200 without authentication.
@@ -142,7 +143,7 @@ Never claim a later check passed without rerunning it after material changes.
 
 ## Highest-priority remaining work
 
-1. Upload `artifacts/video/tend-creative-minds-jam-demo.mp4` to the final judge-accessible video host, verify playback without authentication, then add its URL to the submission form and `docs/SUBMISSION_COPY.md`.
+1. Complete the DoraHacks submission form using `docs/SUBMISSION_COPY.md`, verify every external link in a signed-out browser, and save a confirmation screenshot.
 2. Complete and submit the remaining unchecked items in `docs/SUBMISSION_CHECKLIST.md`.
 3. In the owner-authenticated Minds profile, create the Connection using the ignored `data/tend-skill-api.key`, ask the Mind to build from `docs/tend-skill-openapi.yaml`, inspect permissions, equip it, and test every operation. Never put the key in the OpenAPI file, repository, browser history, or chat.
 4. Complete the remaining human-authored Discord intake, explicit reminder approval, one-time delivery, and fresh-message follow-up tests in the already connected dedicated server. Do not connect a production community.

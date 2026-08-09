@@ -33,7 +33,7 @@ The credential-free demo uses a clearly labeled deterministic Mock Minds decisio
 - **Track:** Moderation & community assistance
 - **Repository:** https://github.com/tang-vu/tend
 - **Live demo:** https://tend.tangvu.dev
-- **Demo video:** [ADD VIDEO URL]
+- **Demo video:** https://youtu.be/seHv0MV4Y0U
 - **Minds persistence proof:** https://github.com/tang-vu/tend/blob/main/docs/evidence/minds-persistence-proof.md
 
 ## Honest status sentence

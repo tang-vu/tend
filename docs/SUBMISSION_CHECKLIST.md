@@ -30,6 +30,7 @@
 ## Submission assets
 
 - [x] 1.5–2 minute demo video following `docs/DEMO_SCRIPT.md` rendered locally at 114.7 seconds in 1080p.
+- [x] Demo video uploaded to YouTube; unauthenticated oEmbed access returned HTTP 200 with the expected title.
 - [x] Credential-free 24-second visual preview rendered with the production FFmpeg scene pipeline.
 - [x] Final MiMo TTS narration and MiMo ASR verification generated from the ignored local environment; per-scene word coverage is 95.2–100%.
 - [x] Desktop landing, incident, countdown, and resolution screenshots.
@@ -51,4 +52,4 @@
 - [x] Product copy distinguishes mock/configured/verified/live.
 - [x] No automatic ban, kick, delete, or timeout path.
 - [ ] Credentials rotated after screen recording if they were visible anywhere.
-- [ ] Deadline buffer reserved for upload and judge-access checks.
+- [x] Video upload and judge-access check completed before the submission deadline.
