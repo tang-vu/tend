@@ -9,9 +9,11 @@ const WORK_DIR = join(OUTPUT_DIR, "work");
 const API_URL = "https://api.xiaomimimo.com/v1/chat/completions";
 const visualOnly = process.argv.includes("--visual-only");
 const preview = process.argv.includes("--preview");
+const skipAsr = process.argv.includes("--skip-asr");
 const width = preview ? 1280 : 1920;
 const height = preview ? 720 : 1080;
 const fps = 30;
+const narrationSpeed = 1.25;
 
 const voiceDirection =
   "Confident, warm English documentary narrator. Premium technology film, calm authority, crisp diction, emotionally intelligent, never salesy. Medium pace with deliberate pauses and a subtle lift on the final sentence.";
@@ -285,7 +287,7 @@ function createSceneVideo(scene, audioPath, duration, index) {
     `fade=t=out:st=${fadeOut}:d=0.45`,
     "format=yuv420p",
   ].join(",");
-  const audioFilter = `loudnorm=I=-16:TP=-1.5:LRA=7,apad,afade=t=in:st=0:d=0.18,afade=t=out:st=${fadeOut}:d=0.4`;
+  const audioFilter = `atempo=${narrationSpeed},loudnorm=I=-16:TP=-1.5:LRA=7,apad,afade=t=in:st=0:d=0.18,afade=t=out:st=${fadeOut}:d=0.4`;
   run("ffmpeg", [
     "-y",
     "-hide_banner",
@@ -434,13 +436,13 @@ async function main() {
     const audioPath = visualOnly
       ? makeSilence(scene)
       : await generateNarration(scene, apiKey);
-    if (!visualOnly)
+    if (!visualOnly && !skipAsr)
       reports.push(await verifyNarration(scene, audioPath, apiKey));
     const duration = visualOnly
       ? preview
         ? 4
         : scene.seconds
-      : audioDuration(audioPath) + 0.65;
+      : audioDuration(audioPath) / narrationSpeed + 0.5;
     process.stdout.write(
       `Rendering ${scene.id} (${duration.toFixed(1)}s)...\n`,
     );

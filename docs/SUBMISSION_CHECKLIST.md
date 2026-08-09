@@ -29,9 +29,9 @@
 
 ## Submission assets
 
-- [ ] 1.5–2 minute demo video following `docs/DEMO_SCRIPT.md`.
+- [x] 1.5–2 minute demo video following `docs/DEMO_SCRIPT.md` rendered locally at 114.7 seconds in 1080p.
 - [x] Credential-free 24-second visual preview rendered with the production FFmpeg scene pipeline.
-- [ ] Final MiMo TTS narration and MiMo ASR verification generated with a newly rotated local key.
+- [x] Final MiMo TTS narration and MiMo ASR verification generated from the ignored local environment; per-scene word coverage is 95.2–100%.
 - [x] Desktop landing, incident, countdown, and resolution screenshots.
 - [x] Mobile landing, incident, countdown, and resolution screenshots.
 - [x] Project description and primary tagline.

@@ -30,7 +30,7 @@ Outputs are intentionally ignored under `artifacts/video/`:
 - `tend-creative-minds-jam-demo.mp4`: final submission deliverable.
 - `mimo-asr-verification.json`: per-scene transcription and word-coverage evidence.
 
-The final build uses `mimo-v2.5-tts` with the built-in `Milo` voice and a restrained documentary direction. Each generated WAV is sent back through `mimo-v2.5-asr` in English mode before composition. Captions are burned from the approved script, so accessibility does not depend on a video player's subtitle support.
+The final build uses `mimo-v2.5-tts` with the built-in `Milo` voice and a restrained documentary direction. Each generated WAV is sent back through `mimo-v2.5-asr` in English mode before composition. Narration is paced at 1.25× to stay inside the submission window while preserving natural delivery. Captions are burned from the approved script, so accessibility does not depend on a video player's subtitle support.
 
 MiMo API references:
 
