@@ -77,6 +77,7 @@ Relevant ignored runtime files:
 - `data/pm2/`: TEND process logs;
 - `data/cloudflared-tend.yml`: concrete local tunnel config;
 - root `.env`: local/live diagnostics only.
+- `artifacts/video/`: generated preview/final MP4, temporary WAV files, and MiMo ASR verification output.
 
 The hosted PM2 process explicitly clears `MINDS_BUILDER_API_KEY` and `MINDS_MIND_ID`; do not weaken this boundary. Live proof commands load the ignored root environment independently.
 
@@ -140,7 +141,7 @@ Never claim a later check passed without rerunning it after material changes.
 
 ## Highest-priority remaining work
 
-1. Record the 1.5-2 minute video using `docs/DEMO_SCRIPT.md` and the public URL.
+1. Revoke the MiMo key that was exposed in chat, place a replacement only in the ignored root `.env` as `MIMO_API_KEY`, then run `pnpm video:build`. The credential-free `pnpm video:preview` pipeline is verified; see `docs/VIDEO_PRODUCTION.md`.
 2. Complete and submit the remaining unchecked items in `docs/SUBMISSION_CHECKLIST.md`.
 3. In the owner-authenticated Minds profile, create the Connection using the ignored `data/tend-skill-api.key`, ask the Mind to build from `docs/tend-skill-openapi.yaml`, inspect permissions, equip it, and test every operation. Never put the key in the OpenAPI file, repository, browser history, or chat.
 4. Complete the remaining human-authored Discord intake, explicit reminder approval, one-time delivery, and fresh-message follow-up tests in the already connected dedicated server. Do not connect a production community.

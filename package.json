@@ -18,6 +18,8 @@
     "minds:doctor": "pnpm --filter @tend/minds minds:doctor",
     "minds:proof": "pnpm --filter @tend/minds minds:proof",
     "minds:usage": "pnpm --filter @tend/minds minds:usage",
+    "video:build": "node scripts/video/build-demo-video.mjs",
+    "video:preview": "node scripts/video/build-demo-video.mjs --visual-only --preview",
     "lint": "pnpm -r --if-present lint",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "vitest run",
