@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { TendSnapshot } from "@tend/db";
 import { DEMO_TEACHING } from "@tend/core";
@@ -545,8 +546,8 @@ export function DemoExperience({
 
           <section className="readiness-panel">
             <div className="panel-heading">
-              <strong>Integration readiness</strong>
-              <span>Honest status</span>
+              <strong>This public runtime</strong>
+              <Link href="/evidence">Verified proof</Link>
             </div>
             <dl>
               <div>
@@ -557,7 +558,7 @@ export function DemoExperience({
                 <dt>Live Minds</dt>
                 <dd>
                   {state.readiness.liveMinds === "not_configured"
-                    ? "Not configured"
+                    ? "Not enabled here"
                     : "Configured · unverified"}
                 </dd>
               </div>
@@ -565,7 +566,7 @@ export function DemoExperience({
                 <dt>Discord</dt>
                 <dd>
                   {state.readiness.discord === "not_configured"
-                    ? "Not configured"
+                    ? "Not enabled here"
                     : "Configured · unverified"}
                 </dd>
               </div>
@@ -574,7 +575,7 @@ export function DemoExperience({
                 <dd>
                   {state.readiness.customSkill.deployed
                     ? "Deployed · unverified"
-                    : "Local spec only"}
+                    : "API not enabled here"}
                 </dd>
               </div>
             </dl>

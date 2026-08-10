@@ -1,12 +1,13 @@
 # TEND continuation handoff
 
-Last updated: 2026-08-08 (Asia/Saigon).
+Last updated: 2026-08-10 (Asia/Saigon).
 
 Read `AGENTS.md` first. This document is the durable operational and implementation handoff for a new chat or maintainer.
 
 ## Current outcome
 
 - Public credential-free demo: **https://tend.tangvu.dev**
+- Judge-readable integration evidence: **https://tend.tangvu.dev/evidence**
 - Health: `https://tend.tangvu.dev/api/health`
 - Repository: `https://github.com/tang-vu/tend`, branch `main`
 - Use `git log -1 --oneline` for the deployed source revision; the repository is kept synchronized after each release.
@@ -120,6 +121,7 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 - The final demo video rendered locally at 114.7 seconds, 1920×1080/30 fps, H.264/AAC 48 kHz, -16.6 LUFS integrated, and -1.5 dBFS true peak. MiMo ASR word coverage is 95.2–100% across all six narration scenes. The ignored deliverable is `artifacts/video/tend-creative-minds-jam-demo.mp4`.
 - The uploaded demo video is `https://youtu.be/seHv0MV4Y0U`; unauthenticated YouTube oEmbed access returned HTTP 200 with the expected title on 2026-08-09.
 - Public HTTPS health, landing, CSS, and full three-act persisted demo: passed.
+- Public `/evidence` returned 200 with the judge-facing runtime/proof boundary after the 2026-08-10 deployment.
 - The public host retained the `learned` scenario and four memory receipts across a verified PM2 stop/start, then reset to `ready` with no incidents, memories, or follow-ups.
 - The public repository returned HTTP 200 without authentication.
 - Discord Gateway login, the authorized guild, 1/1 allowlisted channel, least-privilege permissions, and bot self-loop rejection were externally verified in the dedicated test server. See `docs/evidence/discord-live-proof.md`.

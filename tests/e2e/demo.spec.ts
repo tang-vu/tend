@@ -32,6 +32,26 @@ test("landing presents the product and enters the demo", async ({
     page.getByRole("heading", { name: /Moderation shouldn’t reset/ }),
   ).toBeVisible();
   await expect(page.getByText("AutoMod keeps a server clean.")).toBeVisible();
+  if (testInfo.project.name === "desktop-chromium") {
+    await page.getByRole("link", { name: "Evidence" }).click();
+  } else {
+    await page.goto("/evidence");
+  }
+  await expect(
+    page.getByRole("heading", {
+      name: "Runtime truth, without the hand-waving.",
+    }),
+  ).toBeVisible();
+  await expect(page.getByText("Live Minds", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Partial verification stays partial."),
+  ).toBeVisible();
+  await expectNoPageOverflow(page);
+  await page.screenshot({
+    fullPage: true,
+    path: testInfo.outputPath("evidence.png"),
+  });
+  await page.goto("/");
   const iconHref = await page.locator('link[rel="icon"]').getAttribute("href");
   const ogImage = await page
     .locator('meta[property="og:image"]')
@@ -161,7 +181,9 @@ test("required product screens expose safe, responsive states", async ({
     page.getByRole("heading", { name: "Autonomy policy" }),
   ).toBeVisible();
   await expect(page.getByText("Local spec only")).toBeVisible();
-  await expect(page.getByText("Not configured").first()).toBeVisible();
+  await expect(
+    page.getByText("Not enabled in this runtime").first(),
+  ).toBeVisible();
   await expectNoPageOverflow(page);
 
   await page.goto("/onboarding");

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 function readinessLabel(value: "configured_unverified" | "not_configured") {
   return value === "configured_unverified"
     ? "Configured · not live-verified"
-    : "Not configured";
+    : "Not enabled in this runtime";
 }
 
 export default async function SettingsPage() {
@@ -157,6 +157,11 @@ export default async function SettingsPage() {
                 : "Local spec only"}
             </span>
           </div>
+          <p className="settings-note integration-proof-note">
+            Runtime configuration is intentionally separate from sanitized
+            external proof. <Link href="/evidence">View verified evidence</Link>
+            .
+          </p>
         </section>
 
         <section className="settings-card">

@@ -220,7 +220,7 @@ export default async function CommunityPage() {
               <span>Live Minds</span>
               <strong>
                 {health.liveMinds === "not_configured"
-                  ? "Not configured"
+                  ? "Not enabled here"
                   : "Unverified"}
               </strong>
             </div>
@@ -228,10 +228,13 @@ export default async function CommunityPage() {
               <span>Discord</span>
               <strong>
                 {health.discord === "not_configured"
-                  ? "Not configured"
+                  ? "Not enabled here"
                   : "Unverified"}
               </strong>
             </div>
+            <Link className="readiness-evidence-link" href="/evidence">
+              View verified integration evidence →
+            </Link>
           </section>
         </aside>
       </section>

@@ -40,6 +40,7 @@
 - [x] Track selected: **Moderation & community assistance**.
 - [x] Architecture and security documentation linked.
 - [x] Minds persistence proof linked.
+- [x] Judge-readable integration evidence page separates public runtime, verified boundaries, and withheld claims.
 - [x] Known limitations stated.
 
 ## Final safety and delivery
