@@ -37,8 +37,12 @@ test("landing presents the product and enters the demo", async ({
     page.getByRole("heading", { name: /Moderation shouldn’t reset/ }),
   ).toBeVisible();
   await expect(page.getByText("AutoMod keeps a server clean.")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Review the proof" }),
+  ).toHaveAttribute("href", "/evidence");
+  await expect(page.getByRole("link", { name: "Judge brief" })).toBeVisible();
   if (testInfo.project.name === "desktop-chromium") {
-    await page.getByRole("link", { name: "Evidence" }).click();
+    await page.getByRole("link", { name: "Judge brief" }).click();
   } else {
     await page.goto("/evidence");
   }
@@ -56,6 +60,15 @@ test("landing presents the product and enters the demo", async ({
       name: "One message. Seven accountable handoffs.",
     }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "The case for TEND, in four lenses.",
+    }),
+  ).toBeVisible();
+  await expect(page.locator(".judge-lenses li")).toHaveCount(4);
+  await expect(
+    page.getByRole("link", { name: /Run the three-act demo/ }).first(),
+  ).toHaveAttribute("href", "/demo");
   await expect(page.locator(".proof-step")).toHaveCount(7);
   await expect(
     page.getByRole("link", { name: /Watch the product film/ }),

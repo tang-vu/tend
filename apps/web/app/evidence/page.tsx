@@ -18,6 +18,45 @@ export const metadata: Metadata = {
 
 const repositoryBase = "https://github.com/tang-vu/tend/blob/main";
 
+const judgeLenses = [
+  {
+    number: "01",
+    label: "Problem fit",
+    title: "The creator stops being the memory layer.",
+    detail:
+      "See why relationship context changes a mild-looking moderation decision.",
+    href: "#innovation",
+    linkLabel: "See the counterfactual",
+  },
+  {
+    number: "02",
+    label: "Minds depth",
+    title: "Memory is part of the control loop.",
+    detail:
+      "Trace the persistent Mind through validation, policy, approval, and follow-up.",
+    href: "#proof-spine",
+    linkLabel: "Trace seven handoffs",
+  },
+  {
+    number: "03",
+    label: "Execution",
+    title: "The complete story is publicly runnable.",
+    detail:
+      "Exercise real persistence, approval transitions, a due job, and the audit trail.",
+    href: "/demo",
+    linkLabel: "Run the three-act demo",
+  },
+  {
+    number: "04",
+    label: "Viability",
+    title: "Claims have explicit operating boundaries.",
+    detail:
+      "Inspect what is verified, what is only partial, and what TEND still withholds.",
+    href: "#verified-boundaries",
+    linkLabel: "Audit the boundaries",
+  },
+] as const;
+
 const proofSpine = [
   {
     number: "01",
@@ -177,7 +216,44 @@ export default function EvidencePage() {
           </div>
         </section>
 
-        <section aria-labelledby="proof-spine-heading" className="proof-spine">
+        <section
+          aria-labelledby="judge-lenses-heading"
+          className="judge-lenses"
+        >
+          <div className="judge-lenses-heading">
+            <div>
+              <span className="eyebrow">Judge brief · four review lenses</span>
+              <h2 id="judge-lenses-heading">
+                The case for TEND, in four lenses.
+              </h2>
+            </div>
+            <p>
+              Start with the lens you score. Every claim leads to a runnable
+              surface, inspectable source, or an explicit scope boundary.
+            </p>
+          </div>
+          <ol>
+            {judgeLenses.map((lens) => (
+              <li key={lens.number}>
+                <div className="judge-lens-topline">
+                  <span>{lens.number}</span>
+                  <strong>{lens.label}</strong>
+                </div>
+                <h3>{lens.title}</h3>
+                <p>{lens.detail}</p>
+                <Link href={lens.href}>
+                  {lens.linkLabel} <ArrowIcon />
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section
+          aria-labelledby="proof-spine-heading"
+          className="proof-spine"
+          id="proof-spine"
+        >
           <div className="proof-spine-heading">
             <div>
               <span className="eyebrow">The continuity proof spine</span>
@@ -215,6 +291,7 @@ export default function EvidencePage() {
         <section
           aria-labelledby="counterfactual-heading"
           className="evidence-counterfactual"
+          id="innovation"
         >
           <div className="counterfactual-intro">
             <span className="eyebrow light">The innovation, in one glance</span>
@@ -259,7 +336,11 @@ export default function EvidencePage() {
           </div>
         </section>
 
-        <section aria-labelledby="evidence-heading" className="evidence-proof">
+        <section
+          aria-labelledby="evidence-heading"
+          className="evidence-proof"
+          id="verified-boundaries"
+        >
           <div className="evidence-section-heading">
             <div>
               <span className="eyebrow">Verified boundaries</span>

@@ -41,7 +41,9 @@ export function SiteHeader({ dashboard = false }: { dashboard?: boolean }) {
           <>
             <Link href="/#how-it-works">How it works</Link>
             <Link href="/#safety">Safety</Link>
-            <Link href="/evidence">Evidence</Link>
+            <Link className="nav-evidence" href="/evidence">
+              Judge brief
+            </Link>
             <Link href="/community">Dashboard</Link>
             <Link className="nav-demo" href="/demo">
               Try the demo

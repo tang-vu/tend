@@ -56,8 +56,8 @@ export default function Home() {
               <Link className="button button-primary" href="/demo">
                 Try the three-act demo <ArrowIcon />
               </Link>
-              <Link className="button button-quiet" href="/#how-it-works">
-                See how it works
+              <Link className="button button-quiet" href="/evidence">
+                Review the proof
               </Link>
             </div>
             <div className="hero-trust">

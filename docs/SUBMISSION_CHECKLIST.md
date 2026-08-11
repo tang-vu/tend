@@ -41,6 +41,7 @@
 - [x] Architecture and security documentation linked.
 - [x] Minds persistence proof linked.
 - [x] Judge-readable integration evidence page separates public runtime, verified boundaries, and withheld claims.
+- [x] Landing and mobile navigation surface a dedicated Judge brief; its four-lens scorecard routes directly to problem fit, Minds depth, runnable execution, and viability evidence.
 - [x] Source-linked seven-handoff proof spine and counterfactual make the complete continuity loop inspectable on desktop and mobile.
 - [x] Portable Decision Receipt exposes evidence, authority, continuity, and audit in print/PDF and integrity-verifiable JSON without raw effect or integration identifiers.
 - [x] Known limitations stated.
