@@ -11,7 +11,7 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
 - Health: `https://tend.tangvu.dev/api/health`
 - Repository: `https://github.com/tang-vu/tend`, branch `main`
 - Use `git log -1 --oneline` for the deployed source revision; the repository is kept synchronized after each release.
-- Latest verified CI at handoff: https://github.com/tang-vu/tend/actions/runs/31264268802
+- Latest verified CI at handoff: https://github.com/tang-vu/tend/actions/runs/31453058795
 - Public deployment is intentionally `TEND_MODE=demo` + `MINDS_MODE=mock`.
 - Live Minds discovery, cognition access, messaging, and cross-session recall were separately verified with owner credentials. See `docs/evidence/minds-persistence-proof.md`.
 
@@ -35,7 +35,7 @@ PM2 owns two TEND processes:
 | `tend-web`    | Next.js standalone server on `127.0.0.1:3000` | online         |
 | `tend-tunnel` | Dedicated Cloudflare named tunnel             | online         |
 
-The optional private live-integration profile adds `tend-live-web` on loopback port 3001 and `tend-discord-worker`. It loads the ignored root `.env` through `ops/windows/ecosystem.live.config.cjs`; the public port-3000 process still clears every live credential. Both live processes were online and saved in PM2 on 2026-08-08.
+The optional private live-integration profile adds `tend-live-web` on loopback port 3001 and `tend-discord-worker`. It loads the ignored root `.env` through `ops/windows/ecosystem.live.config.cjs`; the public port-3000 process still clears every live credential. Both live processes were online and saved in PM2 on 2026-08-11 after the current build deployment; loopback live health returned 200 and the unauthenticated state API returned 401.
 
 Check without printing process environments:
 
