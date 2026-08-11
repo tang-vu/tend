@@ -1,13 +1,13 @@
 # TEND continuation handoff
 
-Last updated: 2026-08-10 (Asia/Saigon).
+Last updated: 2026-08-11 (Asia/Saigon).
 
 Read `AGENTS.md` first. This document is the durable operational and implementation handoff for a new chat or maintainer.
 
 ## Current outcome
 
 - Public credential-free demo: **https://tend.tangvu.dev**
-- Judge-readable integration evidence: **https://tend.tangvu.dev/evidence**
+- Judge-readable integration evidence: **https://tend.tangvu.dev/evidence** — now includes a source-linked seven-handoff proof spine, an explicit counterfactual, and direct product-film/demo paths.
 - Health: `https://tend.tangvu.dev/api/health`
 - Repository: `https://github.com/tang-vu/tend`, branch `main`
 - Use `git log -1 --oneline` for the deployed source revision; the repository is kept synchronized after each release.
@@ -90,6 +90,7 @@ Run from the repository root:
 git status --short --branch
 git pull --ff-only
 pnpm install --frozen-lockfile
+pm2 stop tend-web
 pnpm verify
 pnpm build
 pnpm host:prepare
@@ -99,6 +100,8 @@ Invoke-WebRequest http://127.0.0.1:3000/api/health -UseBasicParsing
 ```
 
 `pnpm host:prepare` copies generated static assets into Next's standalone tree. It is required after every build. If the PM2 script path or ecosystem definition changes, delete and recreate only `tend-web` from `ops/windows/ecosystem.config.cjs`; do not disturb unrelated PM2 processes.
+
+If the optional private profile is running, stop `tend-live-web` and `tend-discord-worker` together with `tend-web` before `pnpm verify`: both web profiles execute the same standalone tree, and the worker should not intake work while its private web endpoint is down. Restart all three named TEND processes after `pnpm host:prepare`, verify ports 3000/3001, then `pm2 save`. Never stop an unrelated process merely because it temporarily owns a preferred port.
 
 After local health passes, verify public health, landing, CSS, and the demo flow. Reset the public scenario afterward:
 
@@ -110,7 +113,7 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 
 ## Verification status
 
-- Release verification passed with lint, typecheck, 61/61 Vitest tests, production build, OpenAPI validation, and secret scan. On Windows, stop `tend-web` before rebuilding because the running standalone server locks `.next/standalone`.
+- Release verification passed with lint, typecheck, 61/61 Vitest tests, production build, OpenAPI validation, and secret scan. On Windows, stop every running TEND web profile before rebuilding because they share and lock `.next/standalone`.
 - Browser coverage: 14/14 demo desktop/mobile tests plus 1/1 dedicated live-mode authentication test passed. The live test covers unauthorized reads/mutations, cross-origin rejection, credential failure/success, cookie attributes, authenticated state, logout, post-logout rejection, and the 429 throttle boundary.
 - Updated standalone deployment: local/public health and landing returned 200; CSP, frame denial, and HSTS reached the Cloudflare hostname; the public fictional scenario was reset to `ready` with no incidents, memories, or follow-ups.
 - Playwright: 14/14 desktop/mobile tests passed in CI.
@@ -122,6 +125,9 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 - The uploaded demo video is `https://youtu.be/seHv0MV4Y0U`; unauthenticated YouTube oEmbed access returned HTTP 200 with the expected title on 2026-08-09.
 - Public HTTPS health, landing, CSS, and full three-act persisted demo: passed.
 - Public `/evidence` returned 200 with the judge-facing runtime/proof boundary after the 2026-08-10 deployment.
+- On 2026-08-11, the upgraded public `/evidence` returned 200 through Cloudflare with its responsive seven-handoff proof spine, counterfactual, product-film path, production CSS, and unchanged partial-claim boundaries. Desktop/mobile visual QA showed no page overflow.
+- The 2026-08-11 browser run passed 14/14 demo desktop/mobile tests plus 1/1 isolated live-auth test. The live-auth harness now defaults to dedicated port 3101 and supports `TEND_LIVE_E2E_PORT` override, avoiding contention with the private port-3001 runtime.
+- The complete public three-act flow was rerun after the 2026-08-11 deployment, reached `resolved` with a completed follow-up, and was reset to `ready` with zero incidents, memories, or follow-ups.
 - The public host retained the `learned` scenario and four memory receipts across a verified PM2 stop/start, then reset to `ready` with no incidents, memories, or follow-ups.
 - The public repository returned HTTP 200 without authentication.
 - Discord Gateway login, the authorized guild, 1/1 allowlisted channel, least-privilege permissions, and bot self-loop rejection were externally verified in the dedicated test server. See `docs/evidence/discord-live-proof.md`.

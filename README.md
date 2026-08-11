@@ -10,6 +10,12 @@ Live credential-free demo: **https://tend.tangvu.dev**
 
 Judge-readable integration evidence: **https://tend.tangvu.dev/evidence**
 
+Demo film (1:55): **https://youtu.be/seHv0MV4Y0U**
+
+The evidence page includes a source-linked seven-handoff proof spine from
+allowlisted intake through persistent memory, schema validation, policy,
+human approval, durable follow-up, and grounded outcome.
+
 Continuing development in a new session? Start with [`docs/HANDOFF.md`](docs/HANDOFF.md).
 
 Visual QA captures: [landing desktop](docs/screenshots/landing-desktop.png), [learned receipts desktop](docs/screenshots/demo-learned-desktop.png), [incident desktop](docs/screenshots/demo-incident-desktop.png), [countdown desktop](docs/screenshots/demo-countdown-desktop.png), [resolved desktop](docs/screenshots/demo-resolved-desktop.png), plus matching mobile captures in [`docs/screenshots`](docs/screenshots/).
@@ -181,7 +187,7 @@ Never paste secret values into chat. `.env`, `.env.local`, databases, and logs a
 | `pnpm lint`          | ESLint plus package boundary checks                  |
 | `pnpm typecheck`     | Strict TypeScript across workspace                   |
 | `pnpm test`          | Vitest unit/integration suite                        |
-| `pnpm test:e2e`      | Desktop/mobile Playwright critical path              |
+| `pnpm test:e2e`      | Desktop/mobile story plus live-auth boundary         |
 | `pnpm build`         | All package and production web builds                |
 | `pnpm openapi:lint`  | Validate the Custom TEND Skill OpenAPI document      |
 | `pnpm secrets:check` | Reasonable source secret scan                        |
@@ -199,6 +205,8 @@ docker build -t tend:local .
 ```
 
 Playwright runs at 1440×900 and 390×844 and asserts no horizontal overflow.
+The isolated live-auth server defaults to port `3101`; set
+`TEND_LIVE_E2E_PORT` when that port is unavailable.
 
 ## Security and privacy
 

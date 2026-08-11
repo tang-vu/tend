@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const origin = "http://127.0.0.1:3001";
+const origin = `http://127.0.0.1:${process.env.TEND_LIVE_E2E_PORT ?? "3101"}`;
 const accessKey = "e2e-creator-access-key-with-32-characters";
 
 test("live dashboard fails closed, creates a secure session, and signs out", async ({

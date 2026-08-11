@@ -4,6 +4,7 @@ import {
   ArrowIcon,
   CheckIcon,
   ClockIcon,
+  PlayIcon,
   ShieldIcon,
   SproutIcon,
 } from "@/components/icons";
@@ -16,6 +17,72 @@ export const metadata: Metadata = {
 };
 
 const repositoryBase = "https://github.com/tang-vu/tend/blob/main";
+
+const proofSpine = [
+  {
+    number: "01",
+    verb: "Receive",
+    authority: "Application boundary",
+    detail:
+      "Only allowlisted, non-bot Discord content enters as a bounded, sanitized excerpt.",
+    artifact: "discord.message_ingested",
+    href: `${repositoryBase}/apps/discord-worker/src/filter.ts`,
+  },
+  {
+    number: "02",
+    verb: "Remember",
+    authority: "Persistent Mind",
+    detail:
+      "Creator-approved receipts carry relationship context into a later conversation session.",
+    artifact: "receipt ID + Mind reference",
+    href: `${repositoryBase}/packages/minds/src/live.ts`,
+  },
+  {
+    number: "03",
+    verb: "Validate",
+    authority: "Schema boundary",
+    detail:
+      "Structured output is Zod-validated, repaired once, then fails closed to manual review.",
+    artifact: "prompt version + fingerprint",
+    href: `${repositoryBase}/packages/core/src/schema.ts`,
+  },
+  {
+    number: "04",
+    verb: "Govern",
+    authority: "Core policy",
+    detail:
+      "Post-model policy removes unavailable actions and makes low confidence non-actionable.",
+    artifact: "policy decision + tests",
+    href: `${repositoryBase}/packages/core/src/policy.ts`,
+  },
+  {
+    number: "05",
+    verb: "Approve",
+    authority: "Creator",
+    detail:
+      "Consequential repair remains a proposal until a person explicitly approves it.",
+    artifact: "approval state transition",
+    href: `${repositoryBase}/apps/web/app/api/actions/%5Bid%5D/approve/route.ts`,
+  },
+  {
+    number: "06",
+    verb: "Return",
+    authority: "Persisted worker",
+    detail:
+      "An atomic due-job claim, bounded retry, and idempotency key make follow-up durable.",
+    artifact: "follow-up row + audit event",
+    href: `${repositoryBase}/packages/db/src/worker.ts`,
+  },
+  {
+    number: "07",
+    verb: "Close the loop",
+    authority: "Grounded outcome",
+    detail:
+      "Live resolution requires fresh evidence; demo evidence stays explicitly seeded and labeled.",
+    artifact: "outcome + community pulse",
+    href: `${repositoryBase}/apps/discord-worker/src/followup.ts`,
+  },
+] as const;
 
 const evidence = [
   {
@@ -82,6 +149,23 @@ export default function EvidencePage() {
               has been verified with private integration credentials. Partial
               verification stays partial.
             </p>
+            <div className="evidence-hero-actions">
+              <Link className="button button-primary" href="/demo">
+                Run the proof story <ArrowIcon />
+              </Link>
+              <a
+                className="evidence-video-link"
+                href="https://youtu.be/seHv0MV4Y0U"
+                rel="noreferrer"
+                target="_blank"
+              >
+                <PlayIcon />
+                <span>
+                  <strong>Watch the product film</strong>
+                  1:55 · no sign-in
+                </span>
+              </a>
+            </div>
           </div>
           <div className="evidence-runtime-card">
             <span className="evidence-live-dot" />
@@ -90,6 +174,88 @@ export default function EvidencePage() {
               <strong>Demo mode · Mock Minds · Local Discord</strong>
               <p>No judge credentials or real community data required.</p>
             </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="proof-spine-heading" className="proof-spine">
+          <div className="proof-spine-heading">
+            <div>
+              <span className="eyebrow">The continuity proof spine</span>
+              <h2 id="proof-spine-heading">
+                One message. Seven accountable handoffs.
+              </h2>
+            </div>
+            <p>
+              Every junction names who holds authority, what can fail, and which
+              artifact makes the transition inspectable.
+            </p>
+          </div>
+          <ol aria-label="TEND decision and follow-up proof chain">
+            {proofSpine.map((step) => (
+              <li className="proof-step" key={step.number}>
+                <div className="proof-step-marker">
+                  <span>{step.number}</span>
+                  <i />
+                </div>
+                <span className="proof-authority">{step.authority}</span>
+                <h3>{step.verb}</h3>
+                <p>{step.detail}</p>
+                <div className="proof-artifact">
+                  <span>Proof artifact</span>
+                  <strong>{step.artifact}</strong>
+                </div>
+                <a href={step.href} rel="noreferrer" target="_blank">
+                  Inspect source <ArrowIcon />
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section
+          aria-labelledby="counterfactual-heading"
+          className="evidence-counterfactual"
+        >
+          <div className="counterfactual-intro">
+            <span className="eyebrow light">The innovation, in one glance</span>
+            <h2 id="counterfactual-heading">
+              The words are mild.
+              <br />
+              The history isn&apos;t.
+            </h2>
+            <p>
+              The same message produces a different—and more humane—decision
+              when the system can recall a member-stated boundary and return to
+              check the outcome.
+            </p>
+          </div>
+          <div className="counterfactual-comparison">
+            <article>
+              <span className="counterfactual-label muted">
+                Isolated moderation
+              </span>
+              <blockquote>
+                “Kai made another clip with that cracking voice?”
+              </blockquote>
+              <div className="counterfactual-flow muted">
+                <span>No obvious slur</span>
+                <ArrowIcon />
+                <strong>Ignore or fixed warning</strong>
+              </div>
+              <small>Context resets. Outcome is never checked.</small>
+            </article>
+            <article className="tend-counterfactual">
+              <span className="counterfactual-label">TEND + Minds</span>
+              <blockquote>
+                “Kai asked people not to joke about their voice.”
+              </blockquote>
+              <div className="counterfactual-flow">
+                <span>Known boundary</span>
+                <ArrowIcon />
+                <strong>Private repair · approval gated</strong>
+              </div>
+              <small>Persisted follow-up checks whether repair held.</small>
+            </article>
           </div>
         </section>
 

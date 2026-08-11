@@ -23,7 +23,7 @@ The credential-free demo uses a clearly labeled deterministic Mock Minds decisio
 - **Minds Integration Depth:** one persistent Mind, stable aliases, history fingerprints, structured validation and repair, cognition diagnostics, cross-session proof utility, and a narrow authenticated Custom Skill.
 - **Creator-Economy Problem Fit:** reduces the repeated context gathering and follow-up burden carried by independent creators and small moderator teams.
 - **Innovation:** combines inspectable memory receipts, restorative proportionality, and autonomous outcome tracking instead of isolated punishment.
-- **Execution:** a responsive three-act product with real persistence, approval transitions, due jobs, audit history, tests, CI, and Docker deployment.
+- **Execution:** a responsive three-act product with real persistence, approval transitions, due jobs, audit history, tests, CI, Docker deployment, and a source-linked seven-handoff proof surface for judges.
 - **Viability:** explicit multi-tenant, PostgreSQL, queue, governance, and creator-tier paths without pretending those scale features already exist.
 
 ## Submission fields

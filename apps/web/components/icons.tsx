@@ -55,6 +55,21 @@ export function ArrowIcon(props: IconProps) {
   );
 }
 
+export function PlayIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="m10 8 6 4-6 4V8Z"
+        fill="currentColor"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.2"
+      />
+    </IconBase>
+  );
+}
+
 export function CheckIcon(props: IconProps) {
   return (
     <IconBase {...props}>

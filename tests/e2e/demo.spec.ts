@@ -46,6 +46,21 @@ test("landing presents the product and enters the demo", async ({
   await expect(
     page.getByText("Partial verification stays partial."),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "One message. Seven accountable handoffs.",
+    }),
+  ).toBeVisible();
+  await expect(page.locator(".proof-step")).toHaveCount(7);
+  await expect(
+    page.getByRole("link", { name: /Watch the product film/ }),
+  ).toHaveAttribute("href", "https://youtu.be/seHv0MV4Y0U");
+  await expect(
+    page.getByRole("heading", { name: /The words are mild/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("approval gated", { exact: false }),
+  ).toBeVisible();
   await expectNoPageOverflow(page);
   await page.screenshot({
     fullPage: true,
