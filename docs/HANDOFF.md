@@ -8,6 +8,7 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
 
 - Public credential-free demo: **https://tend.tangvu.dev**
 - Judge-readable integration evidence: **https://tend.tangvu.dev/evidence** — now includes a four-lens judge scorecard, source-linked seven-handoff proof spine, explicit counterfactual, and direct product-film/demo paths.
+- The public repository README opens with a three-step judge path and claim ledger; its Custom Skill wording matches the verified API / unequipped Minds Connection boundary.
 - Health: `https://tend.tangvu.dev/api/health`
 - Incident audit includes a portable Decision Receipt: print/PDF plus a strict
   `tend.decision-receipt.v1` JSON envelope with SHA-256 payload integrity. It is
@@ -131,6 +132,8 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 - Public `/evidence` returned 200 with the judge-facing runtime/proof boundary after the 2026-08-10 deployment.
 - On 2026-08-11, the upgraded public `/evidence` returned 200 through Cloudflare with its responsive seven-handoff proof spine, counterfactual, product-film path, production CSS, and unchanged partial-claim boundaries. Desktop/mobile visual QA showed no page overflow.
 - On 2026-08-11, the landing and site header were upgraded with a prominent Judge brief path that remains visible on mobile. The deployed `/evidence` scorecard routes four review lenses—problem fit, Minds depth, execution, and viability—to inspectable proof. Desktop/mobile visual QA passed without overflow; the full browser run passed 14/14 demo tests plus 1/1 live-auth test, and Cloudflare returned the new markers with the partial-claim disclosure intact.
+- On 2026-08-11, the README was upgraded with a three-step judge review path and compact claim ledger. A stale statement that called the Custom Skill API undeployed was corrected: the authenticated API is deployed and boundary-verified, while Minds Connection creation, equipment, tool-call verification, and publication remain explicitly pending.
+- The same judge-path release passed an unauthenticated HTTP 200 audit across the live landing, demo, evidence, health endpoint, repository, three integration-proof documents, verified implementation CI run, and YouTube oEmbed. Every relative README link also resolved locally.
 - The 2026-08-11 browser run passed 14/14 demo desktop/mobile tests plus 1/1 isolated live-auth test. The live-auth harness now defaults to dedicated port 3101 and supports `TEND_LIVE_E2E_PORT` override, avoiding contention with the private port-3001 runtime.
 - The Decision Receipt browser run passed at 1440Ã—900 and 390Ã—844 with no horizontal overflow; the download digest was independently recomputed, demo disclosures were asserted, raw effect fields were absent, and the live API returned 401 before authentication and 404 only after a valid session.
 - The deployed public Decision Receipt returned 200 through Cloudflare before and

@@ -4,17 +4,26 @@
 
 TEND is a persistent Discord community steward that remembers creator values, member-stated boundaries, and what happened after an incident so creators can make proportionate, restorative decisions.
 
+## Judge start here
+
+1. **[Read the four-lens judge brief](https://tend.tangvu.dev/evidence)** for problem fit, Minds depth, execution, and viability, each linked to inspectable proof.
+2. **[Run the credential-free three-act demo](https://tend.tangvu.dev/demo)** to exercise real persistence, explicit approval, a persisted due job, autonomous follow-up, and audit. Mock Minds and local Discord remain visibly labeled.
+3. **[Watch the 1:55 product film](https://youtu.be/seHv0MV4Y0U)** for the complete story without setup.
+
+| Review surface    | Current claim                                                                                                | Inspect                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Public product    | Runnable demo/mock; no credentials or real community data                                                    | [Open TEND](https://tend.tangvu.dev)                                                                |
+| Minds continuity  | Live discovery, cognition access, messaging, and second-session recall verified privately                    | [Read sanitized proof](docs/evidence/minds-persistence-proof.md)                                    |
+| Custom TEND Skill | Public authenticated API verified; Minds Connection/equip/publish still pending                              | [Read API proof](docs/evidence/tend-skill-deployment-proof.md)                                      |
+| Discord           | Gateway, allowlist, least privilege, and self-loop boundary verified; human delivery/follow-up still pending | [Read boundary proof](docs/evidence/discord-live-proof.md)                                          |
+| Engineering       | Lint, types, tests, production build, browser E2E, secret scan, and Docker CI                                | [Open latest verified implementation run](https://github.com/tang-vu/tend/actions/runs/31464394230) |
+
 ![TEND resolved demo](docs/screenshots/demo-resolved-desktop.png)
 
-Live credential-free demo: **https://tend.tangvu.dev**
-
-Judge-readable integration evidence: **https://tend.tangvu.dev/evidence**
-
-Demo film (1:55): **https://youtu.be/seHv0MV4Y0U**
-
-The evidence page includes a source-linked seven-handoff proof spine from
-allowlisted intake through persistent memory, schema validation, policy,
-human approval, durable follow-up, and grounded outcome.
+The evidence page adds a source-linked seven-handoff proof spine from
+allowlisted intake through persistent memory, schema validation, policy, human
+approval, durable follow-up, and grounded outcome. Partial verification stays
+partial throughout the product and documentation.
 
 Continuing development in a new session? Start with [`docs/HANDOFF.md`](docs/HANDOFF.md).
 
@@ -149,7 +158,7 @@ The worker enforces live mode, one guild, channel allowlists, bot/self filtering
 - schedule and inspect a follow-up;
 - record an incident outcome.
 
-It exposes no Discord enforcement operation. Destructive types are absent from the proposal schema. Deploy TEND behind HTTPS, set a high-entropy `TEND_SKILL_API_KEY`, update the OpenAPI server URL, create the Minds Connection, inspect permissions, then equip and test. The Skill is implemented locally but is **not deployed, equipped, published, or live-verified**. See [Skill setup](docs/MINDS_SKILL_SETUP.md).
+It exposes no Discord enforcement operation. Destructive types are absent from the proposal schema. The authenticated API is deployed on the public HTTPS hostname and its authorization/policy boundary is externally verified. The owner-authenticated Minds Connection still needs to be created, permission-reviewed, equipped, and tool-call tested; it is not published or claimed as a fully verified Minds Skill. See the [deployment proof](docs/evidence/tend-skill-deployment-proof.md) and [Skill setup](docs/MINDS_SKILL_SETUP.md).
 
 ## Environment variables
 

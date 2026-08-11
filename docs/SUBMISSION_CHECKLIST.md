@@ -7,6 +7,7 @@
 - [x] Public demo reset tested after a cold start and returned to `ready` with no incidents, memories, or follow-ups.
 - [x] Public deployment restricted to labeled demo/mock mode; live dashboard separately fails closed without a valid signed creator session.
 - [x] Repository visibility verified for judges with an unauthenticated HTTP 200 response.
+- [x] README opens with a three-step judge path and honest claim ledger linking live product, integration proofs, and CI.
 - [x] README quick start exercised from the empty repository build.
 
 ## Minds evidence
@@ -42,6 +43,7 @@
 - [x] Minds persistence proof linked.
 - [x] Judge-readable integration evidence page separates public runtime, verified boundaries, and withheld claims.
 - [x] Landing and mobile navigation surface a dedicated Judge brief; its four-lens scorecard routes directly to problem fit, Minds depth, runnable execution, and viability evidence.
+- [x] Unauthenticated link audit returned HTTP 200 for the live product, demo, evidence, health, public repository, three integration proofs, verified CI run, and YouTube oEmbed.
 - [x] Source-linked seven-handoff proof spine and counterfactual make the complete continuity loop inspectable on desktop and mobile.
 - [x] Portable Decision Receipt exposes evidence, authority, continuity, and audit in print/PDF and integrity-verifiable JSON without raw effect or integration identifiers.
 - [x] Known limitations stated.
