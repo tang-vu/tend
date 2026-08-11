@@ -1,4 +1,9 @@
+import { createHash } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
+import {
+  canonicalReceiptJson,
+  decisionReceiptEnvelopeSchema,
+} from "../../packages/core/src/index";
 
 const browserErrors = new WeakMap<Page, string[]>();
 const sameOriginHeaders = { origin: "http://127.0.0.1:3000" };
@@ -117,6 +122,9 @@ test("three-act demo persists memory, approval, and autonomous resolution", asyn
   await expect(
     page.getByText("Memory that changed the decision"),
   ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /Inspect portable decision receipt/ }),
+  ).toBeVisible();
   await expect(page.getByText("No ban · No timeout")).toBeVisible();
   await page.screenshot({
     fullPage: true,
@@ -157,7 +165,7 @@ test("three-act demo persists memory, approval, and autonomous resolution", asyn
 
 test("required product screens expose safe, responsive states", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.request.post("/api/demo/reset", { headers: sameOriginHeaders });
   await page.request.post("/api/demo/learn", { headers: sameOriginHeaders });
   await page.request.post("/api/demo/incident", { headers: sameOriginHeaders });
@@ -176,7 +184,53 @@ test("required product screens expose safe, responsive states", async ({
   ).toBeVisible();
   await expect(page.getByText("Untrusted Discord data")).toBeVisible();
   await expect(page.getByText("Memories used")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /Decision receipt/ }),
+  ).toBeVisible();
   await expectNoPageOverflow(page);
+
+  const receiptResponse = await page.request.get(
+    "/api/incidents/incident-demo-voice-boundary/receipt",
+  );
+  expect(receiptResponse.status()).toBe(200);
+  expect(receiptResponse.headers()["cache-control"]).toBe("private, no-store");
+  expect(receiptResponse.headers()["content-disposition"]).toContain(
+    'attachment; filename="tend-incident-demo-voice-boundary-receipt.json"',
+  );
+  const envelope = decisionReceiptEnvelopeSchema.parse(
+    await receiptResponse.json(),
+  );
+  expect(envelope.integrity.digest).toBe(
+    createHash("sha256")
+      .update(canonicalReceiptJson(envelope.receipt))
+      .digest("hex"),
+  );
+  expect(envelope.receipt.disclosure).toMatchObject({
+    judgment: "deterministic_fixture",
+    discordEffect: "recorded_only",
+    followUpEvidence: "seeded_demo",
+  });
+  const serializedEnvelope = JSON.stringify(envelope);
+  expect(serializedEnvelope).not.toContain("e2e-skill-key");
+  expect(serializedEnvelope).not.toContain('"idempotencyKey":');
+  expect(serializedEnvelope).not.toContain('"targetId":');
+
+  await page.goto("/incidents/incident-demo-voice-boundary/receipt");
+  await expect(
+    page.getByRole("heading", {
+      name: "An accountable decision, in one receipt.",
+    }),
+  ).toBeVisible();
+  await expect(page.getByText("deterministic fixture")).toBeVisible();
+  await expect(page.getByText("recorded only")).toBeVisible();
+  await expect(page.locator(".receipt-sheet-footer code").first()).toHaveText(
+    /^[a-f0-9]{64}$/,
+  );
+  await expectNoPageOverflow(page);
+  await page.screenshot({
+    fullPage: true,
+    path: testInfo.outputPath("decision-receipt.png"),
+  });
 
   await page.goto("/memories");
   await expect(

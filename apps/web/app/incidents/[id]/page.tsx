@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { IncidentControls } from "@/components/incident-controls";
@@ -30,6 +31,14 @@ export default async function IncidentPage({
 
   return (
     <DashboardShell
+      actions={
+        <Link
+          className="button button-quiet"
+          href={`/incidents/${incident.id}/receipt`}
+        >
+          <ShieldIcon /> Decision receipt
+        </Link>
+      }
       description="Full evidence, proposed repair, approval boundary, and every persisted state change."
       eyebrow="# creator-lounge · Incident detail"
       title="Why this decision?"

@@ -9,6 +9,10 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
 - Public credential-free demo: **https://tend.tangvu.dev**
 - Judge-readable integration evidence: **https://tend.tangvu.dev/evidence** — now includes a source-linked seven-handoff proof spine, an explicit counterfactual, and direct product-film/demo paths.
 - Health: `https://tend.tangvu.dev/api/health`
+- Incident audit includes a portable Decision Receipt: print/PDF plus a strict
+  `tend.decision-receipt.v1` JSON envelope with SHA-256 payload integrity. It is
+  reachable from the demo incident/resolved states and requires creator auth in
+  live mode.
 - Repository: `https://github.com/tang-vu/tend`, branch `main`
 - Use `git log -1 --oneline` for the deployed source revision; the repository is kept synchronized after each release.
 - Latest verified CI at handoff: https://github.com/tang-vu/tend/actions/runs/31453058795
@@ -113,7 +117,7 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 
 ## Verification status
 
-- Release verification passed with lint, typecheck, 61/61 Vitest tests, production build, OpenAPI validation, and secret scan. On Windows, stop every running TEND web profile before rebuilding because they share and lock `.next/standalone`.
+- Release verification passed with lint, typecheck, 65/65 Vitest tests, production build, OpenAPI validation, and secret scan. On Windows, stop every running TEND web profile before rebuilding because they share and lock `.next/standalone`.
 - Browser coverage: 14/14 demo desktop/mobile tests plus 1/1 dedicated live-mode authentication test passed. The live test covers unauthorized reads/mutations, cross-origin rejection, credential failure/success, cookie attributes, authenticated state, logout, post-logout rejection, and the 429 throttle boundary.
 - Updated standalone deployment: local/public health and landing returned 200; CSP, frame denial, and HSTS reached the Cloudflare hostname; the public fictional scenario was reset to `ready` with no incidents, memories, or follow-ups.
 - Playwright: 14/14 desktop/mobile tests passed in CI.
@@ -127,6 +131,12 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 - Public `/evidence` returned 200 with the judge-facing runtime/proof boundary after the 2026-08-10 deployment.
 - On 2026-08-11, the upgraded public `/evidence` returned 200 through Cloudflare with its responsive seven-handoff proof spine, counterfactual, product-film path, production CSS, and unchanged partial-claim boundaries. Desktop/mobile visual QA showed no page overflow.
 - The 2026-08-11 browser run passed 14/14 demo desktop/mobile tests plus 1/1 isolated live-auth test. The live-auth harness now defaults to dedicated port 3101 and supports `TEND_LIVE_E2E_PORT` override, avoiding contention with the private port-3001 runtime.
+- The Decision Receipt browser run passed at 1440Ã—900 and 390Ã—844 with no horizontal overflow; the download digest was independently recomputed, demo disclosures were asserted, raw effect fields were absent, and the live API returned 401 before authentication and 404 only after a valid session.
+- The deployed public Decision Receipt returned 200 through Cloudflare before and
+  after the complete demo flow. Its digest was independently recomputed, the
+  resolved export contained a completed follow-up, and the hosted scenario was
+  reset to `ready` with zero incidents, memories, or follow-ups. The private
+  loopback live receipt API returned 401 without a creator session.
 - The complete public three-act flow was rerun after the 2026-08-11 deployment, reached `resolved` with a completed follow-up, and was reset to `ready` with zero incidents, memories, or follow-ups.
 - The public host retained the `learned` scenario and four memory receipts across a verified PM2 stop/start, then reset to `ready` with no incidents, memories, or follow-ups.
 - The public repository returned HTTP 200 without authentication.
@@ -146,6 +156,10 @@ Never claim a later check passed without rerunning it after material changes.
 - Live dashboard/data APIs fail closed unless two distinct 32+ character creator secrets are configured and an eight-hour signed session is valid.
 - Browser mutations require an exact trusted origin. The current auth model is single-creator/single-community, not production-grade multi-user identity or tenant authorization.
 - Community messages are untrusted data and cannot alter system policy.
+- Decision Receipts contain a bounded community excerpt and cited memory claims;
+  review before sharing. They omit raw effect keys and integration/member target
+  IDs. Their SHA-256 digest detects payload changes but is not a signer identity
+  proof.
 - The public demo has shared mutable scenario state; any visitor may reset/replay it. Do not store real member/community data in this deployment.
 - SQLite is suitable for this single-host hackathon deployment, not horizontal scaling.
 

@@ -20,6 +20,13 @@ The persistent Mind is the live memory layer. `MemoryReceipt` is an auditable ap
 
 Correction should not silently rewrite history. The prior receipt status and an audit event remain visible. A future production implementation should support linked replacement receipts and a member-facing correction workflow.
 
+The creator-facing Decision Receipt is a deliberate export boundary. It may
+contain the incident's bounded message excerpt and the full claims of memory
+receipts cited by that incident, so the UI and JSON carry a review-before-sharing
+notice. It excludes raw Discord/guild/channel/member identifiers, action content,
+raw idempotency keys, and unrelated community state. Live receipt access requires
+creator authentication; the public demo contains only the fictional scenario.
+
 ## Retention and deletion
 
 Demo defaults:

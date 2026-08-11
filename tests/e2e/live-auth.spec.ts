@@ -9,6 +9,10 @@ test("live dashboard fails closed, creates a secure session, and signs out", asy
 }) => {
   const snapshotWithoutSession = await request.get("/api/demo/state");
   expect(snapshotWithoutSession.status()).toBe(401);
+  const receiptWithoutSession = await request.get(
+    "/api/incidents/unknown/receipt",
+  );
+  expect(receiptWithoutSession.status()).toBe(401);
 
   const crossOriginLogin = await request.post("/api/auth/login", {
     headers: { origin: "https://attacker.invalid" },
@@ -50,6 +54,10 @@ test("live dashboard fails closed, creates a secure session, and signs out", asy
 
   const authenticatedSnapshot = await page.request.get("/api/demo/state");
   expect(authenticatedSnapshot.status()).toBe(200);
+  const authenticatedMissingReceipt = await page.request.get(
+    "/api/incidents/unknown/receipt",
+  );
+  expect(authenticatedMissingReceipt.status()).toBe(404);
 
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(

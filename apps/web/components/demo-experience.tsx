@@ -389,6 +389,13 @@ export function DemoExperience({
                     Reject
                   </button>
                 </div>
+                <Link
+                  className="decision-receipt-link"
+                  href={`/incidents/${incident.id}/receipt`}
+                >
+                  <ShieldIcon /> Inspect portable decision receipt
+                  <ArrowIcon />
+                </Link>
               </div>
             </div>
           )}
@@ -442,7 +449,7 @@ export function DemoExperience({
             </div>
           )}
 
-          {state.snapshot.demoPhase === "resolved" && (
+          {state.snapshot.demoPhase === "resolved" && incident && (
             <div className="act-content resolved-act">
               <div className="resolved-symbol">
                 <SproutIcon />
@@ -482,14 +489,22 @@ export function DemoExperience({
                   </blockquote>
                 </div>
               )}
-              <button
-                className="button button-primary act-button"
-                disabled={busy !== null}
-                onClick={() => void act("/api/demo/reset", "Reset")}
-                type="button"
-              >
-                Replay the story <ArrowIcon />
-              </button>
+              <div className="resolved-actions">
+                <Link
+                  className="button button-quiet"
+                  href={`/incidents/${incident.id}/receipt`}
+                >
+                  <ShieldIcon /> Open completed receipt
+                </Link>
+                <button
+                  className="button button-primary"
+                  disabled={busy !== null}
+                  onClick={() => void act("/api/demo/reset", "Reset")}
+                  type="button"
+                >
+                  Replay the story <ArrowIcon />
+                </button>
+              </div>
             </div>
           )}
         </section>

@@ -57,6 +57,14 @@ The Skill and internal worker surfaces use distinct bearer credentials. Inputs a
 
 In live mode, dashboard pages and the snapshot API require a signed creator session. Approval, rejection, memory mutation, login, logout, and demo mutations also require an exact same-origin request. Sessions use HS256 with fixed issuer/audience, a random token ID, and an eight-hour expiry in an `HttpOnly`, production-`Secure`, `SameSite=Strict` cookie. The access key is compared through fixed-length SHA-256 digests, failed logins are limited to five per client per 15 minutes, and protected responses are non-cacheable. Missing, partial, short, or reused auth secrets fail closed.
 
+Decision-receipt pages and downloads use the same creator-read boundary in live
+mode. The strict export is projected server-side and omits raw idempotency keys,
+target/member IDs, integration identifiers, action content, credentials, and
+unrelated incidents. Responses are private and non-cacheable. The included
+SHA-256 digest covers canonical receipt JSON and detects later payload changes;
+it does not authenticate who produced the receipt. A production attestation
+feature would require managed signing keys, key rotation, and verifier trust.
+
 This is a deliberately narrow single-creator/single-community boundary. The limiter is process-local, and there is no account recovery, MFA, role model, persistent session allowlist, immediate stolen-token revocation, or tenant authorization. A horizontally scaled or multi-user deployment must replace it with a mature identity provider, shared rate limiting, revocable sessions, and community-scoped authorization. Demo mode remains credential-free and contains only fictional state.
 
 ## Persistence

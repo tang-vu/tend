@@ -93,6 +93,14 @@ pnpm worker:once
 
 Everything simulated is labeled: Mock Minds uses a readable fixture and Discord delivery is a local audit record. SQLite, policy, approval, job scheduling, claim, resolution, and audit state are real.
 
+Every incident exposes a print-friendly **Decision Receipt**. It projects the
+decision, cited memory receipts, policy matches, approval state, persisted
+follow-up, and audit trail from the same stored snapshot. Creators can download
+the strict `tend.decision-receipt.v1` JSON envelope; its SHA-256 digest detects
+payload modification but is intentionally not described as proof of signer
+identity. Demo disclosures remain attached to the artifact, and live receipt
+pages/downloads require the signed creator session.
+
 Deployment health is available at `GET /api/health`. It verifies that persisted community state can be read, returns no incident or member data, and is the Docker image healthcheck target.
 
 For the repository owner's always-on Windows/PM2 deployment profile, see [`ops/windows`](ops/windows/README.md). The profile exposes only the labeled demo through a dedicated Cloudflare tunnel and keeps live Minds credentials out of the hosted process. The public health endpoint and full persisted three-act flow were verified through `https://tend.tangvu.dev` on 2026-08-07.
@@ -195,7 +203,7 @@ Never paste secret values into chat. `.env`, `.env.local`, databases, and logs a
 
 ## Testing
 
-Coverage targets policy authority, active-memory evidence, prompt injection, valid/invalid/timeout Minds results, missing credentials, persisted jobs, bounded retries, dedupe, Discord allowlists, approval-only execution, the complete browser story, every required product screen, responsive overflow, and browser runtime errors.
+Coverage targets policy authority, active-memory evidence, prompt injection, valid/invalid/timeout Minds results, missing credentials, persisted jobs, bounded retries, dedupe, Discord allowlists, approval-only execution, receipt integrity/data minimization, the complete browser story, every required product screen, responsive overflow, and browser runtime errors.
 
 ```text
 pnpm verify
@@ -219,7 +227,7 @@ See [Security](docs/SECURITY.md) and [Privacy](docs/PRIVACY.md). Live mode fails
 - **Minds Integration Depth:** official client, stable aliases, history fingerprinting, reply wait, cognition tools, two-session proof, and narrow Skill API.
 - **Creator-Economy Fit:** preserves creator culture while reducing repeated context gathering and follow-up load.
 - **Innovation:** combines relationship-aware memory receipts, proportional repair, and autonomous outcome tracking.
-- **Execution:** complete no-credential story with real persistence, approvals, worker, responsive UI, tests, Docker, and audit.
+- **Execution:** complete no-credential story with real persistence, approvals, worker, responsive UI, portable tamper-evident decision receipts, tests, Docker, and audit.
 - **Viability:** clear tenant/storage/queue boundaries plus honest computed metrics.
 
 ## Viability

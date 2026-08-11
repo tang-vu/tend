@@ -13,6 +13,8 @@ flowchart LR
   Minds -->|Mock fixture| Mock[Deterministic demo]
   Minds -->|Server-side official client| Live[Persistent Mind]
   Web --> DB[(SQLite repository)]
+  Web --> Receipt[Creator-authenticated decision receipt]
+  DB -->|Incident-scoped projection| Receipt
   Worker --> DB
   Scheduler[Persisted due-job poller] -->|Atomic claim + bounded retry| DB
   MindSkill[Custom TEND Skill] -->|Bearer-authenticated narrow tools| Web
@@ -52,6 +54,21 @@ The Mind is the live agent-memory and continuity layer. SQLite is the auditable 
 The embedded web poller starts through Next instrumentation only in demo mode. In live mode the Discord worker exclusively owns follow-up claims so the web process cannot race the observation-capable worker. `pnpm worker:dev` runs that independent worker. Production scale replaces both with queue-backed workers.
 
 The deterministic outcome processor emits `seeded_demo` evidence and is selected only in demo mode. Storage rejects that evidence kind for a live community even if a caller wires the wrong processor. In live mode, the incident's persisted source channel is rechecked against the guild/channel allowlist, then up to 50 newer non-bot messages are supplied to the same persistent Mind as escaped untrusted data. The output receives strict schema and message-ID grounding checks. Resolution requires at least one referenced fresh message and confidence of 0.75 or greater; epistemic uncertainty becomes completed/manual review, while transport or validation failure retries with bounded backoff and then fails closed.
+
+### Decision receipt export
+
+1. The server projects one incident's decision, cited memories, policy matches,
+   action state, follow-ups, and audit events through a strict versioned Zod
+   schema.
+2. The projection omits raw effect keys, member target IDs, integration IDs,
+   action content, authorization material, and unrelated community state.
+3. A canonical key-sorted JSON representation is hashed with SHA-256 and placed
+   in a downloadable envelope. The digest detects receipt-payload changes; it
+   is not a digital signature or identity attestation.
+4. The HTML view renders the same envelope as a responsive, print-friendly
+   governance artifact. Demo truth labels travel with the receipt. Live HTML
+   and JSON access require the signed creator session and return non-cacheable
+   responses.
 
 ## Trust boundaries
 
