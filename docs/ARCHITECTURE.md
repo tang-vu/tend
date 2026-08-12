@@ -98,7 +98,7 @@ Scale path:
 
 - One local community and one shared creator identity; no users, roles, MFA, recovery, or tenant authorization.
 - SQLite and the embedded poller assume one web instance.
-- Live Minds discovery, cognition health, messaging, and cross-session recall are verified. Skill equipment and Discord delivery still require external setup and have not been verified.
+- Live Minds discovery, cognition health, messaging, and cross-session recall are verified. The Custom Skill draft is authored, schema-validated, and permission-reviewed, but its App/Connection and equipment are blocked by the confirmed Minds BETA registration boundary. Discord delivery still requires external verification.
 - Fresh Discord follow-up observation is implemented and test-verified but still awaits execution evidence from the dedicated test server.
 - Nearby Discord context is capped at eight earlier non-bot messages.
 - Follow-up context is capped at 50 newer non-bot text messages; attachments are not analyzed.

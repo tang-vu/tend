@@ -23,7 +23,14 @@ Implementation assumptions verified from the client-library documentation:
 - Cognition health is available through `getCognitionBalance`, `getCognitionUsage`, and `getCognitionUsageByTool`.
 - The current npm registry version observed was `0.1.3`.
 
-Skill guidance says a Skill includes a listing, app manifest, tool schemas, and playbook. It explicitly recommends inspecting what the Skill can read/change before publication. TEND therefore ships a narrow OpenAPI contract and setup guide, but does not claim publication, deployment, equipment, or verification.
+Skill guidance says a Skill includes a listing, app manifest, tool schemas, and
+playbook. It explicitly recommends inspecting what the Skill can read/change
+before publication. On 2026-08-12, Minds support confirmed that private Bazaar
+Apps/Skills and builder-side custom App registration are not currently
+available; published Apps are handled by the Minds team. TEND therefore ships
+a narrow OpenAPI contract and a Mind-authored/schema-validated draft, but does
+not claim App registration, Connection, publication, equipment, or live
+tool-call verification.
 
 Live verification on 2026-08-06 confirmed that the configured Mind recalled the creator-approved Kai/voice boundary across two distinct proof aliases and used it materially in the later assessment with confidence `0.95`. The sanitized report is in `docs/evidence/minds-persistence-proof.md`; the command still reports failures honestly and never hard-codes success.
 

@@ -53,6 +53,15 @@ test("landing presents the product and enters the demo", async ({
   ).toBeVisible();
   await expect(page.getByText("Live Minds", { exact: true })).toBeVisible();
   await expect(
+    page.getByText(/private Bazaar items and builder-side custom App/),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Read platform boundary" }),
+  ).toHaveAttribute(
+    "href",
+    "https://github.com/tang-vu/tend/blob/main/docs/evidence/minds-skill-platform-boundary.md",
+  );
+  await expect(
     page.getByText("Partial verification stays partial."),
   ).toBeVisible();
   await expect(

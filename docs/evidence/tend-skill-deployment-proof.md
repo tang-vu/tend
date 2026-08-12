@@ -1,6 +1,7 @@
 # Custom TEND Skill API deployment proof
 
-Verified: 2026-08-08 (Asia/Saigon).
+Verified: 2026-08-08; Minds platform boundary confirmed 2026-08-12
+(Asia/Saigon).
 
 This record is sanitized. It contains no bearer key, authorization header, creator session, Minds credential, Discord credential, private response body, or raw community content.
 
@@ -16,6 +17,20 @@ This record is sanitized. It contains no bearer key, authorization header, creat
 
 ## Accurate Minds status
 
-The API deployment is ready, but the owner-authenticated Minds steps are not complete. The Skill has not been created, connected, equipped, published, or live tool-call verified. The official Builder flow requires the owner to add the bearer key under **My Connections** and build/refine/equip the Skill through the Mind conversation. The installed client library does not expose Skill or Connection administration.
+The owner-authenticated Mind read the deployed OpenAPI document, authored the
+`tend-community-steward` Skill draft, reported a successful `system_skill`
+schema gate, and returned a permission review covering the six declared
+operations. It did not receive the bearer credential and did not equip or
+publish the draft.
 
-Do not describe the Minds Skill as deployed or equipped until those owner UI steps and every operation test have passed.
+The required TEND App Manifest and Connection could not be created. Minds
+support confirmed that Minds BETA does not currently support private Bazaar
+Apps or Skills and that published Apps are handled by the Minds team. The
+public Builder surfaces support discovery and equipment of existing Apps, not
+builder-side App registration. TEND rejected the proposed fallback of storing
+the bearer credential in a Mind tenet or other content.
+
+See the [sanitized platform-boundary record](minds-skill-platform-boundary.md).
+Do not describe the Skill as deployed, connected, equipped, published, or live
+tool-call verified until a supported App/Connection flow and all operation
+tests have passed.

@@ -14,7 +14,7 @@ TEND is a persistent Discord community steward that remembers creator values, me
 | ----------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
 | Public product    | Runnable demo/mock; no credentials or real community data                                                    | [Open TEND](https://tend.tangvu.dev)                                                                |
 | Minds continuity  | Live discovery, cognition access, messaging, and second-session recall verified privately                    | [Read sanitized proof](docs/evidence/minds-persistence-proof.md)                                    |
-| Custom TEND Skill | Public authenticated API verified; Minds Connection/equip/publish still pending                              | [Read API proof](docs/evidence/tend-skill-deployment-proof.md)                                      |
+| Custom TEND Skill | API verified; Mind-authored draft validated; App/Connection blocked by a confirmed Minds BETA boundary       | [Read platform-boundary proof](docs/evidence/minds-skill-platform-boundary.md)                      |
 | Discord           | Gateway, allowlist, least privilege, and self-loop boundary verified; human delivery/follow-up still pending | [Read boundary proof](docs/evidence/discord-live-proof.md)                                          |
 | Engineering       | Lint, types, tests, production build, browser E2E, secret scan, and Docker CI                                | [Open latest verified implementation run](https://github.com/tang-vu/tend/actions/runs/31464394230) |
 
@@ -158,7 +158,7 @@ The worker enforces live mode, one guild, channel allowlists, bot/self filtering
 - schedule and inspect a follow-up;
 - record an incident outcome.
 
-It exposes no Discord enforcement operation. Destructive types are absent from the proposal schema. The authenticated API is deployed on the public HTTPS hostname and its authorization/policy boundary is externally verified. The owner-authenticated Minds Connection still needs to be created, permission-reviewed, equipped, and tool-call tested; it is not published or claimed as a fully verified Minds Skill. See the [deployment proof](docs/evidence/tend-skill-deployment-proof.md) and [Skill setup](docs/MINDS_SKILL_SETUP.md).
+It exposes no Discord enforcement operation. Destructive types are absent from the proposal schema. The authenticated API is deployed on the public HTTPS hostname and its authorization/policy boundary is externally verified. The owner Mind authored and schema-validated the six-operation Skill draft, and its permissions were reviewed without sharing the bearer credential. Minds support confirmed that private Bazaar items and builder-side custom App registration are not currently available, so the required Connection, equipment, publication, and live tool calls remain blocked and unclaimed. See the [deployment proof](docs/evidence/tend-skill-deployment-proof.md), [platform-boundary record](docs/evidence/minds-skill-platform-boundary.md), and [Skill setup](docs/MINDS_SKILL_SETUP.md).
 
 ## Environment variables
 
@@ -252,8 +252,8 @@ Estimated moderator minutes saved uses a visible demo assumption: four minutes f
 
 ## Roadmap
 
-1. Privately equip and verify the Custom TEND Skill.
-2. Dedicated Discord test-server verification, including fresh follow-up observation.
+1. Complete the supported Minds App registration/Connection flow when available, then equip and verify the Custom TEND Skill.
+2. Dedicated Discord test-server verification, including one approved delivery and fresh follow-up observation.
 3. Multi-user identity, per-community roles, distributed login throttling, and session revocation.
 4. PostgreSQL, queue leases, automated retention/deletion, tenant isolation.
 5. Moderator collaboration, outcome feedback, and governance exports.
@@ -263,7 +263,7 @@ Estimated moderator minutes saved uses a visible demo assumption: four minutes f
 
 - One community, one shared creator credential, and no billing. Multi-user accounts, role-based community authorization, recovery, MFA, and server-side session revocation are not implemented.
 - SQLite and embedded scheduling target one instance.
-- Live Minds discovery and cross-session recall are verified. Discord delivery, Discord follow-up observation, and Skill equipment still await dedicated external verification.
+- Live Minds discovery and cross-session recall are verified. The Skill draft is authored, schema-validated, and permission-reviewed, but App/Connection registration and equipment are blocked by the confirmed Minds BETA platform boundary. Discord delivery and follow-up observation still await dedicated external verification.
 - Live follow-up observation is implemented for the independent Discord worker: it reads only the persisted allowlisted source channel, caps fresh non-bot messages at 50, asks the persistent Mind for a validated assessment, and requires grounded evidence plus at least 0.75 confidence to resolve. Missing or uncertain evidence becomes retry/manual review.
 - Demo onboarding form is a UX walkthrough; the reset scenario owns durable demo configuration.
 - Retention policy is visible but automated purging is not implemented.

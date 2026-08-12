@@ -142,11 +142,11 @@ const evidence = [
     status: "API verified",
     tone: "partial",
     summary:
-      "The public bearer-protected API rejects missing authorization, accepts its dedicated connection key, and refuses unavailable destructive actions.",
+      "The public API boundary is verified, and the owner Mind authored, schema-validated, and permission-reviewed the six-operation Skill draft without receiving its bearer credential.",
     scope:
-      "The owner-authenticated Minds Skill still needs to be created, equipped, and tool-call tested before TEND claims full Skill verification.",
-    href: `${repositoryBase}/docs/evidence/tend-skill-deployment-proof.md`,
-    linkLabel: "Read Skill API proof",
+      "Minds support confirmed that private Bazaar items and builder-side custom App registration are unavailable, so Connection, equipment, publication, and live tool calls remain blocked and unclaimed.",
+    href: `${repositoryBase}/docs/evidence/minds-skill-platform-boundary.md`,
+    linkLabel: "Read platform boundary",
   },
   {
     icon: <CheckIcon />,
@@ -391,19 +391,22 @@ export default function EvidencePage() {
         <section className="evidence-next">
           <div>
             <span className="eyebrow light">Claims still withheld</span>
-            <h2>Two checks remain before the strongest live claim.</h2>
+            <h2>One platform dependency and one live check remain.</h2>
             <p>
-              Equip and exercise the Custom Skill in the owner&apos;s Mind, then
-              complete the consenting Discord delivery and fresh-message
-              follow-up in the dedicated test server.
+              Minds must first provide the supported App/Connection path for the
+              validated Skill draft. TEND also needs the consenting Discord
+              delivery and fresh-message follow-up in its dedicated test server.
             </p>
           </div>
           <ol>
             <li>
               <span>01</span>
               <div>
-                <strong>Equip the Skill</strong>
-                <p>Inspect permissions and test every narrow operation.</p>
+                <strong>Unlock the Connection</strong>
+                <p>
+                  Use the supported Minds App registration path when it becomes
+                  available; never place the bearer secret in Mind content.
+                </p>
               </div>
             </li>
             <li>

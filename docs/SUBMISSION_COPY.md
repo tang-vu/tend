@@ -20,7 +20,7 @@ The credential-free demo uses a clearly labeled deterministic Mock Minds decisio
 
 ## Judging alignment
 
-- **Minds Integration Depth:** one persistent Mind, stable aliases, history fingerprints, structured validation and repair, cognition diagnostics, cross-session proof utility, and a narrow authenticated Custom Skill.
+- **Minds Integration Depth:** one persistent Mind, stable aliases, history fingerprints, structured validation and repair, cognition diagnostics, cross-session proof utility, a narrow authenticated Skill API, and a Mind-authored/schema-validated Skill draft whose unsupported Connection boundary is documented.
 - **Creator-Economy Problem Fit:** reduces the repeated context gathering and follow-up burden carried by independent creators and small moderator teams.
 - **Innovation:** combines inspectable memory receipts, restorative proportionality, and autonomous outcome tracking instead of isolated punishment.
 - **Execution:** a responsive three-act product with real persistence, approval transitions, due jobs, audit history, portable tamper-evident Decision Receipts, tests, CI, Docker deployment, and a source-linked seven-handoff proof surface for judges.
@@ -39,4 +39,4 @@ The credential-free demo uses a clearly labeled deterministic Mock Minds decisio
 
 ## Honest status sentence
 
-The public demo is credential-free and deterministic; live Minds persistence is verified, while Discord delivery and the Custom Skill must be described as configured or verified only after their remaining owner-run checks succeed.
+The public demo is credential-free and deterministic; live Minds persistence is verified. The Custom Skill API is deployed and its Mind-authored draft is schema-validated, while Minds BETA's confirmed App registration/private-item boundary prevents Connection, equipment, publication, and live tool-call verification. Discord delivery also remains unverified.

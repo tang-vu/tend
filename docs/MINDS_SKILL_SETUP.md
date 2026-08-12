@@ -1,6 +1,12 @@
 # Custom TEND Skill setup
 
-Status: the API and OpenAPI contract are deployed at `tend.tangvu.dev` with a dedicated ignored bearer key. Minds Connection, equipment, publication, and live tool-call verification still require the owner flow in Minds.
+Status: the API and OpenAPI contract are deployed at `tend.tangvu.dev` with a
+dedicated ignored bearer key. The owner Mind authored and schema-validated the
+Skill draft and its permissions were reviewed. Minds support confirmed on
+2026-08-12 that private Bazaar Apps/Skills are not currently supported and
+published Apps are team-managed. App registration, Connection creation,
+equipment, publication, and live tool-call verification therefore remain
+blocked and unclaimed.
 
 ## Scope
 
@@ -25,17 +31,26 @@ There is intentionally no Discord execution tool. `propose_community_action` can
 
 For production, place a reverse proxy in front of Next.js for request size limits and rate limiting. Rotate the bearer secret if access changes.
 
-## Give the API to the Mind
+## Supported Minds path
 
-The current official Skill guide describes this builder flow:
+The official Skill guide describes this intended builder flow:
 
 1. Tell the Mind to build a narrowly scoped TEND community-steward Skill around the OpenAPI document.
 2. Provide the deployed OpenAPI URL/content.
-3. In the Minds profile, create the required Connection and enter the bearer credential there.
+3. Use a platform-managed App Manifest and enter the bearer credential through
+   its Mind Connection.
 4. Ask the Mind to show every action and data permission before accepting the Skill.
 5. Verify that it has no delete, timeout execution, kick, or ban tool.
 6. Test each operation on a demo incident.
-7. Equip the Skill only after scope review. Publication is optional and must not be claimed before it occurs.
+7. Equip the Skill only after scope review. Publication must not be claimed
+   before it occurs.
+
+The current Minds BETA cannot complete step 3 for this custom API: there is no
+owner-accessible App registration surface, and private Bazaar items are not
+supported. Do not substitute a tenet, chat message, artifact, Skill body, or
+inline header for the Connection. Resume only when Minds provides or approves
+a supported App registration flow. See
+`docs/evidence/minds-skill-platform-boundary.md`.
 
 Suggested builder instruction:
 
@@ -63,7 +78,9 @@ Expected safety properties:
 
 - Implemented locally: yes.
 - Deployed API and contract: yes.
-- Requires user configuration in Minds: yes.
+- Mind-authored and schema-validated draft: yes.
+- Permissions reviewed: yes.
+- App/Connection registration available: no (Minds BETA platform boundary).
 - Equipped: no.
 - Published: no.
 - Verified live: no.

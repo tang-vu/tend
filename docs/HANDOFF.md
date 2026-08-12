@@ -1,6 +1,6 @@
 # TEND continuation handoff
 
-Last updated: 2026-08-11 (Asia/Saigon).
+Last updated: 2026-08-12 (Asia/Saigon).
 
 Read `AGENTS.md` first. This document is the durable operational and implementation handoff for a new chat or maintainer.
 
@@ -8,7 +8,9 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
 
 - Public credential-free demo: **https://tend.tangvu.dev**
 - Judge-readable integration evidence: **https://tend.tangvu.dev/evidence** — now includes a four-lens judge scorecard, source-linked seven-handoff proof spine, explicit counterfactual, and direct product-film/demo paths.
-- The public repository README opens with a three-step judge path and claim ledger; its Custom Skill wording matches the verified API / unequipped Minds Connection boundary.
+- The public repository README opens with a three-step judge path and claim
+  ledger; its Custom Skill wording matches the verified API,
+  schema-validated draft, and confirmed Minds BETA App/Connection boundary.
 - Health: `https://tend.tangvu.dev/api/health`
 - Incident audit includes a portable Decision Receipt: print/PDF plus a strict
   `tend.decision-receipt.v1` JSON envelope with SHA-256 payload integrity. It is
@@ -19,6 +21,11 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
 - Latest verified implementation CI at handoff: https://github.com/tang-vu/tend/actions/runs/31464394230
 - Public deployment is intentionally `TEND_MODE=demo` + `MINDS_MODE=mock`.
 - Live Minds discovery, cognition access, messaging, and cross-session recall were separately verified with owner credentials. See `docs/evidence/minds-persistence-proof.md`.
+- The owner Mind authored and schema-validated the six-operation Custom Skill
+  draft and returned a permission review without receiving the bearer secret.
+  Minds support then confirmed that private Bazaar items and builder-side App
+  registration are unavailable; the draft remains unequipped and unpublished.
+  See `docs/evidence/minds-skill-platform-boundary.md`.
 
 The public three-act flow was executed through the Cloudflare hostname, not only localhost. It reached:
 
@@ -118,6 +125,13 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 
 ## Verification status
 
+- On 2026-08-12, the Minds BETA platform-boundary update passed lint, strict
+  typecheck, 65/65 Vitest tests, production build, OpenAPI validation, secret
+  scan, 14/14 demo desktop/mobile browser tests, and 1/1 isolated live-auth
+  test. The updated standalone build was deployed; local/public health and the
+  public evidence page returned 200, the new boundary copy was visible through
+  Cloudflare, and the shared demo remained reset to `ready` with zero incidents,
+  memories, or follow-ups.
 - Release verification passed with lint, typecheck, 65/65 Vitest tests, production build, OpenAPI validation, and secret scan. On Windows, stop every running TEND web profile before rebuilding because they share and lock `.next/standalone`.
 - Browser coverage: 14/14 demo desktop/mobile tests plus 1/1 dedicated live-mode authentication test passed. The live test covers unauthorized reads/mutations, cross-origin rejection, credential failure/success, cookie attributes, authenticated state, logout, post-logout rejection, and the 429 throttle boundary.
 - Updated standalone deployment: local/public health and landing returned 200; CSP, frame denial, and HSTS reached the Cloudflare hostname; the public fictional scenario was reset to `ready` with no incidents, memories, or follow-ups.
@@ -145,7 +159,15 @@ If the Windows resolver temporarily retains an NXDOMAIN result, compare against 
 - The public host retained the `learned` scenario and four memory receipts across a verified PM2 stop/start, then reset to `ready` with no incidents, memories, or follow-ups.
 - The public repository returned HTTP 200 without authentication.
 - Discord Gateway login, the authorized guild, 1/1 allowlisted channel, least-privilege permissions, and bot self-loop rejection were externally verified in the dedicated test server. See `docs/evidence/discord-live-proof.md`.
-- The Custom TEND Skill API is deployed on the public hostname with a dedicated ignored runtime bearer key. Missing auth returns 401, valid auth returns 200, and a destructive `delete_message` proposal returns 400. The Minds Skill/Connection is not yet created, equipped, or published. See `docs/evidence/tend-skill-deployment-proof.md`.
+- The Custom TEND Skill API is deployed on the public hostname with a dedicated
+  ignored runtime bearer key. Missing auth returns 401, valid auth returns 200,
+  and a destructive `delete_message` proposal returns 400. The owner Mind
+  authored and schema-validated the six-operation draft and its permissions
+  were reviewed. Minds support confirmed that private Bazaar items and
+  builder-side custom App registration are not currently available, so no
+  Connection exists and the draft is not equipped, published, or live
+  tool-call verified. See `docs/evidence/tend-skill-deployment-proof.md` and
+  `docs/evidence/minds-skill-platform-boundary.md`.
 - Git working tree and `origin/main`: synchronized when this handoff was written.
 
 Never claim a later check passed without rerunning it after material changes.
@@ -171,8 +193,11 @@ Never claim a later check passed without rerunning it after material changes.
 
 1. Complete the DoraHacks submission form using `docs/SUBMISSION_COPY.md`, verify every external link in a signed-out browser, and save a confirmation screenshot.
 2. Complete and submit the remaining unchecked items in `docs/SUBMISSION_CHECKLIST.md`.
-3. In the owner-authenticated Minds profile, create the Connection using the ignored `data/tend-skill-api.key`, ask the Mind to build from `docs/tend-skill-openapi.yaml`, inspect permissions, equip it, and test every operation. Never put the key in the OpenAPI file, repository, browser history, or chat.
-4. Complete the remaining human-authored Discord intake, explicit reminder approval, one-time delivery, and fresh-message follow-up tests in the already connected dedicated server. Do not connect a production community.
+3. Complete the remaining human-authored Discord intake, explicit reminder approval, one-time delivery, and fresh-message follow-up tests in the already connected dedicated server. Do not connect a production community.
+4. Revisit Custom Skill equipment only when Minds provides or approves a
+   supported App registration and Connection flow. Never put the bearer key in
+   a tenet, artifact, Skill body, OpenAPI file, repository, browser history, or
+   chat.
 5. Replace the single-creator boundary with managed identity, MFA/recovery, community roles, revocable sessions, and distributed throttling before multi-user or horizontally scaled deployment.
 6. For post-hackathon scaling, migrate SQLite to PostgreSQL and run queue-backed web/Discord workers.
 7. Arrange periodic SQLite backups and machine uptime monitoring if this host remains the public demo origin.

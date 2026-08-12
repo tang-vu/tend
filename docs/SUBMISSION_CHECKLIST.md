@@ -15,10 +15,11 @@
 - [x] Builder API key and Mind configured in the private live-integration process environment; public demo remains credential-free.
 - [x] `pnpm minds:doctor` saved as a sanitized artifact.
 - [x] `pnpm minds:proof` demonstrates genuine second-session recall.
-- [ ] Failed recall, if any, reported honestly and fixed before recording.
+- [x] The initial failed recall proof was reported honestly, fixed with envelope parsing, regression-tested, and rerun successfully.
 - [x] Cognition balance checked.
-- [ ] Custom Skill deployed, permissions inspected, equipped, and tool calls tested.
-- [x] Skill publication status described accurately: API deployed, but the Minds Skill is not yet created, equipped, or published.
+- [x] Custom Skill draft authored, schema-validated, and permissions inspected without sharing its bearer credential.
+- [ ] Custom Skill App/Connection created, equipped, and tool calls tested — blocked by the confirmed Minds BETA App registration/private-item boundary.
+- [x] Skill status described accurately: API deployed and draft validated; App registration, Connection, equip, publication, and live tool calls remain unclaimed.
 
 ## Discord evidence
 
