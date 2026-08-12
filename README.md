@@ -16,7 +16,7 @@ TEND is a persistent Discord community steward that remembers creator values, me
 | Minds continuity  | Live discovery, cognition access, messaging, and second-session recall verified privately                    | [Read sanitized proof](docs/evidence/minds-persistence-proof.md)                                    |
 | Custom TEND Skill | API verified; Mind-authored draft validated; App/Connection blocked by a confirmed Minds BETA boundary       | [Read platform-boundary proof](docs/evidence/minds-skill-platform-boundary.md)                      |
 | Discord           | Gateway, allowlist, least privilege, and self-loop boundary verified; human delivery/follow-up still pending | [Read boundary proof](docs/evidence/discord-live-proof.md)                                          |
-| Engineering       | Lint, types, tests, production build, browser E2E, secret scan, and Docker CI                                | [Open latest verified implementation run](https://github.com/tang-vu/tend/actions/runs/31464394230) |
+| Engineering       | Lint, types, tests, production build, browser E2E, secret scan, and Docker CI                                | [Open latest verified implementation run](https://github.com/tang-vu/tend/actions/runs/31612611667) |
 
 ![TEND resolved demo](docs/screenshots/demo-resolved-desktop.png)
 

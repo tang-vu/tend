@@ -18,7 +18,7 @@ Read `AGENTS.md` first. This document is the durable operational and implementat
   live mode.
 - Repository: `https://github.com/tang-vu/tend`, branch `main`
 - Use `git log -1 --oneline` for the deployed source revision; the repository is kept synchronized after each release.
-- Latest verified implementation CI at handoff: https://github.com/tang-vu/tend/actions/runs/31464394230
+- Latest verified implementation CI at handoff: https://github.com/tang-vu/tend/actions/runs/31612611667
 - Public deployment is intentionally `TEND_MODE=demo` + `MINDS_MODE=mock`.
 - Live Minds discovery, cognition access, messaging, and cross-session recall were separately verified with owner credentials. See `docs/evidence/minds-persistence-proof.md`.
 - The owner Mind authored and schema-validated the six-operation Custom Skill
