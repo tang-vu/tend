@@ -19,3 +19,9 @@ data/
 artifacts/video/
 .DS_Store
 Thumbs.db
+
+# AI assistant artifacts
+.devin/
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+NUL
